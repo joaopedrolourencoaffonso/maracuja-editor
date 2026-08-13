@@ -1,26 +1,30 @@
-<!-- Include Quill stylesheet -->
-<link
-  href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
-  rel="stylesheet"
-/>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Maracujá</title>
 
-<!-- Create the toolbar container -->
-<!--<div id="toolbar">
-  <button class="ql-bold">Bold</button>
-  <button class="ql-italic">Italic</button>
-</div>-->
+    </head>
+    <body>
+        <!-- Include Quill stylesheet -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+            rel="stylesheet"
+        />
 
-<!-- Create the editor container -->
-<div id="editor">
-  <div class="ql-editor" contenteditable="true"><p>Era uma vez...</p><p><br></p><p>Banana!</p><p><br></p><h2>lourenço</h2><p><br></p><p><a href="https://github.com/slab/quill/" rel="noopener noreferrer" target="_blank">aaaa</a></p><p><br></p><p><br></p><p>rwewewewew</p><p><br></p><p><br></p></div><div class="ql-tooltip ql-hidden"><a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div>
-</div>
+        <!-- Create the editor container -->
+        <div id="editor">
+            <div class="ql-editor" contenteditable="true"><p>Era uma vez...</p><p><br></p><p>Banana!</p><p><br></p><h2>lourenço</h2><p><br></p><p><a href="https://github.com/slab/quill/" rel="noopener noreferrer" target="_blank">aaaa</a></p><p><br></p><p><br></p><p>rwewewewew</p><p><br></p><p><br></p></div><div class="ql-tooltip ql-hidden"><a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div>
+        </div>
 
-<!-- Include the Quill library -->
-<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+        <!-- Include the Quill library -->
+        <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
 
-<!-- Initialize Quill editor -->
-<script>
-  const quill = new Quill("#editor", {
-    theme: "snow",
-  });
-</script>
+        <!-- Initialize Quill editor -->
+        <script>
+            const quill = new Quill("#editor", {
+                theme: "snow",
+            });
+        </script>
+    </body>
+
+</html>
