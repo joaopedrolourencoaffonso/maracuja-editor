@@ -25,5 +25,10 @@ def data():
 
     return jsonify({"message": "ok"})
 
+@app.route('/lista_capitulos')
+def load_data():
+    data = {"livros": ["livro1", "livro2", "livro3","livro4","livro5","livro6","livro7","livro8","livro9"]}
+    return jsonify(data)
+
 if __name__ == '__main__':
     app.run(debug=True)
