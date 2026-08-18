@@ -27,25 +27,16 @@
         <script>
             let livros;
             async function populaPagina() {
-                const response = await fetch("/lista_capitulos");
+                const response = await fetch("/lista_projetos_recentes");
                 livros = await response.json();
-                console.log(livros.livros['0']);
-                let temp = `
-                <ul>
-                    <li>primeiroLivro</li>
-                    <li>segundoLivro</li>
-                    <li>terceiroLivro</li>
-                    <li>quartoLivro</li>
-                    <li>quintoLivro</li>
-                </ul>
-                `;
-
-                temp = temp.replace("primeiroLivro",livros.livros['0']);
-                temp = temp.replace("segundoLivro",livros.livros['1']);
-                temp = temp.replace("terceiroLivro",livros.livros['2']);
-                temp = temp.replace("quartoLivro",livros.livros['3']);
-                temp = temp.replace("quintoLivro",livros.livros['4']);
-
+                console.log(livros);
+                let temp = `<ul>`;
+                
+                Object.entries(livros).forEach(([key, value]) => {
+                    temp = temp + `<li><a href="/project_page/${value}">${key}</a></li>`;
+                });
+                temp = temp + "</ul"
+                
                 var element = document.getElementById("ListaDeLivros");
                 element.innerHTML = temp;
             }

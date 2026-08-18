@@ -7,9 +7,11 @@ Powered by [quilljs](https://github.com/slab/quill/).
 [X] Excolher framework de edição de texto em browser
 [X] UI da página de edição básica
 [X] UI para a página principal
-[ ] UI para Listar Projetos
 [ ] UI para visualizar detalhes de projeto (capítulos incluso)
+[ ] UI para Listar Projetos
 [ ] UI para Criar Projeto
+[ ] API para retornar imagens de capas
+[ ] API para receber imagens de projetos
 [ ] Criar Backend para receber informações acima
 [ ] Efetivamente Salvar informações em DB Sqlite
 [ ] Associar informações de capítulo na DB

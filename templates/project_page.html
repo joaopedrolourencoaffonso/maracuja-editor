@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Maracujá</title>
+        <style>
+            .infoProjeto {
+                display: grid;
+                grid-template-columns: 30% 70%;
+                width: 100%;
+                align-items: start;
+            }
+
+            .infoProjeto > div:first-child {
+                width: 100%;
+            }
+
+            .infoProjeto > div:last-child {
+                width: 100%;
+                min-width: 0;
+                overflow-wrap: break-word;
+            }
+
+            img {
+                width: 95%;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body onload="populaPagina()">
+        <!-- Include Quill stylesheet -->
+        <div class="campo" id="campo">
+            
+        </div>
+
+        <script>
+            let livros;
+            projectID = "{{ projectID }}";
+            console.log("--> ",projectID);
+
+
+            async function populaPagina() {
+                const response = await fetch("/project_info/" + projectID);
+                projectData = await response.json();
+                console.log(projectData.name);
+                let temp = `
+                <div class="infoProjeto">
+                    <div>
+                        <img class="capa" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Building_construction%2C_worker_wipes_reception_area.jpg/960px-Building_construction%2C_worker_wipes_reception_area.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail">
+                    </div>
+                    <div>
+                        <h2>Título do Projeto</h2>
+                        <textarea id="tituloField" rows="2" cols="100">TITULO_DO_PROJETO</textarea>
+
+                        <h2>Sinopse</h2>
+                        <textarea id="sinopseField" rows="2" cols="100">SINOPSE_DO_PROJETO</textarea>
+
+                        <h2>Capítulos</h2>
+                        LISTA_VAI_AQUI
+                    </div>
+                </div>
+                `;
+
+                temp = temp.replace("TITULO_DO_PROJETO",projectData.name);
+                temp = temp.replace("LINK_DA_CAPA",projectData.capa);
+                temp = temp.replace("SINOPSE_DO_PROJETO",projectData.sinopse);
+                
+                listaHTML = "<ul>"
+                projectData.capitulos.forEach(capitulo => {
+                    listaHTML = listaHTML + `<li>${capitulo}</li>`;
+                });
+                listaHTML = listaHTML + "</ul>";
+                temp = temp.replace("LISTA_VAI_AQUI",listaHTML);
+
+                var element = document.getElementById("campo");
+                element.innerHTML = temp;
+            }
+        </script>
+    </body>
+
+</html>
