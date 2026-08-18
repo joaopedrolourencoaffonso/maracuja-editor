@@ -19,7 +19,7 @@ def data():
     text = text.replace('</div><div class="ql-tooltip ql-hidden"><a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div>', "");
     print(f"{text}");
 
-    file = open("static/data.json", "w")
+    file = open("capitulos/data.json", "w")
     json.dump({"text": text}, file)
     file.close()
 
