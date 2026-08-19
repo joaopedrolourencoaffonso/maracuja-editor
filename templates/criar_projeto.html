@@ -20,18 +20,48 @@
                 overflow-wrap: break-word;
             }
 
+            .imagemBotao {
+                position: relative;
+                border: none;
+                padding: 0;
+                background: none;
+                cursor: pointer;
+            }
+
+            .imagemBotao img {
+                display: block;
+            }
+
+            .imagemHover {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemNormal {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemHover {
+                display: block !important;
+            }
+
             img {
                 width: 95%;
                 align-items: center;
             }
         </style>
     </head>
-    <body onload="populaPagina()">
+    <body>
         <!-- Include Quill stylesheet -->
+        <p><a href="/">Voltar ao Início</a></p>
+        <p><a href="/todos_projetos">Lista de Projetos</a></p>
         <div class="campo" id="campo">
             <div class="infoProjeto">
                 <div>
-                    <img class="capa" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Building_construction%2C_worker_wipes_reception_area.jpg/960px-Building_construction%2C_worker_wipes_reception_area.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail">
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
+                        <img class="imagemNormal" src="/img/1" alt="" id="imageCapa">
+                        <img class="imagemHover" src="/img/2" alt="">
+                    </button>
                 </div>
                 <div>
                     <h2>Título do Projeto</h2>
@@ -39,52 +69,29 @@
 
                     <h2>Sinopse</h2>
                     <textarea id="sinopseField" rows="2" cols="100">Uma história sobre...</textarea>
+                    <br>
+                    <button onclick="cadastrarProjeto()">Cadastrar Projeto</button>
                 </div>
             </div>
         </div>
 
         <script>
-            let livros;
-            projectID = "{{ projectID }}";
-            console.log("--> ",projectID);
+            const fileInput = document.getElementById("fileInput");
+            const preview = document.getElementById("imageCapa");
 
-
-            async function populaPagina() {
-                const response = await fetch("/project_info/" + projectID);
-                projectData = await response.json();
-                console.log(projectData.name);
-                let temp = `
-                <div class="infoProjeto">
-                    <div>
-                        <img class="capa" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Building_construction%2C_worker_wipes_reception_area.jpg/960px-Building_construction%2C_worker_wipes_reception_area.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail">
-                    </div>
-                    <div>
-                        <h2>Título do Projeto</h2>
-                        <textarea id="tituloField" rows="2" cols="100">TITULO_DO_PROJETO</textarea>
-
-                        <h2>Sinopse</h2>
-                        <textarea id="sinopseField" rows="2" cols="100">SINOPSE_DO_PROJETO</textarea>
-
-                        <h2>Capítulos</h2>
-                        LISTA_VAI_AQUI
-                    </div>
-                </div>
-                `;
-
-                temp = temp.replace("TITULO_DO_PROJETO",projectData.name);
-                temp = temp.replace("LINK_DA_CAPA",projectData.capa);
-                temp = temp.replace("SINOPSE_DO_PROJETO",projectData.sinopse);
-                
-                listaHTML = "<ul>"
-                projectData.capitulos.forEach(capitulo => {
-                    listaHTML = listaHTML + `<li>${capitulo}</li>`;
-                });
-                listaHTML = listaHTML + "</ul>";
-                temp = temp.replace("LISTA_VAI_AQUI",listaHTML);
-
-                var element = document.getElementById("campo");
-                element.innerHTML = temp;
+            function cadastrarProjeto() {
+                console.log("banana")
             }
+
+            fileInput.addEventListener("change", () => {
+                selectedFile = fileInput.files[0];
+
+                if (!selectedFile) return;
+
+                // Show the image without uploading it
+                preview.src = URL.createObjectURL(selectedFile);
+                preview.style.display = "block";
+            });
         </script>
     </body>
 

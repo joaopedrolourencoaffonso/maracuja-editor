@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 import json
 import os
 
@@ -53,6 +53,15 @@ def project_info(project_id):
 @app.route('/todos_projetos', methods=['GET'])
 def todos_projetos():
     return render_template('todos_projetos.html')
+
+@app.route('/img/<int:image_id>', methods=['GET'])
+def img(image_id):
+    if (image_id == 1):
+        image_id = "under_contruction.png";
+    else:
+        image_id = "alt_under_contruction.png";
+    
+    return send_file(".\\localdata\\" + image_id, mimetype='image/gif')
 
 if __name__ == '__main__':
     app.run(debug=True)
