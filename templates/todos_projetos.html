@@ -1,40 +1,28 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Maracujá</title>
+        <title>Lista de Projetos</title>
         <style>
             .center {
                 display: flex;
-                justify-content: center; /* Centers horizontally */
+                justify-content: left; /* Centers horizontally */
                 align-items: center;     /* Centers vertically */
-            }
-
-            .botoesBase {
-                display: grid;
-                grid-template-columns: auto auto;
-                padding: 10px;
-                gap: 10px;
             }
         </style>
     </head>
     <body onload="populaPagina()">
         <!-- Include Quill stylesheet -->
         <div class="campo">
-            <h1 class="center">Vamos criar!</h1>
+            <h1 class="center">Projetos Cadastrados</h1>
     
             <div class="center" id="ListaDeLivros">
-            </div>
-    
-            <div class="center botoesBase">
-                <a target="_blank" href="/todos_projetos">Ver todos os projetos</a>
-                <a target="_blank" href="/criar_projeto">Criar novo projeto</a>
             </div>
         </div>
 
         <script>
             let livros;
             async function populaPagina() {
-                const response = await fetch("/lista_projetos_recentes");
+                const response = await fetch("/lista_todos_projetos");
                 livros = await response.json();
                 console.log(livros);
                 let temp = `<ul>`;
