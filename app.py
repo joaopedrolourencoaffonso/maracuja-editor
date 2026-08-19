@@ -32,7 +32,8 @@ def lista_projetos_recentes():
 
 @app.route('/lista_todos_projetos')
 def lista_todos_projetos():
-    data = {"livro1":"1", "livro2":"2", "livro3":"3","livro4":"4","livro5":"5","livro6":"6","livro7":"7","livro8":"8","livro9":"9"}
+    tempFigura = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Chaos%2C_of_Moss_K9%2C_as_a_Puppy.jpg/960px-Chaos%2C_of_Moss_K9%2C_as_a_Puppy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    data = {"1": {"titulo":"Título 1","ncapitulos" : 12,"ntimelines":6,"src": tempFigura},"2": {"titulo":"Título 2","ncapitulos" : 5,"ntimelines":2,"src": tempFigura},"3": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"4": {"titulo":"Título 4","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"5": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"6": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"7": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura}}
     return jsonify(data)
 
 @app.route('/project_page/<int:project_id>', methods=['GET'])

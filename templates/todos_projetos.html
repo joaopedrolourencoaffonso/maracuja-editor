@@ -8,16 +8,47 @@
                 justify-content: left; /* Centers horizontally */
                 align-items: center;     /* Centers vertically */
             }
+
+            .boxOfProjetos {
+                display: grid;
+                grid-template-columns: auto auto;
+                align-items: center;
+                justify-content: center;
+                padding: 10px;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .projetoBox {
+                display: grid;
+                grid-template-columns: 3fr 7fr;
+                padding: 10px;
+                gap: 10px;
+                width: 80%;
+                border: 1px solid black;
+                border-radius: 2%;
+            }
+
+            .left {
+                align-items: left;
+                justify-content: left;
+            }
+
+            img {
+                width: 70%;
+            }
         </style>
     </head>
     <body onload="populaPagina()">
         <!-- Include Quill stylesheet -->
         <div class="campo">
-            <h1 class="center">Projetos Cadastrados</h1>
+            <h1 class="center">Meus Projetos</h1>
     
-            <div class="center" id="ListaDeLivros">
+            <div class="boxOfProjetos" id="ListaDeProjetos">
             </div>
         </div>
+
+        <br>
 
         <script>
             let livros;
@@ -25,14 +56,24 @@
                 const response = await fetch("/lista_todos_projetos");
                 livros = await response.json();
                 console.log(livros);
-                let temp = `<ul>`;
+                let temp = "";
                 
                 Object.entries(livros).forEach(([key, value]) => {
-                    temp = temp + `<li><a href="/project_page/${value}">${key}</a></li>`;
+                    console.log(key, value.titulo);
+                    temp = temp + `<div class="projetoBox">
+                        <div>
+                            <img src="${value.src}">
+                        </div>
+                        <div class="left">
+                            <p>${value.titulo}</p>
+                            <p>Número de capítulos: ${value.ncapitulos}</p>
+                            <p>Número de timelines: ${value.ntimelines}</p>
+                        </div>
+                    </div>`
                 });
                 temp = temp + "</ul"
                 
-                var element = document.getElementById("ListaDeLivros");
+                var element = document.getElementById("ListaDeProjetos");
                 element.innerHTML = temp;
             }
         </script>
