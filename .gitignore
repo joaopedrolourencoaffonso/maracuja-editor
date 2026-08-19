@@ -1,1 +1,3 @@
-localdata\*
+/localdata/
+!/localdata/under_contruction.png
+!/localdata/alt_under_contruction.png
