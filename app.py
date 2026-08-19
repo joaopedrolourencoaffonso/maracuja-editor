@@ -45,6 +45,18 @@ def project_page(project_id):
 def criar_projeto():
     return render_template('criar_projeto.html')
 
+@app.route('/cadastraProjeto', methods=['POST'])
+def cadastraProjeto():
+    print("form: ", request.form)
+    print("images: ", request.files)
+
+    image = request.files.get("image");
+    filepath = os.path.join("localdata", image.filename)
+    image.save(filepath)
+
+    resposta = {"msg":"ok"}
+    return jsonify(resposta)
+
 @app.route('/project_info/<int:project_id>', methods=['GET'])
 def project_info(project_id):
     data = {"name": "Saci e o Rei dos Ladrões","sinopse": "Humilhado e traído, o saci embarca numa jornada por justiça contra o terrível rei dos ladrões.", "capitulos":["capitulo 1","capitulo 2","capitulo 3","capitulo 4"], "capa":"https://images.unsplash.com/photo-1536895058696-a69b1c7ba34f?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}

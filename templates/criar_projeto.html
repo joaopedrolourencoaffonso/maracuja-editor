@@ -78,9 +78,32 @@
         <script>
             const fileInput = document.getElementById("fileInput");
             const preview = document.getElementById("imageCapa");
-
+            
             function cadastrarProjeto() {
-                console.log("banana")
+                const titulo = document.getElementById("tituloField");
+                const sinopse = document.getElementById("sinopseField");
+
+                console.log(titulo.textContent, sinopse.textContent, fileInput.files[0]);
+
+                const formData = new FormData();
+                formData.append("titulo",titulo.textContent);
+                formData.append("sinopse",sinopse.textContent);
+                formData.append("image",fileInput.files[0]);
+
+                chamaAPI(formData).then(dados => {
+                    console.log(dados);
+                })
+                .catch(erro => {
+                    console.error(erro);
+                });
+            }
+
+            async function chamaAPI(formData) {
+                const response = await fetch("/cadastraProjeto", {
+                   method: "POST",
+                   body: formData
+                });
+                return response.json();
             }
 
             fileInput.addEventListener("change", () => {
