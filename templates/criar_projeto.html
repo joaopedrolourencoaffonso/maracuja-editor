@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Projeto</title>
+        <title>Novo Projeto</title>
         <style>
             .infoProjeto {
                 display: grid;
@@ -29,7 +29,18 @@
     <body onload="populaPagina()">
         <!-- Include Quill stylesheet -->
         <div class="campo" id="campo">
-            
+            <div class="infoProjeto">
+                <div>
+                    <img class="capa" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Building_construction%2C_worker_wipes_reception_area.jpg/960px-Building_construction%2C_worker_wipes_reception_area.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail">
+                </div>
+                <div>
+                    <h2>Título do Projeto</h2>
+                    <textarea id="tituloField" rows="2" cols="100">As Aventuras de...</textarea>
+
+                    <h2>Sinopse</h2>
+                    <textarea id="sinopseField" rows="2" cols="100">Uma história sobre...</textarea>
+                </div>
+            </div>
         </div>
 
         <script>
