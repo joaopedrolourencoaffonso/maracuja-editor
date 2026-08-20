@@ -49,9 +49,13 @@ def criar_projeto():
 
 @app.route('/cadastraProjeto', methods=['POST'])
 def cadastraProjeto():
-    print("form: ", request.form)
+    #print("form: ", request.form)
     print("images: ", request.files)
 
+    titulo = request.form.get("titulo");
+    sinopse = request.form.get("sinopse");
+    maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse);
+    
     image = request.files.get("image");
     filepath = os.path.join("localdata", image.filename)
     image.save(filepath)
