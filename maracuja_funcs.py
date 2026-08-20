@@ -23,6 +23,7 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE titulos (PROJECT_ID INTEGER, name TEXT)');
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
+        # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
     
     conn.close();
