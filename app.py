@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify, request, send_file
 import json
 import os
+import sqlite3
+import maracuja_funcs;
 
 app = Flask(__name__)
 
@@ -76,4 +78,5 @@ def img(image_id):
     return send_file(".\\static\\" + image_id, mimetype='image/gif')
 
 if __name__ == '__main__':
+    maracuja_funcs.DB_start(sqlite3);
     app.run(debug=True)
