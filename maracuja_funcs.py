@@ -28,7 +28,7 @@ def DB_start(sqlite3):
     conn.close();
     return True;
 
-def insere_titulo_sinopse(sqlite3, titulo, sinopse):
+def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     id = cursor.execute('SELECT MAX(PROJECT_ID) FROM titulos;').fetchall();
@@ -41,5 +41,8 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse):
     
     cursor.execute('INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")');
     cursor.execute('INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")');
+    cursor.execute('INSERT INTO capas VALUES (' + id + ', "' + filename + '")');
     conn.commit();
     conn.close();
+
+    return id;

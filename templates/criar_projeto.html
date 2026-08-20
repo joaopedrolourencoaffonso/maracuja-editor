@@ -78,6 +78,7 @@
         <script>
             const fileInput = document.getElementById("fileInput");
             const preview = document.getElementById("imageCapa");
+            let resultado;
             
             function cadastrarProjeto() {
                 const titulo = document.getElementById("tituloField");
@@ -91,11 +92,16 @@
                 formData.append("image",fileInput.files[0]);
 
                 chamaAPI(formData).then(dados => {
-                    console.log(dados);
+                    resultado = dados;
+                    if (resultado.msg == 'ok') {
+                        alert("Cadastrado com sucesso!")
+                        window.location.href = `/project_page/${resultado.id}`
+                    }
                 })
                 .catch(erro => {
                     console.error(erro);
                 });
+
             }
 
             async function chamaAPI(formData) {

@@ -54,13 +54,15 @@ def cadastraProjeto():
 
     titulo = request.form.get("titulo");
     sinopse = request.form.get("sinopse");
-    maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse);
     
     image = request.files.get("image");
+    image.filename = image.filename.replace(' ','_');
     filepath = os.path.join("localdata", image.filename)
     image.save(filepath)
 
-    resposta = {"msg":"ok"}
+    id_do_projeto = maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse, image.filename);
+
+    resposta = {"msg":"ok","id":id_do_projeto}
     return jsonify(resposta)
 
 @app.route('/project_info/<int:project_id>', methods=['GET'])
