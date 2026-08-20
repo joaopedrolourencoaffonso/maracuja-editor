@@ -73,7 +73,7 @@ def img(image_id):
     else:
         image_id = "alt_under_contruction.png";
     
-    return send_file(".\\localdata\\" + image_id, mimetype='image/gif')
+    return send_file(".\\static\\" + image_id, mimetype='image/gif')
 
 if __name__ == '__main__':
     app.run(debug=True)
