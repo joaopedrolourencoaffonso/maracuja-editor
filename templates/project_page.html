@@ -27,13 +27,21 @@
         </style>
     </head>
     <body onload="populaPagina()">
-        <!-- Include Quill stylesheet -->
+        <div>
+            <button onclick="salvaInfo()">Salvar Mudanças</button>
+            <a href="/">Voltar para a página principal</a>
+            <br><br>
+        </div>
+
         <div class="campo" id="campo">
             
         </div>
 
         <script>
             let livros;
+            let titulo;
+            let sinopse;
+            let capa;
             projectID = "{{ projectID }}";
             console.log("--> ",projectID);
 
@@ -45,7 +53,7 @@
                 let temp = `
                 <div class="infoProjeto">
                     <div>
-                        <img class="capa" src="/img/CAPA_VAI_AQUI">
+                        <img class="capa" src="/img/CAPA_DO_PROJETO">
                     </div>
                     <div>
                         <h2>Título do Projeto</h2>
@@ -61,8 +69,12 @@
                 `;
 
                 temp = temp.replace("TITULO_DO_PROJETO",projectData.name);
-                temp = temp.replace("CAPA_VAI_AQUI",projectData.capa);
+                temp = temp.replace("CAPA_DO_PROJETO",projectData.capa);
                 temp = temp.replace("SINOPSE_DO_PROJETO",projectData.sinopse);
+
+                titulo = projectData.name;
+                sinopse = projectData.sinopse;
+                capa = projectData.capa;
                 
                 listaHTML = "<ul>"
                 projectData.capitulos.forEach(capitulo => {
