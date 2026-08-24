@@ -23,3 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Começando a trabalhar com DB: verifica e cria tabelas básicas e insere informação de projeto.
 - Salva e serve imagens de capa do usuário
 - Introduz [`maracuja_funcs`](./maracuja_funcs.py).
+
+## 0.0.1 - 24-08-2026
+
+### Added
+
+- Começando a usar info da DB na página de projeto

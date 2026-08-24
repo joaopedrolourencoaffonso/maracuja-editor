@@ -20,6 +20,30 @@
                 overflow-wrap: break-word;
             }
 
+            .imagemBotao {
+                position: relative;
+                border: none;
+                padding: 0;
+                background: none;
+                cursor: pointer;
+            }
+
+            .imagemBotao img {
+                display: block;
+            }
+
+            .imagemHover {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemNormal {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemHover {
+                display: block !important;
+            }
+
             img {
                 width: 95%;
                 align-items: center;
@@ -42,7 +66,8 @@
             let titulo;
             let sinopse;
             let capa;
-            projectID = "{{ projectID }}";
+            let selectedFile;
+            const projectID = "{{ projectID }}";
             console.log("--> ",projectID);
 
 
@@ -53,7 +78,11 @@
                 let temp = `
                 <div class="infoProjeto">
                     <div>
-                        <img class="capa" src="/img/CAPA_DO_PROJETO">
+                        <input type="file" id="fileInput" style="display: none;">
+                        <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
+                            <img class="imagemNormal" src="/img/CAPA_DO_PROJETO" alt="" id="imageCapa">
+                            <img class="imagemHover" src="/img_app/2" alt="">
+                        </button>
                     </div>
                     <div>
                         <h2>Título do Projeto</h2>
@@ -85,6 +114,21 @@
 
                 var element = document.getElementById("campo");
                 element.innerHTML = temp;
+
+                const fileInput = document.getElementById("fileInput");
+                const preview = document.getElementById("imageCapa");
+                fileInput.addEventListener("change", () => {
+                    selectedFile = fileInput.files[0];
+
+                    if (!selectedFile) return;
+
+                    preview.src = URL.createObjectURL(selectedFile);
+                    preview.style.display = "block";
+                });
+            }
+
+            function salvaInfo() {
+                console.log("CONTINUAR DAQUI!");
             }
         </script>
     </body>
