@@ -47,3 +47,24 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     conn.close();
 
     return id;
+
+def pega_titulo_por_id(sqlite3, id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    titulo = cursor.execute('SELECT name FROM titulos where PROJECT_ID =' +  str(id) + ';').fetchall()
+    titulo = titulo[0][0]
+    return titulo
+
+def pega_sinopse_por_id(sqlite3, id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    sinopse = cursor.execute('SELECT sinopse FROM sinopses where PROJECT_ID =' +  str(id) + ';').fetchall()
+    sinopse = sinopse[0][0]
+    return sinopse
+
+def pega_capa_por_id(sqlite3, id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    capas = cursor.execute('SELECT imagem_capa FROM capas where PROJECT_ID =' +  str(id) + ';').fetchall()
+    capa = capas[0][0]
+    return capa

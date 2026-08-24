@@ -67,15 +67,23 @@ def cadastraProjeto():
 
 @app.route('/project_info/<int:project_id>', methods=['GET'])
 def project_info(project_id):
-    data = {"name": "Saci e o Rei dos Ladrões","sinopse": "Humilhado e traído, o saci embarca numa jornada por justiça contra o terrível rei dos ladrões.", "capitulos":["capitulo 1","capitulo 2","capitulo 3","capitulo 4"], "capa":"https://images.unsplash.com/photo-1536895058696-a69b1c7ba34f?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+    titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, project_id);
+    sinopse = maracuja_funcs.pega_sinopse_por_id(sqlite3, project_id);
+    capa = maracuja_funcs.pega_capa_por_id(sqlite3, project_id);
+    print(titulo, sinopse, capa)
+    data = {"name": titulo,"sinopse": sinopse, "capitulos":["capitulo 1","capitulo 2","capitulo 3","capitulo 4"], "capa":capa}
     return jsonify(data)
 
 @app.route('/todos_projetos', methods=['GET'])
 def todos_projetos():
     return render_template('todos_projetos.html')
 
-@app.route('/img/<int:image_id>', methods=['GET'])
-def img(image_id):
+@app.route('/img/<string:filename>', methods=['GET'])
+def img(filename):
+    return send_file(".\\localdata\\" + filename, mimetype='image/gif')
+
+@app.route('/img_app/<int:image_id>', methods=['GET'])
+def img_app(image_id):
     if (image_id == 1):
         image_id = "under_contruction.png";
     else:
