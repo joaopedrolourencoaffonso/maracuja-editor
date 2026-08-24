@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Novo Projeto</title>
+        <style>
+            .infoProjeto {
+                display: grid;
+                grid-template-columns: 30% 70%;
+                width: 100%;
+                align-items: start;
+            }
+
+            .infoProjeto > div:first-child {
+                width: 100%;
+            }
+
+            .infoProjeto > div:last-child {
+                width: 100%;
+                min-width: 0;
+                overflow-wrap: break-word;
+            }
+
+            .imagemBotao {
+                position: relative;
+                border: none;
+                padding: 0;
+                background: none;
+                cursor: pointer;
+            }
+
+            .imagemBotao img {
+                display: block;
+            }
+
+            .imagemHover {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemNormal {
+                display: none !important;
+            }
+
+            .imagemBotao:hover .imagemHover {
+                display: block !important;
+            }
+
+            img {
+                width: 95%;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Include Quill stylesheet -->
+        <p><a href="/">Voltar ao Início</a></p>
+        <p><a href="/todos_projetos">Lista de Projetos</a></p>
+        <div class="campo" id="campo">
+            <div class="infoProjeto">
+                <div>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
+                        <img class="imagemNormal" src="/img/1" alt="" id="imageCapa">
+                        <img class="imagemHover" src="/img/2" alt="">
+                    </button>
+                </div>
+                <div>
+                    <h2>Título do Projeto</h2>
+                    <textarea id="tituloField" rows="2" cols="100">As Aventuras de...</textarea>
+
+                    <h2>Sinopse</h2>
+                    <textarea id="sinopseField" rows="2" cols="100">Uma história sobre...</textarea>
+                    <br>
+                    <button onclick="cadastrarProjeto()">Cadastrar Projeto</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const fileInput = document.getElementById("fileInput");
+            const preview = document.getElementById("imageCapa");
+            let resultado;
+            
+            function cadastrarProjeto() {
+                const titulo = document.getElementById("tituloField");
+                const sinopse = document.getElementById("sinopseField");
+
+                console.log(titulo.textContent, sinopse.textContent, fileInput.files[0]);
+
+                const formData = new FormData();
+                formData.append("titulo",titulo.textContent);
+                formData.append("sinopse",sinopse.textContent);
+                formData.append("image",fileInput.files[0]);
+
+                chamaAPI(formData).then(dados => {
+                    resultado = dados;
+                    if (resultado.msg == 'ok') {
+                        alert("Cadastrado com sucesso!")
+                        window.location.href = `/project_page/${resultado.id}`
+                    }
+                })
+                .catch(erro => {
+                    console.error(erro);
+                });
+
+            }
+
+            async function chamaAPI(formData) {
+                const response = await fetch("/cadastraProjeto", {
+                   method: "POST",
+                   body: formData
+                });
+                return response.json();
+            }
+
+            fileInput.addEventListener("change", () => {
+                selectedFile = fileInput.files[0];
+
+                if (!selectedFile) return;
+
+                // Show the image without uploading it
+                preview.src = URL.createObjectURL(selectedFile);
+                preview.style.display = "block";
+            });
+        </script>
+    </body>
+
+</html>
