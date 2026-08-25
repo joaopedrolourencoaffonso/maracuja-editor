@@ -23,11 +23,28 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE titulos (PROJECT_ID INTEGER, name TEXT)');
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
+        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
     
     conn.close();
     return True;
+
+def retorna_novo_chapter_id(sqlite3, project_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID ="' + project_id + '";').fetchall();
+    if (id == [(None,)]):
+        id = 0;
+    else:
+        id = id[0][0];
+    id = id + 1;
+    id = str(id);
+    
+    conn.commit();
+    conn.close();
+
+    return id;
 
 def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     conn = sqlite3.connect('userdata');
