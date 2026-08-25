@@ -73,6 +73,10 @@
                     <h2>Sinopse</h2>
                     <textarea id="sinopseField" rows="2" cols="100"></textarea>
 
+                    <div>
+                        <a href="/editarCapitulo/Novo">Criar Capítulo</a>
+                    </div>
+
                     <h2>Capítulos</h2>
                     <ul id="listaDeCapitulos">
 
@@ -105,7 +109,7 @@
                 
                 listaHTML = ""
                 projectData.capitulos.forEach(capitulo => {
-                    listaHTML = listaHTML + `<li>${capitulo}</li>`;
+                    listaHTML = listaHTML + `<li><a href="/editarCapitulo/${capitulo[0]}">${capitulo[1]}</a></li>`;
                 });
                 listaHTML = listaHTML;
                 var lista = document.getElementById("listaDeCapitulos")
