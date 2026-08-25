@@ -11,7 +11,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 [X] UI básica para Listar Projetos
 [X] UI para Criar Projeto 
 [X] Salvando arquivo enviado pelo usuário
-[ ] UI para Criar Projeto (começando com o Sqlite)
+[X] UI para Criar Projeto (começando com o Sqlite)
 [ ] Adaptar UI's anteriores para usar o SQLite
 [ ] API para retornar imagens de capas
 [ ] API para receber imagens de projetos

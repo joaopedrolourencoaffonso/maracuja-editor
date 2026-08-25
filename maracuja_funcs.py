@@ -48,6 +48,23 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
 
     return id;
 
+def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    project_id = str(project_id);
+    
+    cursor.execute('UPDATE titulos set name = "' + titulo + '" where PROJECT_ID = ' + project_id + ';');
+    cursor.execute('UPDATE sinopses set sinopse = "' + sinopse + '" where PROJECT_ID = ' + project_id + ';');
+    
+    if (filename != 'qiwuqiwuqoeuwhewh,djhbfejhv'):
+        cursor.execute('UPDATE capas set imagem_capa = "' + filename + '" where PROJECT_ID = ' + project_id + ';');
+    
+    conn.commit();
+    conn.close();
+
+    return id;
+
+
 def pega_titulo_por_id(sqlite3, id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();

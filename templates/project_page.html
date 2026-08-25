@@ -58,7 +58,25 @@
         </div>
 
         <div class="campo" id="campo">
-            
+            <div class="infoProjeto">
+                <div>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
+                        <img class="imagemNormal" src="/img/CAPA_DO_PROJETO" alt="" id="imageCapa">
+                        <img class="imagemHover" src="/img_app/2" alt="">
+                    </button>
+                </div>
+                <div>
+                    <h2>Título do Projeto</h2>
+                    <textarea id="tituloField" rows="2" cols="100"></textarea>
+
+                    <h2>Sinopse</h2>
+                    <textarea id="sinopseField" rows="2" cols="100"></textarea>
+
+                    <h2>Capítulos</h2>
+                    LISTA_VAI_AQUI
+                </div>
+            </div>
         </div>
 
         <script>
@@ -67,6 +85,8 @@
             let sinopse;
             let capa;
             let selectedFile;
+            let fileInput;
+            let preview;
             const projectID = "{{ projectID }}";
             console.log("--> ",projectID);
 
@@ -75,31 +95,9 @@
                 const response = await fetch("/project_info/" + projectID);
                 projectData = await response.json();
                 console.log(projectData.name);
-                let temp = `
-                <div class="infoProjeto">
-                    <div>
-                        <input type="file" id="fileInput" style="display: none;">
-                        <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
-                            <img class="imagemNormal" src="/img/CAPA_DO_PROJETO" alt="" id="imageCapa">
-                            <img class="imagemHover" src="/img_app/2" alt="">
-                        </button>
-                    </div>
-                    <div>
-                        <h2>Título do Projeto</h2>
-                        <textarea id="tituloField" rows="2" cols="100">TITULO_DO_PROJETO</textarea>
+                let temp = ``;
 
-                        <h2>Sinopse</h2>
-                        <textarea id="sinopseField" rows="2" cols="100">SINOPSE_DO_PROJETO</textarea>
-
-                        <h2>Capítulos</h2>
-                        LISTA_VAI_AQUI
-                    </div>
-                </div>
-                `;
-
-                temp = temp.replace("TITULO_DO_PROJETO",projectData.name);
-                temp = temp.replace("CAPA_DO_PROJETO",projectData.capa);
-                temp = temp.replace("SINOPSE_DO_PROJETO",projectData.sinopse);
+                //temp = temp.replace("CAPA_DO_PROJETO",projectData.capa);
 
                 titulo = projectData.name;
                 sinopse = projectData.sinopse;
@@ -113,10 +111,14 @@
                 temp = temp.replace("LISTA_VAI_AQUI",listaHTML);
 
                 var element = document.getElementById("campo");
-                element.innerHTML = temp;
+                //element.innerHTML = temp;
 
-                const fileInput = document.getElementById("fileInput");
-                const preview = document.getElementById("imageCapa");
+                document.getElementById("tituloField").value = projectData.name;
+                document.getElementById("sinopseField").value = projectData.sinopse;
+                document.getElementById("imageCapa").src = "/img/" + projectData.capa;
+
+                fileInput = document.getElementById("fileInput");
+                preview = document.getElementById("imageCapa");
                 fileInput.addEventListener("change", () => {
                     selectedFile = fileInput.files[0];
 
@@ -128,7 +130,37 @@
             }
 
             function salvaInfo() {
-                console.log("CONTINUAR DAQUI!");
+                console.log(titulo, sinopse, fileInput.files[0]);
+
+                let novo_titulo = document.getElementById("tituloField").value;
+                let nova_sinopse = document.getElementById("sinopseField").value;
+
+                console.log(novo_titulo, nova_sinopse);
+
+                const formData = new FormData();
+                formData.append("project_id", projectID);
+                formData.append("titulo", novo_titulo);
+                formData.append("sinopse", nova_sinopse);
+                formData.append("image",fileInput.files[0]);
+
+                chamaAPI(formData).then(dados => {
+                    resultado = dados;
+                    if (resultado.msg == 'ok') {
+                        alert("Atualizado com sucesso!")
+                        window.location.href = `/project_page/${projectID}`
+                    }
+                })
+                .catch(erro => {
+                    console.error(erro);
+                });
+            }
+
+            async function chamaAPI(formData) {
+                const response = await fetch("/atualiza_projeto_info", {
+                   method: "POST",
+                   body: formData
+                });
+                return response.json();
             }
         </script>
     </body>

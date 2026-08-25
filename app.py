@@ -80,6 +80,8 @@ def todos_projetos():
 
 @app.route('/img/<string:filename>', methods=['GET'])
 def img(filename):
+    if filename == "CAPA_DO_PROJETO":
+        return send_file(".\\static\\under_contruction.png", mimetype='image/gif')
     return send_file(".\\localdata\\" + filename, mimetype='image/gif')
 
 @app.route('/img_app/<int:image_id>', methods=['GET'])
@@ -90,6 +92,31 @@ def img_app(image_id):
         image_id = "alt_under_contruction.png";
     
     return send_file(".\\static\\" + image_id, mimetype='image/gif')
+
+@app.route('/atualiza_projeto_info', methods=['POST'])
+def atualiza_projeto_info():
+    #print("form: ", request.form)
+    print("images: ", request.files)
+
+    project_id = request.form.get("project_id");
+    titulo = request.form.get("titulo");
+    sinopse = request.form.get("sinopse");
+    nome_imagem = "qiwuqiwuqoeuwhewh,djhbfejhv";
+    
+    image = request.files.get("image");
+
+    print(titulo, sinopse, image);
+
+    if image != None:
+        image.filename = image.filename.replace(' ','_');
+        filepath = os.path.join("localdata", image.filename)
+        image.save(filepath)
+        nome_imagem = image.filename
+
+    maracuja_funcs.atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse, nome_imagem);
+
+    resposta = {"msg":"ok"}
+    return jsonify(resposta)
 
 if __name__ == '__main__':
     maracuja_funcs.DB_start(sqlite3);

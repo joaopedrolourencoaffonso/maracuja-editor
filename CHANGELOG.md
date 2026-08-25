@@ -29,3 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Começando a usar info da DB na página de projeto
+
+## 0.0.2 - 25-08-2026
+
+### Added
+
+- Página de projetos carrega informação do banco de dados e atualiza informações no banco de dados.
