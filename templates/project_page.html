@@ -74,7 +74,9 @@
                     <textarea id="sinopseField" rows="2" cols="100"></textarea>
 
                     <h2>Capítulos</h2>
-                    LISTA_VAI_AQUI
+                    <ul id="listaDeCapitulos">
+
+                    </ul>
                 </div>
             </div>
         </div>
@@ -97,22 +99,20 @@
                 console.log(projectData.name);
                 let temp = ``;
 
-                //temp = temp.replace("CAPA_DO_PROJETO",projectData.capa);
-
                 titulo = projectData.name;
                 sinopse = projectData.sinopse;
                 capa = projectData.capa;
                 
-                listaHTML = "<ul>"
+                listaHTML = ""
                 projectData.capitulos.forEach(capitulo => {
                     listaHTML = listaHTML + `<li>${capitulo}</li>`;
                 });
-                listaHTML = listaHTML + "</ul>";
-                temp = temp.replace("LISTA_VAI_AQUI",listaHTML);
+                listaHTML = listaHTML;
+                var lista = document.getElementById("listaDeCapitulos")
+                lista.innerHTML = listaHTML;
 
                 var element = document.getElementById("campo");
-                //element.innerHTML = temp;
-
+                
                 document.getElementById("tituloField").value = projectData.name;
                 document.getElementById("sinopseField").value = projectData.sinopse;
                 document.getElementById("imageCapa").src = "/img/" + projectData.capa;
