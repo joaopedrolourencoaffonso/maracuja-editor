@@ -109,7 +109,7 @@
                 
                 listaHTML = ""
                 projectData.capitulos.forEach(capitulo => {
-                    listaHTML = listaHTML + `<li><a href="/editarCapitulo/${capitulo[0]}">${capitulo[1]}</a></li>`;
+                    listaHTML = listaHTML + `<li><a href="/editarCapitulo/?chapter_id=${capitulo[0]}&project_id=${projectID}">${capitulo[1]}</a></li>`;
                 });
                 listaHTML = listaHTML;
                 var lista = document.getElementById("listaDeCapitulos")

@@ -14,6 +14,18 @@ def index():
 def editor():
     return render_template('editor.html')
 
+@app.route('/editarCapitulo/', methods=['GET'])
+def editarCapitulo():
+    project_id = request.args.getlist('project_id')[0];
+    chapter_id = request.args.getlist('chapter_id')[0];
+    print(project_id, chapter_id)
+    if chapter_id == "Novo":
+        file = open("capitulos/novo.json", "w")
+        json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
+        file.close()
+
+    return render_template('editor.html',projectID=project_id)
+
 @app.route('/data')
 def data():
     text = request.args.get("text", "")
@@ -71,7 +83,7 @@ def project_info(project_id):
     sinopse = maracuja_funcs.pega_sinopse_por_id(sqlite3, project_id);
     capa = maracuja_funcs.pega_capa_por_id(sqlite3, project_id);
     print(titulo, sinopse, capa)
-    data = {"name": titulo,"sinopse": sinopse, "capitulos":[[1,"capitulo_1"],[2,"capitulo_2"],[3,"capitulo_3"],[4,"capitulo_4"]], "capa":capa}
+    data = {"name": titulo,"sinopse": sinopse, "capitulos":[["1","capitulo_1"],["2","capitulo_2"],["3","capitulo_3"],["4","capitulo_4"]], "capa":capa}
     return jsonify(data)
 
 @app.route('/todos_projetos', methods=['GET'])
