@@ -12,14 +12,10 @@ Powered by [quilljs](https://github.com/slab/quill/).
 [X] UI para Criar Projeto 
 [X] Salvando arquivo enviado pelo usuário
 [X] UI para Criar Projeto (começando com o Sqlite)
-[ ] Adaptar UI's anteriores para usar o SQLite
-[ ] API para retornar imagens de capas
-[ ] API para receber imagens de projetos
-[ ] Criar Backend para receber informações acima
-[ ] Efetivamente Salvar informações em DB Sqlite
-[ ] Associar informações de capítulo na DB
-[ ] Salvar capítulo em arquivos de forma que eles possam ser facilmente acessíveis ao usuário
-[ ] Adicionar trackeamento (com)/(no estilo) do git
-[ ] UI que reflita as edições de forma fácil e intuitiva
-[ ] Opção de Exportar arquivos como pdf
-[ ] Informações sobre elementos da história
+[X] Adaptar UI's anteriores para usar o SQLite
+[X] API para retornar imagens de capas
+[X] API para receber imagens de projetos
+[ ] Adicionar título aos capítulos
+[ ] Adaptar página do projeto para exibir os verdadeiros capítulos
+[ ] Adaptar página "todos os projetos" à exibir verdaeiros projetos cadastrados
+[ ] Estabelecer novos objetivos

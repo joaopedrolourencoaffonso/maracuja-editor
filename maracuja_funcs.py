@@ -23,14 +23,15 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE titulos (PROJECT_ID INTEGER, name TEXT)');
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
-        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT)');
+        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, CHAPTER_TITLE TEXT)');
+        cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
     
     conn.close();
     return True;
 
-def retorna_novo_chapter_id(sqlite3, project_id):
+def retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID ="' + project_id + '";').fetchall();
@@ -40,6 +41,8 @@ def retorna_novo_chapter_id(sqlite3, project_id):
         id = id[0][0];
     id = id + 1;
     id = str(id);
+
+    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?,?)', (project_id, id, version_id, "Capítulo " + id));
     
     conn.commit();
     conn.close();

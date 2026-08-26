@@ -19,10 +19,12 @@ def editarCapitulo():
     # CONTINUAR DAQUI!
     project_id = request.args.getlist('project_id')[0];
     chapter_id = request.args.getlist('chapter_id')[0];
+    # PLACEHOLDER
+    version_id = 1;
     print(project_id, chapter_id);
     if chapter_id == "Novo":
-        new_chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id)
-        file = open("capitulos/" + project_id + "-" + new_chapter_id + ".json", "w")
+        chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id)
+        file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "w")
         json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
         file.close()
     
