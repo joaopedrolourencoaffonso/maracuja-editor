@@ -35,3 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Página de projetos carrega informação do banco de dados e atualiza informações no banco de dados.
+
+## 0.0.3 - 26-08-2026
+
+### Added
+
+- Usando API do quill para salvar o texto em arquivo
+- Usando API do quill para expôr texto dos arquivos para o usuário.

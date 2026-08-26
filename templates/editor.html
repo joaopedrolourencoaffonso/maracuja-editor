@@ -4,7 +4,7 @@
         <title>Maracujá</title>
 
     </head>
-    <body>
+    <body onload="escreveCapitulo()">
         <!-- Include Quill stylesheet -->
         <link
             href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
@@ -15,8 +15,8 @@
 
         <!-- Create the editor container -->
         <div id="editor">
-            <div id="campoDoTexto">
-                Era uma vez...
+            <div id="textoVaiAqui">
+                
             </div>
         </div>
 
@@ -25,23 +25,39 @@
 
         <!-- Initialize Quill editor -->
         <script>
-            const projectID = "{{ projectID }}";
+            const project_id = "{{ projectID }}";
+            const chapter_id = "{{ chapterID }}";
+            const chapter_data = {{ chapterData | tojson }};
             
             const quill = new Quill("#editor", {
                 theme: "snow",
             });
 
+            function escreveCapitulo() {
+                quill.setContents(chapter_data);
+            }
+
             function enviarTexto() {
-                var element = document.getElementById("editor");
-                var texto = element.innerHTML;
-                fetch(`/data?text=${encodeURIComponent(texto)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data.message);
+                const contents = quill.getContents();
+
+                fetch("/data", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        chapter_id: chapter_id,
+                        contents: contents
                     })
-                    .catch(error => {
-                        console.error('Erro ao enviar o texto:', error);
-                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(error => {
+                    console.error("Erro ao enviar o texto:", error);
+                });
             }
         </script>
     </body>

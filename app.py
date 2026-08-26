@@ -20,26 +20,46 @@ def editarCapitulo():
     project_id = request.args.getlist('project_id')[0];
     chapter_id = request.args.getlist('chapter_id')[0];
     print(project_id, chapter_id);
-    new_chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id)
     if chapter_id == "Novo":
+        new_chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id)
         file = open("capitulos/" + project_id + "-" + new_chapter_id + ".json", "w")
         json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
         file.close()
+    
+    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "r")
+    rawChapterData = file.read();
+    file.close();
 
-    return render_template('editor.html',projectID=project_id)
+    chapterData = json.loads(rawChapterData);
 
-@app.route('/data')
+    print(rawChapterData);
+
+    return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData);
+
+@app.route('/data', methods=['POST'])
 def data():
-    text = request.args.get("text", "")
-    text = text.replace('<div class="ql-editor" contenteditable="true">', "");
-    text = text.replace('</div><div class="ql-tooltip ql-hidden"><a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div>', "");
-    print(f"{text}");
+    data = request.get_json()
 
-    file = open("capitulos/data.json", "w")
-    json.dump({"text": text}, file)
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+    contents = data["contents"]
+
+    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "w")
+    json.dump(contents, file)
     file.close()
 
     return jsonify({"message": "ok"})
+
+@app.route('/chapterData', methods=['POST'])
+def chapterData():
+    chapter_id = request.args.getlist("chapter_id")[0];
+    project_id = request.args.getlist("project_id")[0];
+
+    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "r")
+    data = file.read();
+    file.close()
+
+    return jsonify({"chapterData": data})
 
 @app.route('/lista_projetos_recentes')
 def lista_projetos_recentes():
