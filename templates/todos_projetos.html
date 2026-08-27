@@ -62,16 +62,18 @@
                 
                 Object.entries(livros).forEach(([key, value]) => {
                     console.log(key, value.titulo);
-                    temp = temp + `<div class="projetoBox">
-                        <div>
-                            <img src="${value.src}">
+                    temp = temp + `<a href="/project_page/${key}">
+                        <div class="projetoBox">
+                            <div>
+                                <img src="/img/${value.src}">
+                            </div>
+                            <div class="left">
+                                <p>${value.titulo}</p>
+                                <p>Número de capítulos: ${value.ncapitulos}</p>
+                                <p>Número de timelines: ${value.ntimelines}</p>
+                            </div>
                         </div>
-                        <div class="left">
-                            <p>${value.titulo}</p>
-                            <p>Número de capítulos: ${value.ncapitulos}</p>
-                            <p>Número de timelines: ${value.ntimelines}</p>
-                        </div>
-                    </div>`
+                    </a>`
                 });
                 temp = temp + "</ul"
                 

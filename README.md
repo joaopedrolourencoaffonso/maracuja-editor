@@ -16,7 +16,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 [X] API para retornar imagens de capas
 [X] API para receber imagens de projetos
 [X] Adicionar título aos capítulos
-[ ] Listar capítulos corretamente à listagem de capítulos do projeto
-[ ] Adaptar página do projeto para exibir os verdadeiros capítulos
-[ ] Adaptar página "todos os projetos" à exibir verdaeiros projetos cadastrados
+[X] Listar capítulos corretamente à listagem de capítulos do projeto
+[X] Adaptar página do projeto para exibir os verdadeiros capítulos
+[ ] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
 [ ] Estabelecer novos objetivos
