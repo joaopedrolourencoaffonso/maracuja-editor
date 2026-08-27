@@ -111,8 +111,12 @@ def project_info(project_id):
     titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, project_id);
     sinopse = maracuja_funcs.pega_sinopse_por_id(sqlite3, project_id);
     capa = maracuja_funcs.pega_capa_por_id(sqlite3, project_id);
-    print(titulo, sinopse, capa)
-    data = {"name": titulo,"sinopse": sinopse, "capitulos":[["1","capitulo_1"],["2","capitulo_2"],["3","capitulo_3"],["4","capitulo_4"]], "capa":capa}
+    print(titulo, sinopse, capa);
+
+    capitulos = maracuja_funcs.pega_capitulos(sqlite3, project_id);
+
+    #data = {"name": titulo,"sinopse": sinopse, "capitulos":[["1","capitulo_1"],["2","capitulo_2"],["3","capitulo_3"],["4","capitulo_4"]], "capa":capa}
+    data = {"name": titulo,"sinopse": sinopse, "capitulos":capitulos, "capa":capa}
     return jsonify(data)
 
 @app.route('/todos_projetos', methods=['GET'])

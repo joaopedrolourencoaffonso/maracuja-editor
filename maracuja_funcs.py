@@ -68,6 +68,17 @@ def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_na
     
     conn.commit();
     conn.close();
+
+def pega_capitulos(sqlite3, project_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE from capitulos where VERSION_ID = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
+    
+    conn.commit();
+    conn.close();
+
+    return capitulos;
     
 
 def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):

@@ -100,7 +100,7 @@
             async function populaPagina() {
                 const response = await fetch("/project_info/" + projectID);
                 projectData = await response.json();
-                console.log(projectData.name);
+                console.log("--> ",projectData.capitulos);
                 let temp = ``;
 
                 titulo = projectData.name;

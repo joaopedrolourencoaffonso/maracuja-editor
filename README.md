@@ -15,7 +15,8 @@ Powered by [quilljs](https://github.com/slab/quill/).
 [X] Adaptar UI's anteriores para usar o SQLite
 [X] API para retornar imagens de capas
 [X] API para receber imagens de projetos
-[ ] Adicionar título aos capítulos
+[X] Adicionar título aos capítulos
+[ ] Listar capítulos corretamente à listagem de capítulos do projeto
 [ ] Adaptar página do projeto para exibir os verdadeiros capítulos
 [ ] Adaptar página "todos os projetos" à exibir verdaeiros projetos cadastrados
 [ ] Estabelecer novos objetivos
