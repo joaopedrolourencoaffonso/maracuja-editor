@@ -4,19 +4,29 @@ Um editor de texto amigável ao usuário construído sobre o git para facilitar 
 
 Powered by [quilljs](https://github.com/slab/quill/).
 
-[X] Excolher framework de edição de texto em browser
-[X] UI da página de edição básica
-[X] UI para a página principal
-[X] UI básica para visualizar detalhes de projeto (capítulos incluso)
-[X] UI básica para Listar Projetos
-[X] UI para Criar Projeto 
-[X] Salvando arquivo enviado pelo usuário
-[X] UI para Criar Projeto (começando com o Sqlite)
-[X] Adaptar UI's anteriores para usar o SQLite
-[X] API para retornar imagens de capas
-[X] API para receber imagens de projetos
-[X] Adicionar título aos capítulos
-[X] Listar capítulos corretamente à listagem de capítulos do projeto
-[X] Adaptar página do projeto para exibir os verdadeiros capítulos
-[ ] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
-[ ] Estabelecer novos objetivos
+- v0.1.0 Editor de Texto Mínimo
+
+- [X] Excolher framework de edição de texto em browser
+- [X] UI da página de edição básica
+- [X] UI para a página principal
+- [X] UI básica para visualizar detalhes de projeto (capítulos incluso)
+- [X] UI básica para Listar Projetos
+- [X] UI para Criar Projeto 
+- [X] Salvando arquivo enviado pelo usuário
+- [X] UI para Criar Projeto (começando com o Sqlite)
+- [X] Adaptar UI's anteriores para usar o SQLite
+- [X] API para retornar imagens de capas
+- [X] API para receber imagens de projetos
+- [X] Adicionar título aos capítulos
+- [X] Listar capítulos corretamente à listagem de capítulos do projeto
+- [X] Adaptar página do projeto para exibir os verdadeiros capítulos
+- [X] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
+- [ ] Trabalhar em API para listar projetos recentes
+- [ ] Adicionar botões para excluir capítulos
+- [ ] Adicionar botões para excluir projetos
+- [ ] Adicionar botões para trocar capítulos de posição
+- [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas
+- [ ] Adicionar opção para limpar todos os dados do projeto (ajudar no teste e desenvolvimento)
+- [ ] Adicionar "-v" na linha de comando
+
+

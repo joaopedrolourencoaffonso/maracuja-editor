@@ -49,3 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adicionando título aos capítulos
 - Adicionando variável `version_id` para rastrear versão do capítulo. Será usada em maior profundidade no futuro.
+
+## 0.0.5 - 27-08-2026
+
+### Added
+
+- Adicionando API para listar todos os projetos
