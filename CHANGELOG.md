@@ -42,3 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Usando API do quill para salvar o texto em arquivo
 - Usando API do quill para expôr texto dos arquivos para o usuário.
+
+## 0.0.4 - 26-08-2026
+
+### Added
+
+- Adicionando título aos capítulos
+- Adicionando variável `version_id` para rastrear versão do capítulo. Será usada em maior profundidade no futuro.

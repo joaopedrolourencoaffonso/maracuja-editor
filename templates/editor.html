@@ -11,7 +11,13 @@
             rel="stylesheet"
         />
 
-        <button id="enviar" onclick="enviarTexto()">Enviar</button>
+        <button id="enviar" onclick="enviarTexto()">Salvar Capítulo</button>
+        <br><br>
+
+        <div>
+            <input id="tituloDoCapitulo" value="{{ tituloCapitulo }}">
+        </div>
+        <br>
 
         <!-- Create the editor container -->
         <div id="editor">
@@ -27,6 +33,7 @@
         <script>
             const project_id = "{{ projectID }}";
             const chapter_id = "{{ chapterID }}";
+            const version_id = "{{ versionID }}";
             const chapter_data = {{ chapterData | tojson }};
             
             const quill = new Quill("#editor", {
@@ -40,6 +47,8 @@
             function enviarTexto() {
                 const contents = quill.getContents();
 
+                const chapter_title = document.getElementById("tituloDoCapitulo").value
+
                 fetch("/data", {
                     method: "POST",
                     headers: {
@@ -48,7 +57,9 @@
                     body: JSON.stringify({
                         project_id: project_id,
                         chapter_id: chapter_id,
-                        contents: contents
+                        contents: contents,
+                        version_id: version_id,
+                        chapter_title: chapter_title
                     })
                 })
                 .then(response => response.json())

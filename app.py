@@ -34,9 +34,10 @@ def editarCapitulo():
 
     chapterData = json.loads(rawChapterData);
 
-    print(rawChapterData);
+    #print(rawChapterData);
+    titulo_capitulo = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id);
 
-    return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData);
+    return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData,versionID=version_id,tituloCapitulo=titulo_capitulo);
 
 @app.route('/data', methods=['POST'])
 def data():
@@ -44,11 +45,15 @@ def data():
 
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
+    version_id = data["version_id"]
     contents = data["contents"]
+    chapter_title = data["chapter_title"]
 
     file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "w")
     json.dump(contents, file)
     file.close()
+
+    maracuja_funcs.atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, chapter_title)
 
     return jsonify({"message": "ok"})
 
