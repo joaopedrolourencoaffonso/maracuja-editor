@@ -3,6 +3,7 @@ import json
 import os
 from time import time;
 import sqlite3
+from pathlib import Path
 import maracuja_funcs;
 
 app = Flask(__name__)
@@ -194,7 +195,7 @@ def deleta_projeto():
 
     project_id = data["project_id"];
 
-    maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
+    maracuja_funcs.excluir_projeto(os, Path, sqlite3, project_id);
 
     return jsonify({"message": "ok"})
 

@@ -54,6 +54,7 @@
         <div>
             <button onclick="salvaInfo()">Salvar Mudanças</button>
             <a href="/">Voltar para a página principal</a>
+            <button onclick="deletaProjeto()">Deletar Projeto</button>
             <br><br>
         </div>
 
@@ -165,6 +166,36 @@
                    body: formData
                 });
                 return response.json();
+            }
+
+            function deletaProjeto() {
+                decisao1 = window.confirm("Essa ação irá deletar o <b>projeto inteiro</b>. Tem certeza que deseja fazer isso?");
+                decisao2 = window.confirm("Tem certeza mesmo?");
+                //console.log("-> ", decisao);
+                if (decisao1 && decisao2) {
+                    fetch("/deleta_projeto", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            project_id: projectID
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        if (data.message == "ok") {
+                            alert("Projeto deletado com sucesso!");
+                            window.location.href = `http://127.0.0.1:5000/`
+                        } else {
+                            alert("Algo deu errado! Tente novamente!");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao deletar o arquivo:", error);
+                    });
+                }
             }
         </script>
     </body>

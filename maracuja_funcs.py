@@ -198,3 +198,27 @@ def excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id):
     conn.close();
 
     os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
+
+def excluir_projeto(os, Path, sqlite3, project_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    cursor.execute("delete from titulos where project_id = ?;",(project_id,));
+    cursor.execute("delete from sinopses where project_id = ?;",(project_id,));
+    cursor.execute("delete from capitulos where project_id = ?;",(project_id,));
+    # AINDA NÃO IMPLEMENTADO
+    #cursor.execute("delete from versoesCapitulos where project_id = ?;",(project_id,));
+    cursor.execute("delete from projetosRecentes where project_id = ?;",(project_id,));
+
+    capa = cursor.execute("select imagem_capa from capas where project_id = ?", (project_id,)).fetchall();
+
+    capa = capa[0][0];
+
+    os.remove("localdata//" + capa);
+    cursor.execute("delete from capas where project_id = ?;",(project_id,));
+
+    conn.commit();
+    conn.close();
+
+    for f in Path("capitulos").glob(str(project_id) + "*.json"):
+        f.unlink()

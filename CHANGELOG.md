@@ -66,4 +66,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Adicionando API para remover capítulos. Botão no próprio capítulo.
+- Adicionando API e botão para remover capítulos. Botão no próprio capítulo.
+- Adicionando API e botão para remoção de projetos. Botão na própria página do projeto. 

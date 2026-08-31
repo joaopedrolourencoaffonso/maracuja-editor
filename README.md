@@ -23,10 +23,26 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
 - [X] Trabalhar em API para listar projetos recentes
 - [X] Adicionar botões para excluir capítulos
-- [ ] Adicionar botões para excluir projetos
-- [ ] Adicionar botões para trocar capítulos de posição
+- [X] Adicionar botões para excluir projetos
+- [ ] Adicionar botões para trocar capítulos de ordem
+
+- v0.2.0 Editor com versionamento
+
+- [ ] Implementar versionamento de capítulo
+- [ ] Implementar comparação de versões de capítulo lado à lado.
+- [ ] Implementar árvore de mundanças (?)
+
+- v0.3.0 Editor de Texto Avançado
+
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas
-- [ ] Adicionar opção para limpar todos os dados do projeto (ajudar no teste e desenvolvimento)
+- [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento)
 - [ ] Adicionar "-v" na linha de comando
 
+- v1.0.0 Editor de Texto Completo
+
+- [ ] Refatorar UI para ficar mais amigável.
+- [ ] Exportar projeto para `.md`
+- [ ] Exportar projeto para html
+- [ ] Exportar projeto para PDF
+- [ ] Exportar projeto para epub
 
