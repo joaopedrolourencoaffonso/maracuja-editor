@@ -21,7 +21,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Listar capítulos corretamente à listagem de capítulos do projeto
 - [X] Adaptar página do projeto para exibir os verdadeiros capítulos
 - [X] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
-- [ ] Trabalhar em API para listar projetos recentes
+- [X] Trabalhar em API para listar projetos recentes
 - [ ] Adicionar botões para excluir capítulos
 - [ ] Adicionar botões para excluir projetos
 - [ ] Adicionar botões para trocar capítulos de posição

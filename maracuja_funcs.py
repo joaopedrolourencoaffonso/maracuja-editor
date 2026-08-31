@@ -25,6 +25,7 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
         cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, CHAPTER_TITLE TEXT)');
         cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
+        cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
     
@@ -152,4 +153,37 @@ def pega_capa_por_id(sqlite3, id):
     cursor = conn.cursor();
     capas = cursor.execute('SELECT imagem_capa FROM capas where PROJECT_ID =' +  str(id) + ';').fetchall()
     capa = capas[0][0]
-    return capa
+    return capa;
+
+def atualiza_projeto_mais_recente(sqlite3, time, id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    nova_hora = int(time());
+
+    cursor.execute('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
+    
+    conn.commit();
+    conn.close();
+
+def insere_projeto_mais_recente(sqlite3, time, id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    nova_hora = int(time());
+
+    cursor.execute('insert into projetosRecentes values (?, ?);',(id, nova_hora));
+    
+    conn.commit();
+    conn.close();
+
+def retorna_projetos_recentes(sqlite3):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    order_desc = cursor.execute('select project_id from projetosRecentes order by last_open desc limit 10;').fetchall()
+
+    conn.commit();
+    conn.close();
+
+    return order_desc;

@@ -22,7 +22,7 @@
         <div class="campo">
             <h1 class="center">Vamos criar!</h1>
     
-            <div class="center" id="ListaDeLivros">
+            <div class="center" id="ListaDeProjetos">
             </div>
     
             <div class="center botoesBase">
@@ -32,19 +32,19 @@
         </div>
 
         <script>
-            let livros;
+            let projetos;
             async function populaPagina() {
                 const response = await fetch("/lista_projetos_recentes");
-                livros = await response.json();
-                console.log(livros);
+                projetos = await response.json();
+                console.log("--> ", projetos);
                 let temp = `<ul>`;
                 
-                Object.entries(livros).forEach(([key, value]) => {
+                Object.entries(projetos).forEach(([key, value]) => {
                     temp = temp + `<li><a href="/project_page/${value}">${key}</a></li>`;
                 });
                 temp = temp + "</ul"
                 
-                var element = document.getElementById("ListaDeLivros");
+                var element = document.getElementById("ListaDeProjetos");
                 element.innerHTML = temp;
             }
         </script>

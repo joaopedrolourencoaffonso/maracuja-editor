@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, send_file
 import json
 import os
+from time import time;
 import sqlite3
 import maracuja_funcs;
 
@@ -55,6 +56,8 @@ def data():
 
     maracuja_funcs.atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, chapter_title)
 
+    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
+
     return jsonify({"message": "ok"})
 
 @app.route('/chapterData', methods=['POST'])
@@ -70,15 +73,20 @@ def chapterData():
 
 @app.route('/lista_projetos_recentes')
 def lista_projetos_recentes():
-    data = {"livro1":"1", "livro2":"2", "livro3":"3","livro4":"4","livro5":"5","livro6":"6","livro7":"7","livro8":"8","livro9":"9"}
+    order_desc = maracuja_funcs.retorna_projetos_recentes(sqlite3);
+    print(order_desc)
+    data = {}
+    for projeto in order_desc:
+        titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto[0]);
+        data[titulo] = projeto[0];
+        
+    print(data);
+    
     return jsonify(data)
 
 @app.route('/lista_todos_projetos')
 def lista_todos_projetos():
     rows = maracuja_funcs.todos_projetos(sqlite3);
-    tempFigura = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Chaos%2C_of_Moss_K9%2C_as_a_Puppy.jpg/960px-Chaos%2C_of_Moss_K9%2C_as_a_Puppy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
-    #data = {"1": {"titulo":"Título 1","ncapitulos" : 12,"ntimelines":6,"src": tempFigura},"2": {"titulo":"Título 2","ncapitulos" : 5,"ntimelines":2,"src": tempFigura},"3": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"4": {"titulo":"Título 4","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"5": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"6": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura},"7": {"titulo":"Título 3","ncapitulos" : 5,"ntimelines":4,"src": tempFigura}}
-    #return jsonify(data)
     return jsonify(rows)
 
 @app.route('/project_page/<int:project_id>', methods=['GET'])
@@ -104,6 +112,8 @@ def cadastraProjeto():
     image.save(filepath)
 
     id_do_projeto = maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse, image.filename);
+
+    maracuja_funcs.insere_projeto_mais_recente(sqlite3, time, id_do_projeto);
 
     resposta = {"msg":"ok","id":id_do_projeto}
     return jsonify(resposta)
@@ -161,6 +171,7 @@ def atualiza_projeto_info():
         nome_imagem = image.filename
 
     maracuja_funcs.atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse, nome_imagem);
+    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
 
     resposta = {"msg":"ok"}
     return jsonify(resposta)
