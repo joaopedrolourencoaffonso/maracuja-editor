@@ -21,15 +21,15 @@ def editarCapitulo():
     project_id = request.args.getlist('project_id')[0];
     chapter_id = request.args.getlist('chapter_id')[0];
     # PLACEHOLDER
-    version_id = 1;
+    version_id = str(1);
     print(project_id, chapter_id);
     if chapter_id == "Novo":
         chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id)
-        file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "w")
+        file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
         json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
         file.close()
     
-    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "r")
+    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id  + ".json", "r")
     rawChapterData = file.read();
     file.close();
 
@@ -50,7 +50,7 @@ def data():
     contents = data["contents"]
     chapter_title = data["chapter_title"]
 
-    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "w")
+    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
     json.dump(contents, file)
     file.close()
 
@@ -65,7 +65,7 @@ def chapterData():
     chapter_id = request.args.getlist("chapter_id")[0];
     project_id = request.args.getlist("project_id")[0];
 
-    file = open("capitulos/" + project_id + "-" + chapter_id + ".json", "r")
+    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "r")
     data = file.read();
     file.close()
 
@@ -174,7 +174,29 @@ def atualiza_projeto_info():
     maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
 
     resposta = {"msg":"ok"}
-    return jsonify(resposta)
+    return jsonify(resposta);
+
+@app.route('/deleta_capitulo', methods=['POST'])
+def deleta_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+    version_id = data["version_id"]
+    
+    maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
+
+    return jsonify({"message": "ok"})
+
+@app.route('/deleta_projeto', methods=['POST'])
+def deleta_projeto():
+    data = request.get_json()
+
+    project_id = data["project_id"];
+
+    maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
+
+    return jsonify({"message": "ok"})
 
 if __name__ == '__main__':
     maracuja_funcs.DB_start(sqlite3);

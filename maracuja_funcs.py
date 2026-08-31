@@ -187,3 +187,14 @@ def retorna_projetos_recentes(sqlite3):
     conn.close();
 
     return order_desc;
+
+def excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+
+    conn.commit();
+    conn.close();
+
+    os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");

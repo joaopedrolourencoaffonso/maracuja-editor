@@ -61,3 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adicionando API para listar projetos recentemente editados.
+
+## 0.0.7 - 31-08-2026
+
+### Added
+
+- Adicionando API para remover capítulos. Botão no próprio capítulo.
