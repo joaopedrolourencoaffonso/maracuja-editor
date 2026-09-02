@@ -222,3 +222,29 @@ def excluir_projeto(os, Path, sqlite3, project_id):
 
     for f in Path("capitulos").glob(str(project_id) + "*.json"):
         f.unlink()
+
+def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo):
+    try:
+        capituloASerMovido = int(capituloASerMovido)
+        novaPosicaoDoCapitulo = int(novaPosicaoDoCapitulo)
+    except (TypeError, ValueError):
+        raise ValueError("Os IDs dos capítulos devem ser inteiros")
+
+    if capituloASerMovido == novaPosicaoDoCapitulo:
+        return
+
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    cursor.execute("UPDATE capitulos set chapter_id = 7777777777 where project_id = ? AND chapter_id = ?;",(project_id, capituloASerMovido));
+    
+    if (capituloASerMovido < novaPosicaoDoCapitulo):
+        cursor.execute("UPDATE capitulos set chapter_id = chapter_id - 1 where project_id = ? AND chapter_id <= ? AND chapter_id > ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));
+    else:
+        cursor.execute("UPDATE capitulos set chapter_id = chapter_id + 1 where project_id = ? AND chapter_id >= ? AND chapter_id < ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));    
+    
+    cursor.execute("UPDATE capitulos set chapter_id = ? where project_id = ? AND chapter_id = 7777777777;",(novaPosicaoDoCapitulo, project_id));
+
+    
+    conn.commit();
+    conn.close();

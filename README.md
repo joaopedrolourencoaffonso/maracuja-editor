@@ -24,7 +24,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Trabalhar em API para listar projetos recentes
 - [X] Adicionar botões para excluir capítulos
 - [X] Adicionar botões para excluir projetos
-- [ ] Adicionar botões para trocar capítulos de ordem
+- [X] Adicionar botões para trocar capítulos de ordem
 
 - v0.2.0 Editor com versionamento
 
@@ -37,6 +37,12 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas
 - [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento)
 - [ ] Adicionar "-v" na linha de comando
+
+- v0.4.0 Adaptando para Escritores
+
+- [ ] Criando seção de notas da estória
+- [ ] Criando seção de personagens
+- [ ] Adicionando opção de adicionar notas aos documentos em si.
 
 - v1.0.0 Editor de Texto Completo
 

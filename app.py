@@ -199,6 +199,20 @@ def deleta_projeto():
 
     return jsonify({"message": "ok"})
 
+
+
+@app.route('/move_capitulo', methods=['POST'])
+def move_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    capituloASerMovido = data["capituloASerMovido"]
+    novaPosicaoDoCapitulo = data["novaPosicaoDoCapitulo"]
+
+    maracuja_funcs.mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo);
+
+    return jsonify({"message": "ok"})
+
 if __name__ == '__main__':
     maracuja_funcs.DB_start(sqlite3);
     app.run(debug=True)

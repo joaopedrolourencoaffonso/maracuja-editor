@@ -76,12 +76,31 @@
 
                     <div>
                         <a href="/editarCapitulo/?project_id={{ projectID }}&chapter_id=Novo">Criar Capítulo</a>
+                        <button onclick="moveCapituloDialog()">Mover capítulo ↹</button>
                     </div>
 
                     <h2>Capítulos</h2>
                     <ul id="listaDeCapitulos">
 
                     </ul>
+
+                    <dialog id="multiInputModal"  class="moverCapituloDialog" close>
+                        <form method="dialog" id="modalForm">
+                            <h3>Movendo capítulo!</h3>
+                            
+                            <label for="capitulo">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Capitulo:</label>
+                            <input type="number" id="capituloASerMovido" name="capitulo" required />
+                            <br><br>
+
+                            <label for="posicao">Nova posição:</label>
+                            <input type="number" id="novaPosicaoDoCapitulo" name="posicao" required />
+
+                            <div class="dialog-actions">
+                            <button type="button" id="cancelBtn" onClick="fechaDialog()">Cancelar</button>
+                            <button type="submit" value="submit" onClick="moveCapitulo()">Salvar</button>
+                            </div>
+                        </form>
+                    </dialog>
                 </div>
             </div>
         </div>
@@ -94,6 +113,7 @@
             let selectedFile;
             let fileInput;
             let preview;
+            let numeroDeCapitulos;
             const projectID = "{{ projectID }}";
             console.log("--> ",projectID);
 
@@ -107,10 +127,13 @@
                 titulo = projectData.name;
                 sinopse = projectData.sinopse;
                 capa = projectData.capa;
+
+                console.log("número de capítulos: ", projectData.capitulos.length);
+                numeroDeCapitulos = projectData.capitulos.length;
                 
                 listaHTML = ""
                 projectData.capitulos.forEach(capitulo => {
-                    listaHTML = listaHTML + `<li><a href="/editarCapitulo/?chapter_id=${capitulo[0]}&project_id=${projectID}">${capitulo[1]}</a></li>`;
+                    listaHTML = listaHTML + `<li>${capitulo[0]} - <a href="/editarCapitulo/?chapter_id=${capitulo[0]}&project_id=${projectID}">${capitulo[1]}</a> </li>`;
                 });
                 listaHTML = listaHTML;
                 var lista = document.getElementById("listaDeCapitulos")
@@ -196,6 +219,63 @@
                         console.error("Erro ao deletar o arquivo:", error);
                     });
                 }
+            }
+
+            function moveCapituloDialog() {
+                const dialog = document.getElementById("multiInputModal");
+                dialog.showModal();
+            }
+
+            function fechaDialog() {
+                const dialog = document.getElementById("multiInputModal");
+                dialog.close();
+            }
+
+            function moveCapitulo() {
+                const capituloASerMovido = document.getElementById("capituloASerMovido").value;
+                const novaPosicaoDoCapitulo = document.getElementById("novaPosicaoDoCapitulo").value;
+
+                if (capituloASerMovido === "" || novaPosicaoDoCapitulo === "") {
+                    alert("Erro. Revise valores e tente novamente.");
+                    return;
+                }
+
+                if ( capituloASerMovido === novaPosicaoDoCapitulo) {
+                    alert("Erro. Capítulo não pode ser movido para a mesma posição.");
+                    return;
+                }
+
+                if (parseInt(capituloASerMovido) < 1 || parseInt(novaPosicaoDoCapitulo) < 1) {
+                    alert("Erro. Valores inválidos.");
+                    return;
+                }
+
+                if (parseInt(capituloASerMovido) > numeroDeCapitulos || parseInt(novaPosicaoDoCapitulo) > numeroDeCapitulos) {
+                    alert("Erro. Valores inválidos.");
+                    return;
+                }
+
+                fetch("/move_capitulo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: projectID,
+                        capituloASerMovido: capituloASerMovido,
+                        novaPosicaoDoCapitulo: novaPosicaoDoCapitulo
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    if (data.message == "ok") {
+                        alert("Capítulo movido com sucesso!");
+                        window.location.href = `/project_page/${projectID}`
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
             }
         </script>
     </body>

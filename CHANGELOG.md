@@ -68,3 +68,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adicionando API e botão para remover capítulos. Botão no próprio capítulo.
 - Adicionando API e botão para remoção de projetos. Botão na própria página do projeto. 
+
+## 0.1.0 - 02-09-2026
+
+### Added
+
+- Adicionei ids dos capítulos ao lado dos seus títulos na listagem.
+- Adicionei funcionalidade para mover capítulos de posição (não é elegante, mas funciona). 
