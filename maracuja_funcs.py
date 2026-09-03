@@ -86,11 +86,9 @@ def todos_projetos(sqlite3):
     cursor = conn.cursor();
 
     projetos = cursor.execute('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;').fetchall();
-    #rows = [];
     rows = {};
     for projeto in projetos:
         n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
-        #rows.append([projeto[0], projeto[1], projeto[2], n_capitulos[0][0]]);
         rows.update({f"{projeto[0]}": {"titulo": f"{projeto[1]}","src": f"{projeto[2]}","ncapitulos": f"{n_capitulos[0][0]}","ntimelines":6}})
     
     conn.commit();

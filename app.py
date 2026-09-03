@@ -36,7 +36,6 @@ def editarCapitulo():
 
     chapterData = json.loads(rawChapterData);
 
-    #print(rawChapterData);
     titulo_capitulo = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id);
 
     return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData,versionID=version_id,tituloCapitulo=titulo_capitulo);
@@ -101,7 +100,6 @@ def criar_projeto():
 
 @app.route('/cadastraProjeto', methods=['POST'])
 def cadastraProjeto():
-    #print("form: ", request.form)
     print("images: ", request.files)
 
     titulo = request.form.get("titulo");
@@ -128,7 +126,6 @@ def project_info(project_id):
 
     capitulos = maracuja_funcs.pega_capitulos(sqlite3, project_id);
 
-    #data = {"name": titulo,"sinopse": sinopse, "capitulos":[["1","capitulo_1"],["2","capitulo_2"],["3","capitulo_3"],["4","capitulo_4"]], "capa":capa}
     data = {"name": titulo,"sinopse": sinopse, "capitulos":capitulos, "capa":capa}
     return jsonify(data)
 
@@ -153,7 +150,6 @@ def img_app(image_id):
 
 @app.route('/atualiza_projeto_info', methods=['POST'])
 def atualiza_projeto_info():
-    #print("form: ", request.form)
     print("images: ", request.files)
 
     project_id = request.form.get("project_id");
@@ -198,8 +194,6 @@ def deleta_projeto():
     maracuja_funcs.excluir_projeto(os, Path, sqlite3, project_id);
 
     return jsonify({"message": "ok"})
-
-
 
 @app.route('/move_capitulo', methods=['POST'])
 def move_capitulo():

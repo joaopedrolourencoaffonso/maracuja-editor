@@ -51,4 +51,4 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [ ] Exportar projeto para html
 - [ ] Exportar projeto para PDF
 - [ ] Exportar projeto para epub
-
+- [ ] Criar logo
