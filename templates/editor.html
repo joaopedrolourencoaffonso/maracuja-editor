@@ -14,7 +14,19 @@
         <a href="/project_page/{{ projectID }}">Página do Projeto</a>
 
         <button id="enviar" onclick="enviarTexto()">Salvar Capítulo</button>
+        
+        <!--<label for="version">Versão:</label>-->
+        <select name="listaDeVersao" id="versaoExibida">
+            <option value="v1">v1</option>
+            <option value="v2">v2</option>
+            <option value="versao_gotica">versão gótica</option>
+            <option value="teste">teste</option>
+        </select>
+        
+        <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão Capítulo</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button id="deletar" onclick="deletarCapítulo()">Deletar Capítulo</button>
+        
         <br><br>
 
         <div>
@@ -29,6 +41,19 @@
             </div>
         </div>
 
+        <dialog id="multiInputModal"  class="moverCapituloDialog" close>
+            <form method="dialog" id="modalForm">
+                <h3>Digite o nome da nova versão!</h3>
+                
+                <label for="nomeNovaVersao">Nome da nova versão:</label>
+                <input type="text" id="nomeNovaVersao" name="nomeNovaVersao" required />
+                <br><br>
+
+                <button type="button" id="cancelBtn" onClick="fechaDialog()">Cancelar</button>
+                <button type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
+            </form>
+        </dialog>
+
         <!-- Include the Quill library -->
         <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
 
@@ -37,6 +62,7 @@
             const project_id = "{{ projectID }}";
             const chapter_id = "{{ chapterID }}";
             const version_id = "{{ versionID }}";
+            const possivel_novo_version_id = "{{ possivelNovoVersionID }}";
             const chapter_data = {{ chapterData | tojson }};
             
             const quill = new Quill("#editor", {
@@ -104,6 +130,50 @@
                         console.error("Erro ao deletar o arquivo:", error);
                     });
                 }
+            }
+
+            function mostraVersionarDialog() {
+                const dialog = document.getElementById("multiInputModal");
+                dialog.showModal();
+            }
+
+            function fechaDialog() {
+                const dialog = document.getElementById("multiInputModal");
+                dialog.close();
+            }
+
+            function salvaNovaVersao() {
+                const nomeNovaVersao = document.getElementById("nomeNovaVersao").value;
+                const contents = quill.getContents();
+                const chapter_title = document.getElementById("tituloDoCapitulo").value;
+
+                fetch("/nova_versao_capitulo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        chapter_id: chapter_id,
+                        contents: contents,
+                        version_id: possivel_novo_version_id,
+                        chapter_title: chapter_title,
+                        nome_nova_versao: nomeNovaVersao
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    if (data.message == "ok") {
+                        alert("Nova versão criada com sucesso!");
+                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${possivel_novo_version_id}`;
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar a nova versão:", error);
+                });
             }
         </script>
     </body>

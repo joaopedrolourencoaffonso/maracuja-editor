@@ -28,15 +28,23 @@ Powered by [quilljs](https://github.com/slab/quill/).
 
 - v0.2.0 Editor com versionamento
 
-- [ ] Implementar versionamento de capítulo
+- [X] Adaptar UI para operar com versão
+- [ ] Adaptar APIs para operar com versão
+- [ ] Permitir usuário cadastrar novas versões do capítulo
+- [ ] Expôr versões de arquivos na página do capítulo
+- [ ] Permitir usuário clicar e visualizar versões de capítulo
+- [ ] Permitir usuário redefinir versão principal (vai exigir rearranjar DB)
+- [ ] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
 - [ ] Implementar comparação de versões de capítulo lado à lado.
 - [ ] Implementar árvore de mundanças (?)
 
 - v0.3.0 Editor de Texto Avançado
 
+- [ ] Opção de apenas ler os capítulos
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas
 - [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento)
 - [ ] Adicionar "-v" na linha de comando
+- [ ] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
 
 - v0.4.0 Adaptando para Escritores
 
