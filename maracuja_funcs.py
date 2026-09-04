@@ -23,8 +23,8 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE titulos (PROJECT_ID INTEGER, name TEXT)');
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
-        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, CHAPTER_TITLE TEXT)');
-        cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
+        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)');
+        #cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
@@ -32,10 +32,10 @@ def DB_start(sqlite3):
     conn.close();
     return True;
 
-def retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id):
+def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID ="' + project_id + '";').fetchall();
+    id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
     if (id == [(None,)]):
         id = 0;
     else:
@@ -43,7 +43,8 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id):
     id = id + 1;
     id = str(id);
 
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?,?)', (project_id, id, version_id, "Capítulo " + id));
+    # (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)
+    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1));
     
     conn.commit();
     conn.close();
@@ -74,7 +75,7 @@ def pega_capitulos(sqlite3, project_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE from capitulos where VERSION_ID = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
+    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
     
     conn.commit();
     conn.close();
@@ -242,7 +243,22 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
         cursor.execute("UPDATE capitulos set chapter_id = chapter_id + 1 where project_id = ? AND chapter_id >= ? AND chapter_id < ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));    
     
     cursor.execute("UPDATE capitulos set chapter_id = ? where project_id = ? AND chapter_id = 7777777777;",(novaPosicaoDoCapitulo, project_id));
-
     
     conn.commit();
     conn.close();
+
+def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, version_id, nome_nova_versao):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    novo_id = cursor.execute('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    novo_id = novo_id[0][0] + 1;
+
+    # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
+    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0));
+    
+    conn.commit();
+    conn.close();
+
+    return novo_id;
+

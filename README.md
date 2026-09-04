@@ -28,8 +28,9 @@ Powered by [quilljs](https://github.com/slab/quill/).
 
 - v0.2.0 Editor com versionamento
 
-- [X] Adaptar UI para operar com versão
-- [ ] Adaptar APIs para operar com versão
+- [X] Refatorar esquema de banco de dados para suportar o versionamento (percebi retroativamente)
+- [ ] Adicionar o `version_id=1` nos links do `/project_page` 
+- [ ] Editar endpoint `/editarCapitulo` para trabalhar com `version_id`
 - [ ] Permitir usuário cadastrar novas versões do capítulo
 - [ ] Expôr versões de arquivos na página do capítulo
 - [ ] Permitir usuário clicar e visualizar versões de capítulo

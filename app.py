@@ -25,7 +25,7 @@ def editarCapitulo():
     version_id = str(1);
     print(project_id, chapter_id);
     if chapter_id == "Novo":
-        chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id, version_id)
+        chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
         file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
         json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
         file.close()
@@ -59,6 +59,29 @@ def data():
     maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
 
     return jsonify({"message": "ok"})
+
+@app.route('/nova_versao_capitulo', methods=['POST'])
+def nova_versao_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+    version_id = data["version_id"]
+    contents = data["contents"]
+    chapter_title = data["chapter_title"]
+    nome_nova_versao = data["nome_nova_versao"]
+
+    version_id = maracuja_funcs.registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, version_id, nome_nova_versao);
+
+    file = open("capitulos/" + str(project_id) + "-" + str(chapter_id) + "-" + str(version_id) + ".json", "w")
+    json.dump(contents, file)
+    file.close()
+
+    maracuja_funcs.atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, chapter_title)
+
+    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
+
+    return jsonify({"message": "ok","version_id":version_id})
 
 @app.route('/chapterData', methods=['POST'])
 def chapterData():

@@ -62,7 +62,7 @@
             const project_id = "{{ projectID }}";
             const chapter_id = "{{ chapterID }}";
             const version_id = "{{ versionID }}";
-            const possivel_novo_version_id = "{{ possivelNovoVersionID }}";
+            //const possivel_novo_version_id = "{{ possivelNovoVersionID }}";
             const chapter_data = {{ chapterData | tojson }};
             
             const quill = new Quill("#editor", {
@@ -156,7 +156,7 @@
                         project_id: project_id,
                         chapter_id: chapter_id,
                         contents: contents,
-                        version_id: possivel_novo_version_id,
+                        version_id: version_id,
                         chapter_title: chapter_title,
                         nome_nova_versao: nomeNovaVersao
                     })
@@ -166,7 +166,7 @@
                     console.log(data.message);
                     if (data.message == "ok") {
                         alert("Nova versão criada com sucesso!");
-                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${possivel_novo_version_id}`;
+                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${data.version_id}`;
                     } else {
                         alert("Algo deu errado! Tente novamente!");
                     }

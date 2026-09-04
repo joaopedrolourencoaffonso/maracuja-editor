@@ -75,3 +75,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adicionei ids dos capítulos ao lado dos seus títulos na listagem.
 - Adicionei funcionalidade para mover capítulos de posição (não é elegante, mas funciona). 
+
+## 0.1.1 - 03-09-2026
+
+### Added
+
+- Esquema de banco de dados refatorado para suportar o versionamento (percebi retroativamente uma forma melhor de fazer).
+- Provavelmente ainda serão necessárias outras mudanças, mas é um começo.
