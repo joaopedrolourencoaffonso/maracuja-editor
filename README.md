@@ -58,6 +58,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [ ] Refatorar UI para ficar mais amigável.
 - [ ] Exportar projeto para `.md`
 - [ ] Exportar projeto para html
-- [ ] Exportar projeto para PDF
-- [ ] Exportar projeto para epub
+- [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
+- [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Criar logo
+
