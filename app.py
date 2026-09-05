@@ -21,8 +21,9 @@ def editarCapitulo():
     # CONTINUAR DAQUI!
     project_id = request.args.getlist('project_id')[0];
     chapter_id = request.args.getlist('chapter_id')[0];
+    version_id = request.args.getlist('version_id')[0];
     # PLACEHOLDER
-    version_id = str(1);
+    #version_id = str(1);
     print(project_id, chapter_id);
     if chapter_id == "Novo":
         chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
