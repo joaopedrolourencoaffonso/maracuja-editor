@@ -21,8 +21,9 @@
         </select>
         
         <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão Capítulo</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button id="deletar" onclick="deletarCapítulo()">Deletar Capítulo</button>
+        &nbsp;&nbsp;&nbsp;
+        <button id="canonizar" onclick="abreCanonizarDialog()">Canonizar</button>
+        
         
         <br><br>
 
@@ -38,7 +39,10 @@
             </div>
         </div>
 
-        <dialog id="multiInputModal"  class="moverCapituloDialog" close>
+        <br><br>
+        <button id="deletar" onclick="deletarCapítulo()">Deletar Capítulo</button>
+
+        <dialog id="multiInputModal"  class="dialogBox" close>
             <form method="dialog" id="modalForm">
                 <h3>Digite o nome da nova versão!</h3>
                 
@@ -48,6 +52,15 @@
 
                 <button type="button" id="cancelBtn" onClick="fechaDialog()">Cancelar</button>
                 <button type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
+            </form>
+        </dialog>
+
+        <dialog id="confirmaCanonizar"  class="dialogBox" close>
+            <form method="dialog" id="modalFormCanonizar">
+                <h3>Confirma canonização do capítulo?</h3>
+
+                <button type="button" id="cancelBtn" onClick="fechaCanonizarDialog()">Cancelar</button>
+                <button type="button" id="saveBtn" onClick="canonizar()">Salvar</button>
             </form>
         </dialog>
 
@@ -64,6 +77,14 @@
             
             const quill = new Quill("#editor", {
                 theme: "snow",
+            });
+
+            // monitora a opcao de versão de capítulo
+            const selectElement = document.getElementById('listaVersoes');
+            selectElement.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                console.log(selectedValue);
+                window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${selectedValue}`;
             });
 
             function escreveCapitulo() {
@@ -189,7 +210,19 @@
                 .then(data => {
                     console.log(data.message);
                     if (data.message == "ok") {
-                        console.log(data.lista);
+                        console.log("data.lista: ",data.lista);
+
+                        const targetId = parseInt(version_id);
+                        const index = data.lista.findIndex(versao => versao[0] == targetId);
+                        if (index !== -1) {
+                            const versao = data.lista[index];
+                            
+                            // Add the option to the HTML element
+                            element.innerHTML += `<option value="${versao[0]}">${versao[1]}</option>`;
+                            
+                            // Remove the item from the array
+                            data.lista.splice(index, 1);
+                        }
 
                         data.lista.forEach(versao => { 
                             element.innerHTML = element.innerHTML + `<option value="${versao[0]}">${versao[1]}</option>`
@@ -203,6 +236,43 @@
                 });
 
                 // <option value="v1">v1</option>
+            } 
+
+            function abreCanonizarDialog() {
+                const dialog = document.getElementById("confirmaCanonizar");
+                dialog.showModal();
+            }
+
+            function fechaCanonizarDialog() {
+                const dialog = document.getElementById("confirmaCanonizar");
+                dialog.close();
+            }
+
+            function canonizar() {
+                fetch("/canonizar_capitulo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        chapter_id: chapter_id,
+                        version_id: version_id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    if (data.message == "ok") {
+                        alert("Capítulo canonizado!")
+                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}`;
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar a nova versão:", error);
+                });
             }
         </script>
     </body>

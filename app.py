@@ -244,6 +244,18 @@ def pega_versoes_capitulo():
 
     return jsonify({"message": "ok", "lista": lista});
 
+@app.route('/canonizar_capitulo', methods=['POST'])
+def canonizar_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+    version_id = data["version_id"]
+
+    maracuja_funcs.canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id);
+
+    return jsonify({"message": "ok"});
+
 if __name__ == '__main__':
     maracuja_funcs.DB_start(sqlite3);
     app.run(debug=True)

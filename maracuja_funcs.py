@@ -272,3 +272,13 @@ def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
     conn.close();
 
     return lista;
+
+def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    cursor.execute("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? ;",(project_id, chapter_id));
+    cursor.execute("UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
+
+    conn.commit();
+    conn.close();
