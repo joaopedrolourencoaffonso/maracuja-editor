@@ -32,7 +32,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Adicionar o `version_id=1` nos links do `/project_page` 
 - [X] Editar endpoint `/editarCapitulo` para trabalhar com `version_id`
 - [X] Permitir usuário cadastrar novas versões do capítulo
-- [ ] Expôr versões de arquivos na página do capítulo
+- [X] Expôr versões de arquivos na página do capítulo
 - [ ] Permitir usuário clicar e visualizar versões de capítulo
 - [ ] Permitir usuário redefinir versão principal (vai exigir rearranjar DB)
 - [ ] Expôr lista de capítulos na página de edição para permitir navegação mais fácil

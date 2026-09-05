@@ -4,7 +4,7 @@
         <title>Maracujá</title>
 
     </head>
-    <body onload="escreveCapitulo()">
+    <body onload="escreveCapitulo(); listaVersoes();">
         <!-- Include Quill stylesheet -->
         <link
             href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
@@ -16,11 +16,8 @@
         <button id="enviar" onclick="enviarTexto()">Salvar Capítulo</button>
         
         <!--<label for="version">Versão:</label>-->
-        <select name="listaDeVersao" id="versaoExibida">
-            <option value="v1">v1</option>
-            <option value="v2">v2</option>
-            <option value="versao_gotica">versão gótica</option>
-            <option value="teste">teste</option>
+        <select name="listaDeVersao" id="listaVersoes">
+            
         </select>
         
         <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão Capítulo</button>
@@ -173,6 +170,39 @@
                 .catch(error => {
                     console.error("Erro ao criar a nova versão:", error);
                 });
+            }
+
+            function listaVersoes() {
+                var element = document.getElementById('listaVersoes');
+
+                fetch("/pega_versoes_capitulo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        chapter_id: chapter_id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    if (data.message == "ok") {
+                        console.log(data.lista);
+
+                        data.lista.forEach(versao => { 
+                            element.innerHTML = element.innerHTML + `<option value="${versao[0]}">${versao[1]}</option>`
+                        });
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar a nova versão:", error);
+                });
+
+                // <option value="v1">v1</option>
             }
         </script>
     </body>

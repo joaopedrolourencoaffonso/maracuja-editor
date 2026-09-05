@@ -219,7 +219,7 @@ def deleta_projeto():
 
     maracuja_funcs.excluir_projeto(os, Path, sqlite3, project_id);
 
-    return jsonify({"message": "ok"})
+    return jsonify({"message": "ok"});
 
 @app.route('/move_capitulo', methods=['POST'])
 def move_capitulo():
@@ -232,6 +232,17 @@ def move_capitulo():
     maracuja_funcs.mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo);
 
     return jsonify({"message": "ok"})
+
+@app.route('/pega_versoes_capitulo', methods=['POST'])
+def pega_versoes_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+
+    lista = maracuja_funcs.pega_versoes_capitulo(sqlite3, project_id, chapter_id);
+
+    return jsonify({"message": "ok", "lista": lista});
 
 if __name__ == '__main__':
     maracuja_funcs.DB_start(sqlite3);

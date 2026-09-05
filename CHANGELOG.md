@@ -94,4 +94,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--  Permitir usuário cadastrar novas versões do capítulo
+-  Permitir usuário cadastrar novas versões do capítulo.
+
+## 0.1.4 - 05-09-2026
+
+### Added
+
+-  Permitir usuário cadastrar novas versões do capítulo.

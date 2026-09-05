@@ -262,3 +262,13 @@ def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_no
 
     return novo_id;
 
+def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    lista = cursor.execute("select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id)).fetchall();
+
+    conn.commit();
+    conn.close();
+
+    return lista;
