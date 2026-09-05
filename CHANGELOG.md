@@ -89,3 +89,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adicionado o `version_id=1` nos links do `/project_page` 
 - Endpoint `/editarCapitulo` editado para trabalhar com `version_id`
+
+## 0.1.3 - 05-09-2026
+
+### Added
+
+-  Permitir usuário cadastrar novas versões do capítulo

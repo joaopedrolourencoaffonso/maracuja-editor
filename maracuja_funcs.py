@@ -247,7 +247,7 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     conn.commit();
     conn.close();
 
-def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, version_id, nome_nova_versao):
+def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 

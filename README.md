@@ -31,7 +31,7 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Refatorar esquema de banco de dados para suportar o versionamento (percebi retroativamente)
 - [X] Adicionar o `version_id=1` nos links do `/project_page` 
 - [X] Editar endpoint `/editarCapitulo` para trabalhar com `version_id`
-- [ ] Permitir usuário cadastrar novas versões do capítulo
+- [X] Permitir usuário cadastrar novas versões do capítulo
 - [ ] Expôr versões de arquivos na página do capítulo
 - [ ] Permitir usuário clicar e visualizar versões de capítulo
 - [ ] Permitir usuário redefinir versão principal (vai exigir rearranjar DB)

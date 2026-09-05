@@ -65,14 +65,16 @@ def data():
 def nova_versao_capitulo():
     data = request.get_json()
 
+    print(data);
+
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
-    version_id = data["version_id"]
+    #version_id = data["version_id"]
     contents = data["contents"]
     chapter_title = data["chapter_title"]
     nome_nova_versao = data["nome_nova_versao"]
 
-    version_id = maracuja_funcs.registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, version_id, nome_nova_versao);
+    version_id = maracuja_funcs.registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao);
 
     file = open("capitulos/" + str(project_id) + "-" + str(chapter_id) + "-" + str(version_id) + ".json", "w")
     json.dump(contents, file)
