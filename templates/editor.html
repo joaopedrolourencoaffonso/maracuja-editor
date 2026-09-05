@@ -141,7 +141,7 @@
                             alert("Capítulo deletado com sucesso!");
                             window.location.href = `http://127.0.0.1:5000/project_page/${project_id}`
                         } else {
-                            alert("Algo deu errado! Tente novamente!");
+                            alert(data.message);
                         }
                     })
                     .catch(error => {

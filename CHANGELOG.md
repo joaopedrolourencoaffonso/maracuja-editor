@@ -109,3 +109,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expôr versões de arquivos na página do capítulo
 - Permitir usuário clicar e visualizar versões de capítulo
 - Permitir usuário redefinir versão principal (canonizar capítulo)
+
+## 0.1.6 - 05-09-2026
+
+### Added
+
+- Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.

@@ -207,9 +207,14 @@ def deleta_capitulo():
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
     
-    maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
+    retorno = maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
 
-    return jsonify({"message": "ok"})
+    if retorno == 1:
+        message = "Não pode excluir capítulos canon. Canonize outro capítulo antes de deletar este";
+    else:
+        message = "ok"
+        
+    return jsonify({"message": message})
 
 @app.route('/deleta_projeto', methods=['POST'])
 def deleta_projeto():

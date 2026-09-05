@@ -191,12 +191,19 @@ def excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+    is_canon = cursor.execute("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id)).fetchall();
+    if is_canon[0][0] == 1:
+        retorno = 1;
+    else:
+        retorno = 0;
+        cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+        os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
 
     conn.commit();
     conn.close();
 
-    os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
+    return retorno;
+
 
 def excluir_projeto(os, Path, sqlite3, project_id):
     conn = sqlite3.connect('userdata');
