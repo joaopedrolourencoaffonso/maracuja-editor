@@ -94,7 +94,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    window.location.href = `http://127.0.0.1:5000/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}`
+                    window.location.href = `http://127.0.0.1:5000/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_i=${version_id}`
                 })
                 .catch(error => {
                     console.error("Erro ao enviar o texto:", error);

@@ -75,7 +75,7 @@ def pega_capitulos(sqlite3, project_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
+    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
     
     conn.commit();
     conn.close();

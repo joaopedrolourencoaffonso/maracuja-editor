@@ -82,3 +82,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Esquema de banco de dados refatorado para suportar o versionamento (percebi retroativamente uma forma melhor de fazer).
 - Provavelmente ainda serão necessárias outras mudanças, mas é um começo.
+
+## 0.1.2 - 05-09-2026
+
+### Added
+
+- Adicionado o `version_id=1` nos links do `/project_page` 
+- Endpoint `/editarCapitulo` editado para trabalhar com `version_id`
