@@ -101,3 +101,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -  Permitir usuário cadastrar novas versões do capítulo.
+
+## 0.1.5 - 05-09-2026
+
+### Added
+
+- Expôr versões de arquivos na página do capítulo
+- Permitir usuário clicar e visualizar versões de capítulo
+- Permitir usuário redefinir versão principal (canonizar capítulo)

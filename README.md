@@ -34,7 +34,8 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Permitir usuário cadastrar novas versões do capítulo
 - [X] Expôr versões de arquivos na página do capítulo
 - [X] Permitir usuário clicar e visualizar versões de capítulo
-- [ ] Permitir usuário redefinir versão principal
+- [X] Permitir usuário redefinir versão principal (canonizar capítulo)
+- [ ] Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
 - [ ] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
 - [ ] Implementar comparação de versões de capítulo lado à lado.
 - [ ] Implementar árvore de mundanças (?)
