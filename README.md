@@ -4,6 +4,14 @@ Um editor de texto amigável ao usuário construído sobre o git para facilitar 
 
 Powered by [quilljs](https://github.com/slab/quill/).
 
+# O que é canonização?
+
+Do inglês, "canon", geralmente usado para simbolizar aspectos imutáveis de uma certa história (a morte do tio Ben do homem aranha, por exemplo).
+
+A ideia é que quando um capítulo é "canonizado", ele é marcado como a versão 'oficial' ou no mínimo 'atual' do capítulo em questão, sendo o capítulo exposto por padrão quando se acessa o link pela página do projeto, assim como o capítulo que será adicionado ao texto em caso de exportação do projeto para html, pdf e/ou epub.
+
+# Objetivos
+
 - v0.1.0 Editor de Texto Mínimo
 
 - [X] Excolher framework de edição de texto em browser
@@ -36,9 +44,9 @@ Powered by [quilljs](https://github.com/slab/quill/).
 - [X] Permitir usuário clicar e visualizar versões de capítulo
 - [X] Permitir usuário redefinir versão principal (canonizar capítulo)
 - [X] Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
-- [ ] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
+- [X] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
 - [ ] Implementar comparação de versões de capítulo lado à lado.
-- [ ] Implementar árvore de mundanças (?)
+- [N] Implementar árvore de mundanças (desnecessário, complicações demais para um aplicativo local)
 
 - v0.3.0 Editor de Texto Avançado
 

@@ -4,7 +4,7 @@
         <title>Maracujá</title>
 
     </head>
-    <body onload="escreveCapitulo(); listaVersoes();">
+    <body onload="escreveCapitulo(); listaVersoes(); populaListaDeCapitulos();">
         <!-- Include Quill stylesheet -->
         <link
             href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
@@ -23,6 +23,10 @@
         <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão Capítulo</button>
         &nbsp;&nbsp;&nbsp;
         <button id="canonizar" onclick="abreCanonizarDialog()">Canonizar</button>
+        &nbsp;&nbsp;&nbsp;
+        <select name="listaDeCapitulos" id="listaDeCapitulos">
+            
+        </select>
         
         
         <br><br>
@@ -80,11 +84,20 @@
             });
 
             // monitora a opcao de versão de capítulo
-            const selectElement = document.getElementById('listaVersoes');
-            selectElement.addEventListener('change', (event) => {
+            const selectVersao = document.getElementById('listaVersoes');
+            selectVersao.addEventListener('change', (event) => {
                 const selectedValue = event.target.value;
                 console.log(selectedValue);
                 window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${selectedValue}`;
+            });
+
+            // monitora a opcao de versão de capítulo
+            const selectCapitulo = document.getElementById('listaDeCapitulos');
+            selectCapitulo.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                const valores = selectedValue.split(";")
+                console.log(selectedValue.split(";"));
+                window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${valores[0]}&version_id=${valores[1]}`;
             });
 
             function escreveCapitulo() {
@@ -272,6 +285,18 @@
                 })
                 .catch(error => {
                     console.error("Erro ao criar a nova versão:", error);
+                });
+            }
+
+            async function populaListaDeCapitulos() {
+                const response = await fetch("/project_info/" + project_id);
+                projectData = await response.json();
+
+                console.log("projectData.capitulos: ", projectData.capitulos);
+
+                element = document.getElementById('listaDeCapitulos');
+                projectData.capitulos.forEach(capitulo => {
+                    element.innerHTML = element.innerHTML  + `<option value="${capitulo[0]};${capitulo[2]}">${capitulo[1]}</option>`;
                 });
             }
         </script>

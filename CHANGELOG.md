@@ -115,3 +115,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
+
+## 0.1.7 - 07-09-2026
+
+### Added
+
+- Expôr lista de capítulos na página de edição para permitir navegação mais fácil.
