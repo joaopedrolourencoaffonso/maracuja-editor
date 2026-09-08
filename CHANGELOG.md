@@ -127,4 +127,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Corrigindo bug da página principal que ocorria quando múltiplos projetos tinham o mesmo título. Projetos agora devem ter títulos diferentes.
-- 
+- Aceita projetos que não tem imagem de capa

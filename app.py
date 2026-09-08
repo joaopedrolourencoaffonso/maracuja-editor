@@ -138,11 +138,16 @@ def cadastraProjeto():
         return jsonify(resposta)
     
     image = request.files.get("image");
-    image.filename = image.filename.replace(' ','_');
-    filepath = os.path.join("localdata", image.filename)
-    image.save(filepath)
+    print("---> ", image);
+    if (image == None):
+        image_name = "CAPA_DO_PROJETO";
+    else:
+        image.filename = image.filename.replace(' ','_');
+        filepath = os.path.join("localdata", image.filename)
+        image.save(filepath)
+        image_name = image.filename;
 
-    id_do_projeto = maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse, image.filename);
+    id_do_projeto = maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse, image_name);
 
     maracuja_funcs.insere_projeto_mais_recente(sqlite3, time, id_do_projeto);
 

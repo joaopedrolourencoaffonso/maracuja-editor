@@ -46,7 +46,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
 - [X] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
 - [X] Corrigir bug na página principal em que novos projetos não estão sendo expostos (bug era resultado do código permitir múltiplos projetos com o mesmo nome)
-- [ ] Adicionar controle para forçar usuário a subir capa *ou* aceitar projetos que não tem capítulo de capa.
+- [X] Aceitar projetos que não tem imagem de capa.
 - [ ] Implementar comparação de versões de capítulo lado à lado.
 - [N] Implementar árvore de mundanças (desnecessário, complicações demais para um aplicativo local)
 
