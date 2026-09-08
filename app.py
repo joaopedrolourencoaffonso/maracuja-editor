@@ -130,6 +130,12 @@ def cadastraProjeto():
 
     titulo = request.form.get("titulo");
     sinopse = request.form.get("sinopse");
+
+    titulo_ja_existe = maracuja_funcs.titulo_ja_existe(sqlite3, titulo);
+
+    if (titulo_ja_existe):
+        resposta = {"msg":"Erro. Já existe um projeto com esse título. Por favor, use outro título."};
+        return jsonify(resposta)
     
     image = request.files.get("image");
     image.filename = image.filename.replace(' ','_');

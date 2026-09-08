@@ -136,16 +136,29 @@ def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
 def pega_titulo_por_id(sqlite3, id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    titulo = cursor.execute('SELECT name FROM titulos where PROJECT_ID =' +  str(id) + ';').fetchall()
-    titulo = titulo[0][0]
+    titulo = cursor.execute('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),)).fetchall()
+    titulo = titulo[0][0];
+    conn.close();
     return titulo
 
 def pega_sinopse_por_id(sqlite3, id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     sinopse = cursor.execute('SELECT sinopse FROM sinopses where PROJECT_ID =' +  str(id) + ';').fetchall()
-    sinopse = sinopse[0][0]
+    sinopse = sinopse[0][0];
+    conn.close();
     return sinopse
+
+def titulo_ja_existe(sqlite3, titulo):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    print("------> ", titulo);
+    numero = cursor.execute('SELECT count() FROM titulos where name = ?;', (str(titulo),)).fetchall()
+    conn.close();
+    if (numero[0][0] > 0):
+        return True;
+    else:
+        return False;
 
 def pega_capa_por_id(sqlite3, id):
     conn = sqlite3.connect('userdata');

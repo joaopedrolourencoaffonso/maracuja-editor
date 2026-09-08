@@ -87,8 +87,8 @@
                 console.log(titulo.textContent, sinopse.textContent, fileInput.files[0]);
 
                 const formData = new FormData();
-                formData.append("titulo",titulo.textContent);
-                formData.append("sinopse",sinopse.textContent);
+                formData.append("titulo",titulo.value);
+                formData.append("sinopse",sinopse.value);
                 formData.append("image",fileInput.files[0]);
 
                 chamaAPI(formData).then(dados => {
@@ -96,6 +96,8 @@
                     if (resultado.msg == 'ok') {
                         alert("Cadastrado com sucesso!")
                         window.location.href = `/project_page/${resultado.id}`
+                    } else {
+                        alert(resultado.msg);
                     }
                 })
                 .catch(erro => {

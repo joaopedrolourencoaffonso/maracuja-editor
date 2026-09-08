@@ -121,3 +121,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Expôr lista de capítulos na página de edição para permitir navegação mais fácil.
+
+## 0.1.8 - 08-09-2026
+
+### Added
+
+- Corrigindo bug da página principal que ocorria quando múltiplos projetos tinham o mesmo título. Projetos agora devem ter títulos diferentes.
+- 

@@ -45,6 +45,8 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Permitir usuário redefinir versão principal (canonizar capítulo)
 - [X] Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
 - [X] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
+- [X] Corrigir bug na página principal em que novos projetos não estão sendo expostos (bug era resultado do código permitir múltiplos projetos com o mesmo nome)
+- [ ] Adicionar controle para forçar usuário a subir capa *ou* aceitar projetos que não tem capítulo de capa.
 - [ ] Implementar comparação de versões de capítulo lado à lado.
 - [N] Implementar árvore de mundanças (desnecessário, complicações demais para um aplicativo local)
 
@@ -65,6 +67,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - v1.0.0 Editor de Texto Completo
 
 - [ ] Refatorar UI para ficar mais amigável.
+- [ ] Adicionar dark mode.
 - [ ] Exportar projeto para `.md`
 - [ ] Exportar projeto para html
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
