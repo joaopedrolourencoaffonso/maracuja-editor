@@ -128,3 +128,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Corrigindo bug da página principal que ocorria quando múltiplos projetos tinham o mesmo título. Projetos agora devem ter títulos diferentes.
 - Aceita projetos que não tem imagem de capa
+
+## 0.1.9 - 08-09-2026
+
+### Added
+
+- Implementar comparação de versões de capítulo lado a lado (vlw Daniel!).

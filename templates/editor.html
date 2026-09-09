@@ -4,14 +4,14 @@
         <title>Maracujá</title>
 
     </head>
-    <body onload="escreveCapitulo(); listaVersoes(); populaListaDeCapitulos();">
+    <body onload="iniciaPagina()">
         <!-- Include Quill stylesheet -->
         <link
             href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
             rel="stylesheet"
         />
 
-        <a href="/project_page/{{ projectID }}">Página do Projeto</a>
+        <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto">Página do Projeto</a>
 
         <button id="enviar" onclick="enviarTexto()">Salvar Capítulo</button>
         
@@ -20,7 +20,9 @@
             
         </select>
         
-        <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão Capítulo</button>
+        <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão</button>
+        &nbsp;&nbsp;&nbsp;
+        <button id="comparar" onclick="abreCompararDialog()">Comparar versões</button>
         &nbsp;&nbsp;&nbsp;
         <button id="canonizar" onclick="abreCanonizarDialog()">Canonizar</button>
         &nbsp;&nbsp;&nbsp;
@@ -68,6 +70,25 @@
             </form>
         </dialog>
 
+        <dialog id="compararVersao"  class="dialogBox" close>
+            <form method="dialog" id="modalFormCanonizar">
+                <h3>Quais versões você deseja comparar?</h3>
+
+                <p>Primeira versão:</p>
+                <select name="listaDeCapitulos" id="primeiraLista">
+            
+                </select>
+                
+                <p>Segunda versão:</p>
+                <select name="listaDeCapitulos" id="segundaLista">
+                    
+                </select>
+                <br><br>
+                <button type="button" id="cancelBtn" onClick="fechaCompararDialog()">Cancelar</button>
+                <button type="button" id="saveBtn" onClick="abreJanelaComparacao()">Salvar</button>
+            </form>
+        </dialog>
+
         <!-- Include the Quill library -->
         <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
 
@@ -76,12 +97,34 @@
             const project_id = "{{ projectID }}";
             const chapter_id = "{{ chapterID }}";
             const version_id = "{{ versionID }}";
-            //const possivel_novo_version_id = "{{ possivelNovoVersionID }}";
+            const iframeFlag = "{{ iframeFlag }}";
             const chapter_data = {{ chapterData | tojson }};
+
+            console.log("--> banana ",iframeFlag);
             
             const quill = new Quill("#editor", {
                 theme: "snow",
             });
+
+            function iniciaPagina() {
+                escreveCapitulo();
+                if (iframeFlag == 1) {
+                    let element = document.getElementById("linkPaginaDoProjeto");
+                    element.remove();
+                    element = document.getElementById("versionar");
+                    element.remove();
+                    element = document.getElementById("comparar");
+                    element.remove();
+                    element = document.getElementById("listaDeCapitulos");
+                    element.remove();
+                    element = document.getElementById("listaVersoes");
+                    element.remove();
+                    return
+                } else {
+                    listaVersoes();
+                    populaListaDeCapitulos();
+                }
+            }
 
             // monitora a opcao de versão de capítulo
             const selectVersao = document.getElementById('listaVersoes');
@@ -207,7 +250,13 @@
             }
 
             function listaVersoes() {
-                var element = document.getElementById('listaVersoes');
+                listaVersao("listaVersoes");
+                listaVersao("primeiraLista");
+                listaVersao("segundaLista");
+            }
+
+            function listaVersao(html_id) {
+                var element = document.getElementById(html_id);
 
                 fetch("/pega_versoes_capitulo", {
                     method: "POST",
@@ -278,7 +327,7 @@
                     console.log(data.message);
                     if (data.message == "ok") {
                         alert("Capítulo canonizado!")
-                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}`;
+                        window.location.href =  window.location.href;
                     } else {
                         alert("Algo deu errado! Tente novamente!");
                     }
@@ -287,6 +336,29 @@
                     console.error("Erro ao criar a nova versão:", error);
                 });
             }
+
+            function abreCompararDialog() {
+                const dialog = document.getElementById("compararVersao");
+                dialog.showModal();
+            }
+
+            function fechaCompararDialog() {
+                const dialog = document.getElementById("compararVersao");
+                dialog.close();
+            }
+
+            function abreJanelaComparacao() {
+                const v1 = document.getElementById("primeiraLista");
+                const v2 = document.getElementById("segundaLista");
+                console.log("-> ",v1.value, v2.value);
+
+                if (v1.value != v2.value) {
+                    window.location.href = `/compararVersoes/?project_id=${project_id}&chapter_id=${chapter_id}&v1=${v1.value}&v2=${v2.value}`;
+                } else {
+                    alert("Erro. Versões devem ser diferentes")
+                }
+            }
+
 
             async function populaListaDeCapitulos() {
                 const response = await fetch("/project_info/" + project_id);

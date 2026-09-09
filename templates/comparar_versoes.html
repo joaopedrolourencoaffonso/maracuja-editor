@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Capítulo {{ chapterID }}</title>
+
+        <style>
+            html, body {
+                height: 100%;
+            }
+            
+            .editor {
+                display: grid;
+                grid-template-columns: minmax(0, 5fr) minmax(0, 5fr);
+                padding: 10px;
+                width: 100%;
+                height: 100%;
+            }
+
+            .iframeClass {
+                width: 95%;
+                height: 100%;
+            }
+        </style>
+
+    </head>
+    <body onload="console.log('oi!');">
+        <!-- Include Quill stylesheet -->
+
+        <!-- Create the editor container -->
+        <div class="editor">
+            <div>
+                Versão: '{{ titulo_v1 }}'
+                <iframe class="iframeClass" src="/editarCapitulo/?project_id={{ projectID }}&chapter_id={{ chapterID }}&version_id={{ v1 }}&iframeFlag" title="description"></iframe>
+            </div>
+            <div>
+                Versão: '{{ titulo_v2 }}'
+                <iframe class="iframeClass" src="/editarCapitulo/?project_id={{ projectID }}&chapter_id={{ chapterID }}&version_id={{ v2 }}&iframeFlag" title="description"></iframe>
+            </div>
+        </div>
+        
+
+        <!-- Include the Quill library -->
+        
+
+        <!-- Initialize Quill editor -->
+        <script>
+            const project_id = "{{ projectID }}";
+            const chapter_id = "{{ chapterID }}";
+            const v1 = "{{ v1 }}";
+            const v2 = "{{ v2 }}";
+
+            /*const primeiraVersao = document.getElementById("primeira-versao");
+            const segundaVersao = document.getElementById("segunda-versao");
+
+            primeiraVersao.innerHTML = chapter_data_v1['ops'][0].insert;
+            segundaVersao.innerHTML = chapter_data_v2['ops'][0].insert;*/
+        </script>
+    </body>
+
+</html>

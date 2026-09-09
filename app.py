@@ -22,6 +22,13 @@ def editarCapitulo():
     project_id = request.args.getlist('project_id')[0];
     chapter_id = request.args.getlist('chapter_id')[0];
     version_id = request.args.getlist('version_id')[0];
+    iframeFlag = request.args.getlist('iframeFlag');
+    if iframeFlag == []:
+        iframeFlag = 0
+    else:
+        iframeFlag = 1
+    
+    print("-> ", iframeFlag);
     # PLACEHOLDER
     #version_id = str(1);
     print(project_id, chapter_id);
@@ -39,7 +46,35 @@ def editarCapitulo():
 
     titulo_capitulo = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id);
 
-    return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData,versionID=version_id,tituloCapitulo=titulo_capitulo);
+    return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData,versionID=version_id,tituloCapitulo=titulo_capitulo,iframeFlag=iframeFlag);
+
+@app.route('/compararVersoes/', methods=['GET'])
+def compararVersoes():
+    # CONTINUAR DAQUI!
+    project_id = request.args.getlist('project_id')[0];
+    chapter_id = request.args.getlist('chapter_id')[0];
+    v1 = request.args.getlist('v1')[0];
+    v2 = request.args.getlist('v2')[0];
+
+    titulo_v1 = maracuja_funcs.retorna_titulo_versao(sqlite3, project_id, chapter_id, v1);
+    titulo_v2 = maracuja_funcs.retorna_titulo_versao(sqlite3, project_id, chapter_id, v2);
+    
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + v1  + ".json", "r")
+    #rawChapterData1 = file.read();
+    #file.close();
+
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + v2  + ".json", "r")
+    #rawChapterData2 = file.read();
+    #file.close();
+
+    #chapterDatav1 = json.loads(rawChapterData1);
+    #chapterDatav2 = json.loads(rawChapterData2);
+
+    #titulo_capitulo_v1 = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, v1);
+    #titulo_capitulo_v2 = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, v2);
+
+    #return render_template('comparar_versoes.html',projectID=project_id, chapterID=chapter_id,v1=v1,v2=v2,chapterDatav1=chapterDatav1,chapterDatav2=chapterDatav2,titulo_capitulo_v1=titulo_capitulo_v1,titulo_capitulo_v2=titulo_capitulo_v2);
+    return render_template('comparar_versoes.html',projectID=project_id, chapterID=chapter_id,v1=v1,v2=v2,titulo_v1=titulo_v1,titulo_v2=titulo_v2);
 
 @app.route('/data', methods=['POST'])
 def data():

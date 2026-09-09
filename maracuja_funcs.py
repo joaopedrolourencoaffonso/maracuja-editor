@@ -62,6 +62,17 @@ def retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id):
 
     return titulo;
 
+def retorna_titulo_versao(sqlite3, project_id, chapter_id, version_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    titulo = cursor.execute('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id)).fetchall();
+    titulo = titulo[0][0]
+
+    conn.close();
+
+    return titulo;
+
 def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_name):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
