@@ -139,4 +139,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler
+- Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler.
+- Corrige bug da lista de versões que impede de acessar capítulo 1.

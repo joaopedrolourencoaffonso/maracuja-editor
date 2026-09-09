@@ -168,7 +168,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    window.location.href = `http://127.0.0.1:5000/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}`
+                    window.location.href = window.location.href;
                 })
                 .catch(error => {
                     console.error("Erro ao enviar o texto:", error);
@@ -347,6 +347,7 @@
                 console.log("projectData.capitulos: ", projectData.capitulos);
 
                 element = document.getElementById('listaDeCapitulos');
+                element.innerHTML = element.innerHTML  + `<option value="a;b">Selecione Capítulo</option>`;
                 projectData.capitulos.forEach(capitulo => {
                     element.innerHTML = element.innerHTML  + `<option value="${capitulo[0]};${capitulo[2]}">${capitulo[1]}</option>`;
                 });
