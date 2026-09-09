@@ -134,3 +134,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Implementar comparação de versões de capítulo lado a lado (vlw Daniel!).
+
+## 0.1.10 - 08-09-2026
+
+### Added
+
+- Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler

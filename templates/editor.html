@@ -20,11 +20,11 @@
             
         </select>
         
-        <button id="versionar" onclick="mostraVersionarDialog()">Nova Versão</button>
+        <button id="versionar" onclick="mostraDialog('multiInputModal')">Nova Versão</button>
         &nbsp;&nbsp;&nbsp;
-        <button id="comparar" onclick="abreCompararDialog()">Comparar versões</button>
+        <button id="comparar" onclick="mostraDialog('compararVersao')">Comparar versões</button>
         &nbsp;&nbsp;&nbsp;
-        <button id="canonizar" onclick="abreCanonizarDialog()">Canonizar</button>
+        <button id="canonizar" onclick="mostraDialog('confirmaCanonizar')">Canonizar</button>
         &nbsp;&nbsp;&nbsp;
         <select name="listaDeCapitulos" id="listaDeCapitulos">
             
@@ -56,7 +56,7 @@
                 <input type="text" id="nomeNovaVersao" name="nomeNovaVersao" required />
                 <br><br>
 
-                <button type="button" id="cancelBtn" onClick="fechaDialog()">Cancelar</button>
+                <button type="button" id="cancelBtn" onClick="fechaDialog('multiInputModal')">Cancelar</button>
                 <button type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
             </form>
         </dialog>
@@ -65,7 +65,7 @@
             <form method="dialog" id="modalFormCanonizar">
                 <h3>Confirma canonização do capítulo?</h3>
 
-                <button type="button" id="cancelBtn" onClick="fechaCanonizarDialog()">Cancelar</button>
+                <button type="button" id="cancelBtn" onClick="fechaDialog('confirmaCanonizar')">Cancelar</button>
                 <button type="button" id="saveBtn" onClick="canonizar()">Salvar</button>
             </form>
         </dialog>
@@ -84,8 +84,8 @@
                     
                 </select>
                 <br><br>
-                <button type="button" id="cancelBtn" onClick="fechaCompararDialog()">Cancelar</button>
-                <button type="button" id="saveBtn" onClick="abreJanelaComparacao()">Salvar</button>
+                <button type="button" id="cancelBtn" onClick="fechaDialog('compararVersao')">Cancelar</button>
+                <button type="button" id="saveBtn" onClick="abreJanelaComparacao()">Comparar!</button>
             </form>
         </dialog>
 
@@ -206,13 +206,13 @@
                 }
             }
 
-            function mostraVersionarDialog() {
-                const dialog = document.getElementById("multiInputModal");
+            function mostraDialog(idDoDialog) {
+                const dialog = document.getElementById(idDoDialog);
                 dialog.showModal();
             }
 
-            function fechaDialog() {
-                const dialog = document.getElementById("multiInputModal");
+            function fechaDialog(idDoDialog) {
+                const dialog = document.getElementById(idDoDialog);
                 dialog.close();
             }
 
@@ -298,16 +298,6 @@
                 });
 
                 // <option value="v1">v1</option>
-            } 
-
-            function abreCanonizarDialog() {
-                const dialog = document.getElementById("confirmaCanonizar");
-                dialog.showModal();
-            }
-
-            function fechaCanonizarDialog() {
-                const dialog = document.getElementById("confirmaCanonizar");
-                dialog.close();
             }
 
             function canonizar() {
@@ -335,16 +325,6 @@
                 .catch(error => {
                     console.error("Erro ao criar a nova versão:", error);
                 });
-            }
-
-            function abreCompararDialog() {
-                const dialog = document.getElementById("compararVersao");
-                dialog.showModal();
-            }
-
-            function fechaCompararDialog() {
-                const dialog = document.getElementById("compararVersao");
-                dialog.close();
             }
 
             function abreJanelaComparacao() {

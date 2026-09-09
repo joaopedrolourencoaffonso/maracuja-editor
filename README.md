@@ -48,9 +48,9 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Corrigir bug na página principal em que novos projetos não estão sendo expostos (bug era resultado do código permitir múltiplos projetos com o mesmo nome)
 - [X] Aceitar projetos que não tem imagem de capa.
 - [X] Implementar comparação de versões de capítulo lado a lado.
-- [ ] Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler
+- [X] Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler
 - [ ] Corrigir bug da lista de versões que impede de acessar capítulo 1. (não tem mudança para detectar)
-- [N] Implementar árvore de mundanças (desnecessário, complicações demais para um aplicativo local)
+- [X] ~~Implementar árvore de mundanças~~(desnecessário, complicações demais para um aplicativo local)
 
 - v0.3.0 Editor de Texto Avançado
 
