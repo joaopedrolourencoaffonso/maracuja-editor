@@ -57,7 +57,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Opção de apenas ler os capítulos
 - [X] Adicionar "-v" na linha de comando
 - [X] Adicionar opção de backup (CLI)
-- [ ] Corrigir bug de capítulo criar capítulo novo quando é salvo
+- [X] Corrigir bug de capítulo criar capítulo novo quando é salvo
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas (CLI)
 - [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (CLI)
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas (UI)

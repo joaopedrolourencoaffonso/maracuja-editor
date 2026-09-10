@@ -168,7 +168,12 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    window.location.href = window.location.href;
+                    //window.location.href = window.location.href;
+                    if (iframeFlag == 1){
+                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}&iframeFlag`
+                    } else {
+                        window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}`
+                    }
                 })
                 .catch(error => {
                     console.error("Erro ao enviar o texto:", error);
