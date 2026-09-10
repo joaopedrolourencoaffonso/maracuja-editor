@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Maracujá</title>
+
+    </head>
+    <body onload="iniciaPagina()">
+
+        <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto">Página do Projeto</a>
+
+        <!--<label for="version">Versão:</label>-->
+        <select name="listaDeVersao" id="listaVersoes">
+            
+        </select>
+        
+        <select name="listaDeCapitulos" id="listaDeCapitulos">
+            
+        </select>
+        
+        
+        <br><br>
+
+        <div>
+            <h2 id="tituloDoCapitulo">{{ titulo_capitulo }}</h2>
+        </div>
+        <br>
+
+        <div id="leitor">
+
+        </div>
+
+        <!-- Create the editor container -->
+        <div id="temp">
+        </div>
+
+        <!-- Include the Quill library -->
+        <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+        <link
+            href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+            rel="stylesheet"
+        />
+
+        <!-- Initialize Quill editor -->
+        <script>
+            const project_id = "{{ projectID }}";
+            const chapter_id = "{{ chapterID }}";
+            const version_id = "{{ versionID }}";
+            const titulo_capitulo = "{{ titulo_capitulo }}";
+            const chapter_data = {{ chapterData | tojson }};
+
+            //console.log("--> banana ",iframeFlag);
+            
+            const quill = new Quill("#temp", {
+                theme: "snow",
+            });
+
+            function iniciaPagina() {
+                escreveCapitulo();
+                listaVersoes();
+                populaListaDeCapitulos();
+            }
+
+            // monitora a opcao de versão de capítulo
+            const selectVersao = document.getElementById('listaVersoes');
+            selectVersao.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                console.log(selectedValue);
+                window.location.href = `/lerCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${selectedValue}`;
+            });
+
+            // monitora a opcao de lista de capítulo
+            const selectCapitulo = document.getElementById('listaDeCapitulos');
+            selectCapitulo.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                const valores = selectedValue.split(";")
+                console.log(selectedValue.split(";"));
+                window.location.href = `/lerCapitulo/?project_id=${project_id}&chapter_id=${valores[0]}&version_id=${valores[1]}`;
+            });
+
+            function escreveCapitulo() {
+                quill.setContents(chapter_data);
+                const htmlContent = quill.getSemanticHTML();
+                const leitor = document.getElementById("leitor");
+                leitor.innerHTML = htmlContent;
+                const temp = document.getElementById("temp");
+                temp.parentElement.querySelector(".ql-toolbar")?.remove();
+                temp.remove();
+            }
+
+            function listaVersoes() {
+                listaVersao("listaVersoes");
+            }
+
+            function listaVersao(html_id) {
+                var element = document.getElementById(html_id);
+
+                fetch("/pega_versoes_capitulo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        chapter_id: chapter_id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    if (data.message == "ok") {
+                        console.log("data.lista: ",data.lista);
+
+                        const targetId = parseInt(version_id);
+                        const index = data.lista.findIndex(versao => versao[0] == targetId);
+                        if (index !== -1) {
+                            const versao = data.lista[index];
+                            
+                            // Add the option to the HTML element
+                            element.innerHTML += `<option value="${versao[0]}">${versao[1]}</option>`;
+                            
+                            // Remove the item from the array
+                            data.lista.splice(index, 1);
+                        }
+
+                        data.lista.forEach(versao => { 
+                            element.innerHTML = element.innerHTML + `<option value="${versao[0]}">${versao[1]}</option>`
+                        });
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar a nova versão:", error);
+                });
+
+                // <option value="v1">v1</option>
+            }
+
+            async function populaListaDeCapitulos() {
+                const response = await fetch("/project_info/" + project_id);
+                projectData = await response.json();
+
+                console.log("projectData.capitulos: ", projectData.capitulos);
+
+                element = document.getElementById('listaDeCapitulos');
+                element.innerHTML = element.innerHTML  + `<option value="a;b">Selecione Capítulo</option>`;
+                projectData.capitulos.forEach(capitulo => {
+                    element.innerHTML = element.innerHTML  + `<option value="${capitulo[0]};${capitulo[2]}">${capitulo[1]}</option>`;
+                });
+            }
+        </script>
+    </body>
+
+</html>

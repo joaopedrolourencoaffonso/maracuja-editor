@@ -54,7 +54,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v0.3.0 Editor de Texto Avançado
 
-- [ ] Opção de apenas ler os capítulos
+- [X] Opção de apenas ler os capítulos
 - [ ] Adicionar opção para limpar imagens que não estão sendo usadas como capas
 - [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento)
 - [ ] Adicionar opção de backup
@@ -77,4 +77,6 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Criar logo
 - [ ] Criar instalador (inclui baixar o quill.js localmente)
+- [ ] Criar site para o projeto
+- [ ] Criar tutoriais para usuários leigos
 
