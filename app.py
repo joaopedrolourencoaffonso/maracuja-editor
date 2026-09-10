@@ -4,9 +4,14 @@ import os
 from time import time;
 import sqlite3
 from pathlib import Path
+from sys import argv;
+import tarfile;
 import maracuja_funcs;
 
 app = Flask(__name__)
+
+# global variables
+version = "";
 
 @app.route('/')
 def index():
@@ -310,5 +315,39 @@ def canonizar_capitulo():
     return jsonify({"message": "ok"});
 
 if __name__ == '__main__':
-    maracuja_funcs.DB_start(sqlite3);
-    app.run(debug=True)
+    print(argv)
+
+    try:
+        print(1);
+    
+        file = open(".\\version", "r")
+        version = file.read();
+        file.close()
+        print(version);
+
+        if (len(argv) > 1):
+            if (argv[1] == "-v" or argv[1] == "--version" or argv[1] == "-version"):
+                exit();
+            
+            if (argv[1] == "--export"):
+                print("Exportando arquivos");
+                if (len(argv) > 2):
+                    print("aqui")
+                    print("-> ", argv);
+                    nome_do_projeto = argv[2];
+                else:
+                    nome_do_projeto = "meusProjetosExport.tar.gz"
+
+                with tarfile.open(nome_do_projeto, "w:gz") as archive:
+                    archive.add(".\\capitulos", arcname="capitulos");
+                    archive.add(".\\localdata", arcname="localdata");
+                    archive.add(".\\userdata", arcname="userdata");
+                
+                exit()
+
+        # tirando para teste
+        maracuja_funcs.DB_start(sqlite3);
+        app.run(debug=True);
+    
+    except Exception as e:
+        print(e);

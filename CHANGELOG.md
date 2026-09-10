@@ -147,3 +147,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Opção de apenas ler os capítulos.
+
+## 0.2.2 - 10-09-2026
+
+### Added
+
+- Adicionar "-v" na linha de comando
+- Adicionar opção de backup (CLI)
