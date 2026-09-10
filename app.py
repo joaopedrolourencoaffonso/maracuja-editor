@@ -6,6 +6,8 @@ import sqlite3
 from pathlib import Path
 from sys import argv;
 import tarfile;
+from pathlib import Path
+import shutil
 import maracuja_funcs;
 
 app = Flask(__name__)
@@ -323,11 +325,10 @@ if __name__ == '__main__':
         file = open(".\\version", "r")
         version = file.read();
         file.close()
-        print(version);
 
         if (len(argv) > 1):
             if (argv[1] == "-v" or argv[1] == "--version" or argv[1] == "-version"):
-                exit();
+                print(version);
             
             if (argv[1] == "--export"):
                 print("Exportando arquivos");
@@ -343,7 +344,29 @@ if __name__ == '__main__':
                     archive.add(".\\localdata", arcname="localdata");
                     archive.add(".\\userdata", arcname="userdata");
                 
-                exit()
+                print("Arquivos exportados para o formato .tar.gz!");
+            
+            if (argv[1] == "--clean"):
+                decisao = input(
+                    "\nTem certeza de que deseja deletar todos os arquivos do projeto? "
+                    "Digite 'y' para sim: "
+                )
+
+                if decisao.lower() == "y":
+                    for folder_name in ("localdata", "capitulos"):
+                        folder = Path(folder_name)
+                        for item in folder.iterdir():
+                            if item.is_dir():
+                                shutil.rmtree(item)
+                            else:
+                                item.unlink()
+
+                    Path("userdata").unlink(missing_ok=True)
+                    print("Arquivos deletados.")
+                else:
+                    print("Deleção cancelada.")
+
+            exit();
 
         # tirando para teste
         maracuja_funcs.DB_start(sqlite3);

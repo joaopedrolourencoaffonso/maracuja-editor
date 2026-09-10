@@ -160,3 +160,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Corrigir bug de capítulo criar capítulo novo quando é salvo
+
+
+## 0.2.4 - 10-09-2026
+
+### Added
+
+- Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (CLI)
