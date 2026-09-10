@@ -314,7 +314,7 @@ def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
     conn.commit();
     conn.close();
 
-def exporta_dados(argv,tarfile):
+def exporta_arquivos(argv,tarfile):
     if (len(argv) > 2):
         print("aqui")
         print("-> ", argv);
@@ -326,3 +326,15 @@ def exporta_dados(argv,tarfile):
         archive.add(".\\capitulos", arcname="capitulos");
         archive.add(".\\localdata", arcname="localdata");
         archive.add(".\\userdata", arcname="userdata");
+
+def clean(Path, shutil):
+    for folder_name in ("localdata", "capitulos"):
+        folder = Path(folder_name)
+        for item in folder.iterdir():
+            if item.is_dir():
+                shutil.rmtree(item)
+            else:
+                item.unlink()
+
+    Path("userdata").unlink(missing_ok=True)
+    print("Arquivos deletados.")

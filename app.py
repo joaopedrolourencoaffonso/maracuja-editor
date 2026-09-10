@@ -19,6 +19,20 @@ version = "";
 def index():
     return render_template('index.html')
 
+@app.route('/settings')
+def backup():
+    return render_template('settings.html')
+
+@app.route('/retornaBackup', methods=['GET'])
+def retornaBackup():
+    maracuja_funcs.exporta_arquivos(["a","b","meusProjetosExport.tar.gz"],tarfile);
+    return send_file(
+        "meusProjetosExport.tar.gz",
+        mimetype="application/gzip",
+        as_attachment=True,
+        download_name="meusProjetosExport.tar.gz"
+    )
+
 @app.route('/editor')
 def editor():
     return render_template('editor.html')
@@ -332,7 +346,7 @@ if __name__ == '__main__':
             
             if (argv[1] == "--export"):
                 print("Exportando arquivos");
-                maracuja_funcs.exporta_dados(argv,tarfile)
+                maracuja_funcs.exporta_arquivos(argv,tarfile)
                 
                 print("Arquivos exportados para o formato .tar.gz!");
             
@@ -343,16 +357,7 @@ if __name__ == '__main__':
                 )
 
                 if decisao.lower() == "y":
-                    for folder_name in ("localdata", "capitulos"):
-                        folder = Path(folder_name)
-                        for item in folder.iterdir():
-                            if item.is_dir():
-                                shutil.rmtree(item)
-                            else:
-                                item.unlink()
-
-                    Path("userdata").unlink(missing_ok=True)
-                    print("Arquivos deletados.")
+                    maracuja_funcs.clean(Path, shutil);
                 else:
                     print("Deleção cancelada.")
 

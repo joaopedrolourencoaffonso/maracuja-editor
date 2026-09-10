@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Settings</title>
+        <style>
+            
+        </style>
+    </head>
+    <body onload="">
+        <!-- Include Quill stylesheet -->
+        <div class="campo">
+            <a href="/">Página principal</a>
+            <p>Aperte o botão para gerar um Backup: <button onclick="geraBackup()">Clique aqui para gerar um backup</button></p>
+            <p>Apagar todos os dados do projeto: <button onclick="apagarTudo()">Apagar Tudo!</button></p>
+
+        </div>
+
+        <script>
+            function geraBackup() {
+                window.location.href = "/retornaBackup";
+            }
+            function apagarTudo() {
+                // CONTINUAR DAQUI!
+                window.location.href = "/apagarTudo";
+            }
+        </script>
+    </body>
+
+</html>
