@@ -332,17 +332,7 @@ if __name__ == '__main__':
             
             if (argv[1] == "--export"):
                 print("Exportando arquivos");
-                if (len(argv) > 2):
-                    print("aqui")
-                    print("-> ", argv);
-                    nome_do_projeto = argv[2];
-                else:
-                    nome_do_projeto = "meusProjetosExport.tar.gz"
-
-                with tarfile.open(nome_do_projeto, "w:gz") as archive:
-                    archive.add(".\\capitulos", arcname="capitulos");
-                    archive.add(".\\localdata", arcname="localdata");
-                    archive.add(".\\userdata", arcname="userdata");
+                maracuja_funcs.exporta_dados(argv,tarfile)
                 
                 print("Arquivos exportados para o formato .tar.gz!");
             

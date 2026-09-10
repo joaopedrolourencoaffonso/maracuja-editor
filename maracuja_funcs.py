@@ -313,3 +313,16 @@ def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
 
     conn.commit();
     conn.close();
+
+def exporta_dados(argv,tarfile):
+    if (len(argv) > 2):
+        print("aqui")
+        print("-> ", argv);
+        nome_do_projeto = argv[2];
+    else:
+        nome_do_projeto = "meusProjetosExport.tar.gz"
+
+    with tarfile.open(nome_do_projeto, "w:gz") as archive:
+        archive.add(".\\capitulos", arcname="capitulos");
+        archive.add(".\\localdata", arcname="localdata");
+        archive.add(".\\userdata", arcname="userdata");
