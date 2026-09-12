@@ -192,3 +192,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adaptando para operar no Windows e no Linux
+
+## 0.3.0 - 12-09-2026
+
+### Added
+
+- Permitindo exportar arquivos, importar arquivos, limpar os dados e solução de bugs

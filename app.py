@@ -312,21 +312,27 @@ def atualiza_projeto_info():
     resposta = {"msg":"ok"}
     return jsonify(resposta);
 
-@app.route('/deleta_capitulo', methods=['POST'])
-def deleta_capitulo():
+@app.route('/deleta_versao', methods=['POST'])
+def deleta_versao():
     data = request.get_json()
 
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
     
-    retorno = maracuja_funcs.excluir_capitulo(Path, sqlite3, project_id, chapter_id, version_id);
+    message = maracuja_funcs.excluir_versao(Path, sqlite3, project_id, chapter_id, version_id);
 
-    if retorno == 1:
-        message = "Não pode excluir capítulos canon. Canonize outro capítulo antes de deletar este";
-    else:
-        message = "ok"
-        
+    return jsonify({"message": message})
+
+@app.route('/deleta_capitulo', methods=['POST'])
+def deleta_capitulo():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    chapter_id = data["chapter_id"]
+    
+    message = maracuja_funcs.excluir_capitulo(Path, sqlite3, project_id, chapter_id);
+
     return jsonify({"message": message})
 
 @app.route('/deleta_projeto', methods=['POST'])

@@ -46,7 +46,7 @@
         </div>
 
         <br><br>
-        <button id="deletar" onclick="deletarCapítulo()">Deletar Capítulo</button>
+        <button id="deletar" onclick="deletarVersao()">Deletar Versão</button>
 
         <dialog id="multiInputModal"  class="dialogBox" close>
             <form method="dialog" id="modalForm">
@@ -180,11 +180,11 @@
                 });
             }
 
-            function deletarCapítulo() {
-                decisao = window.confirm("Essa ação irá deletar o capítulo. Tem certeza que deseja fazer isso?");
+            function deletarVersao() {
+                decisao = window.confirm("Essa ação irá deletar essa versão do capítulo. Tem certeza que deseja prosseguir?");
                 //console.log("-> ", decisao);
                 if (decisao) {
-                    fetch("/deleta_capitulo", {
+                    fetch("/deleta_versao", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

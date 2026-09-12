@@ -211,17 +211,17 @@ def retorna_projetos_recentes(sqlite3):
 
     return order_desc;
 
-def excluir_capitulo(Path, sqlite3, project_id, chapter_id, version_id):
+def excluir_versao(Path, sqlite3, project_id, chapter_id, version_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
     is_canon = cursor.execute("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id)).fetchall();
     if is_canon[0][0] == 1:
-        retorno = 1;
+        retorno = "Não pode excluir versão canon. Canonize outra versão antes de deletar este";
     else:
-        retorno = 0;
+        retorno = "ok";
         cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
-        #os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
+        
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
         file_path.unlink(missing_ok=True)
 
@@ -229,6 +229,27 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id, version_id):
     conn.close();
 
     return retorno;
+
+def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    mover_capitulo(sqlite3, project_id, chapter_id, 888888);
+
+    cursor.execute("delete from capitulos where project_id = ? AND chapter_id = 888888;",(project_id,));
+    
+    conn.commit();
+    conn.close();
+    
+    #file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
+    #file_path.unlink(missing_ok=True)
+    folder = Path("capitulos")
+    pattern = f"{project_id}-{chapter_id}-*.json"
+
+    for file_path in folder.glob(pattern):
+        file_path.unlink(missing_ok=True)
+
+    return "ok";
 
 
 def excluir_projeto(os, Path, sqlite3, project_id):

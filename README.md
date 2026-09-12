@@ -65,12 +65,16 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Adicionar opção para importar dados a partir de tar.gz (CLI)
 - [X] Adicionar opção para importar dados a partir de tar.gz (UI)
 - [X] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
-- [ ] Resolver bug na deleção de arquivos
+- [X] Resolver bug na deleção de arquivos
 
-- v0.4.0 Adaptando para Escritores
+- 0.4.0 Introduzir coluna de posicionamento
 
-- [ ] Criando seção de notas da estória
+- [ ] Método para mover arquivos de posição está quebrado. Solução é introduzir coluna de posição.
+
+- v0.5.0 Adaptando para Escritores
+
 - [ ] Criando seção de personagens
+- [ ] Criando seção de notas do projeto
 - [ ] Adicionando opção de adicionar notas aos documentos em si.
 
 - v1.0.0 Editor de Texto Completo
