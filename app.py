@@ -84,16 +84,16 @@ def editarCapitulo():
     print(project_id, chapter_id);
     if chapter_id == "Novo":
         chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
-        #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
-        #json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
-        #file.close()
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
         with file_path.open("w", encoding="utf-8") as file:
             json.dump({"text": '{"text": "Era uma vez..."}'}, file);
     
-    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id  + ".json", "r")
-    rawChapterData = file.read();
-    file.close();
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id  + ".json", "r")
+    #rawChapterData = file.read();
+    #file.close();
+    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+    with file_path.open("r", encoding="utf-8") as file:
+        rawChapterData = file.read()
 
     chapterData = json.loads(rawChapterData);
 
@@ -123,9 +123,12 @@ def lerCapitulo():
 
     titulo_capitulo = maracuja_funcs.retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id);
 
-    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "r")
-    rawChapterData = file.read();
-    file.close();
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "r")
+    #rawChapterData = file.read();
+    #file.close();
+    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+    with file_path.open("r", encoding="utf-8") as file:
+        rawChapterData = file.read()
 
     chapterData = json.loads(rawChapterData);
     
@@ -141,9 +144,12 @@ def data():
     contents = data["contents"]
     chapter_title = data["chapter_title"]
 
-    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
-    json.dump(contents, file)
-    file.close()
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
+    #json.dump(contents, file)
+    #file.close()
+    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+    with file_path.open("w", encoding="utf-8") as file:
+        json.dump(contents, file);
 
     maracuja_funcs.atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, chapter_title)
 
@@ -166,9 +172,12 @@ def nova_versao_capitulo():
 
     version_id = maracuja_funcs.registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao);
 
-    file = open("capitulos/" + str(project_id) + "-" + str(chapter_id) + "-" + str(version_id) + ".json", "w")
-    json.dump(contents, file)
-    file.close()
+    #file = open("capitulos/" + str(project_id) + "-" + str(chapter_id) + "-" + str(version_id) + ".json", "w")
+    #json.dump(contents, file)
+    #file.close()
+    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+    with file_path.open("w", encoding="utf-8") as file:
+        json.dump(contents, file);
 
     maracuja_funcs.atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, chapter_title)
 
@@ -181,9 +190,12 @@ def chapterData():
     chapter_id = request.args.getlist("chapter_id")[0];
     project_id = request.args.getlist("project_id")[0];
 
-    file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "r")
-    data = file.read();
-    file.close()
+    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "r")
+    #data = file.read();
+    #file.close()
+    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+    with file_path.open("r", encoding="utf-8") as file:
+        data = file.read()
 
     return jsonify({"chapterData": data})
 
@@ -368,9 +380,12 @@ if __name__ == '__main__':
     try:
         print(1);
     
-        file = open(".\\version", "r")
-        version = file.read();
-        file.close()
+        #file = open(".\\version", "r")
+        #version = file.read();
+        #file.close()
+        file_path = Path(".") / "version"
+        with file_path.open("r", encoding="utf-8") as file:
+            data = file.read()
 
         if (len(argv) > 1):
             if (argv[1] == "-v" or argv[1] == "--version" or argv[1] == "-version"):
