@@ -63,7 +63,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Adicionar opção de backup (UI)
 - [X] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
 - [X] Adicionar opção para importar dados a partir de tar.gz (CLI)
-- [ ] Adicionar opção para importar dados a partir de tar.gz (UI)
+- [X] Adicionar opção para importar dados a partir de tar.gz (UI)
 - [ ] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
 
 - v0.4.0 Adaptando para Escritores

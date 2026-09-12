@@ -185,3 +185,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adicionar opção para importar dados a partir de tar.gz (CLI)
+- Adicionar opção para importar dados a partir de tar.gz (UI)

@@ -8,6 +8,7 @@ from sys import argv;
 import tarfile;
 from pathlib import Path
 import shutil
+import tempfile
 import maracuja_funcs;
 
 app = Flask(__name__)
@@ -30,6 +31,26 @@ def apagaTudo():
         return jsonify({'msg':'Arquivos deletados com sucesso!'});
     except Exception as e:
         return jsonify({'msg':str(e)});
+
+@app.route('/importandoArquivos', methods=['POST'])
+def importandoArquivos():
+    filepath = None
+    try:
+        arquivo = request.files.get('file')
+        if arquivo is None or arquivo.filename == '':
+            raise ValueError('Nenhum arquivo .tar.gz foi enviado')
+
+        with tempfile.NamedTemporaryFile(suffix='.tar.gz', delete=False) as arquivo_temporario:
+            filepath = arquivo_temporario.name
+            arquivo.save(filepath)
+
+        maracuja_funcs.importa_arquivos(argv, tarfile, filepath, Path, shutil)
+        return jsonify({'msg': 'Arquivos importados com sucesso!'})
+    except Exception as e:
+        return jsonify({'msg': str(e)})
+    finally:
+        if filepath is not None:
+            os.remove(filepath)
 
 @app.route('/retornaBackup', methods=['GET'])
 def retornaBackup():

@@ -12,6 +12,7 @@
             <a href="/">Página principal</a>
             <p>Aperte o botão para gerar um Backup: <button onclick="geraBackup()">Clique aqui para gerar um backup</button></p>
             <p>Aperte o botão para importar arquivos: <button onclick="importaArquivos()">Clique aqui para importar arquivos</button></p>
+            <input type="file" id="arquivoImportacao" accept=".tar.gz,application/gzip" style="display: none;">
             <hr>
             <p>Apagar todos os dados do projeto: <button onclick="apagarTudo()">Apagar Tudo!</button></p>
 
@@ -21,6 +22,34 @@
             function geraBackup() {
                 window.location.href = "/retornaBackup";
             }
+
+            function importaArquivos() {
+                const resposta = window.confirm("Essa ação apagará todos os dados de projetos já salvos e os substituirá pelos dados do arquivo escolhido. Confirma operação?")
+
+                if (resposta == false) {
+                    console.log("cancelado!");
+                    return
+                }
+
+                const seletorArquivo = document.getElementById("arquivoImportacao");
+                seletorArquivo.click();
+
+                seletorArquivo.onchange = async function() {
+                    const arquivo = seletorArquivo.files[0];
+                    if (!arquivo) return;
+
+                    const formData = new FormData();
+                    formData.append("file", arquivo);
+
+                    const response = await fetch("/importandoArquivos", {
+                        method: "POST",
+                        body: formData
+                    });
+                    const resultado = await response.json();
+                    window.alert(resultado.msg);
+                };
+            };
+
             function apagarTudo() {
                 const resposta = window.confirm("Tem certeza que deseja limpar TODOS os dados da instalação?");
                 //console.log(resposta);
