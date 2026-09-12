@@ -100,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--  Permitir usuário cadastrar novas versões do capítulo.
+-  Corrigindo bugs no cadastro de capítulos.
 
 ## 0.1.5 - 05-09-2026
 
@@ -173,3 +173,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Transformar feature de limpar dados e exportação de dados em funções para reutilizar na UI
 - Adicionar opção de backup (UI)
+
+## 0.2.6 - 12-09-2026
+
+### Added
+
+- Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)

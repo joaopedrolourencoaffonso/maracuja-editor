@@ -20,8 +20,16 @@ def index():
     return render_template('index.html')
 
 @app.route('/settings')
-def backup():
+def settings():
     return render_template('settings.html')
+
+@app.route('/apagaTudo', methods=['GET'])
+def apagaTudo():
+    try:
+        maracuja_funcs.clean(Path, shutil)
+        return jsonify({'msg':'Arquivos deletados com sucesso!'});
+    except Exception as e:
+        return jsonify({'msg':str(e)});
 
 @app.route('/retornaBackup', methods=['GET'])
 def retornaBackup():

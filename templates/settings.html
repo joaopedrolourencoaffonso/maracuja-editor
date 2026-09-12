@@ -11,6 +11,8 @@
         <div class="campo">
             <a href="/">Página principal</a>
             <p>Aperte o botão para gerar um Backup: <button onclick="geraBackup()">Clique aqui para gerar um backup</button></p>
+            <p>Aperte o botão para importar arquivos: <button onclick="importaArquivos()">Clique aqui para importar arquivos</button></p>
+            <hr>
             <p>Apagar todos os dados do projeto: <button onclick="apagarTudo()">Apagar Tudo!</button></p>
 
         </div>
@@ -20,8 +22,34 @@
                 window.location.href = "/retornaBackup";
             }
             function apagarTudo() {
+                const resposta = window.confirm("Tem certeza que deseja limpar TODOS os dados da instalação?");
+                //console.log(resposta);
+
+                if (resposta == false) {
+                    console.log("cancelado!");
+                    return
+                }
+
+                const resposta2 = window.confirm("Tem certeza MESMO? Essa ação não tem volta a menos que você tenha um backup dos dados");
+                //console.log(resposta);
+
+                if (resposta2 == false) {
+                    console.log("cancelado!");
+                    return
+                }
+
+                console.log("banana")
+
+                resultado = fetch('/apagaTudo')
+                    .then(response => response.json())
+                    .then(data => {
+                        window.alert(data.msg);
+                    })
+                    .catch(error => {
+                        console.error("Erro ao deletar o arquivo:", error);
+                    });
                 // CONTINUAR DAQUI!
-                window.location.href = "/apagarTudo";
+                //window.location.href = "/apagarTudo";
             }
         </script>
     </body>

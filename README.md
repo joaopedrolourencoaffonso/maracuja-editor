@@ -14,10 +14,10 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v0.1.0 Editor de Texto Mínimo
 
-- [X] Excolher framework de edição de texto em browser
+- [X] Escolher framework de edição de texto em browser
 - [X] UI da página de edição básica
 - [X] UI para a página principal
-- [X] UI básica para visualizar detalhes de projeto (capítulos incluso)
+- [X] UI básica para visualizar detalhes de projeto (capítulos inclusos)
 - [X] UI básica para Listar Projetos
 - [X] UI para Criar Projeto 
 - [X] Salvando arquivo enviado pelo usuário
@@ -50,7 +50,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Implementar comparação de versões de capítulo lado a lado.
 - [X] Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler
 - [X] Corrigir bug da lista de versões que impede de acessar capítulo 1. (não tem mudança para detectar)
-- [X] ~~Implementar árvore de mundanças~~(desnecessário, complicações demais para um aplicativo local)
+- [X] ~~Implementar árvore de mudanças~~(desnecessário, complicações demais para um aplicativo local)
 
 - v0.3.0 Editor de Texto Avançado
 
@@ -61,7 +61,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (CLI)
 - [X] Transformar opções acima em funções para reciclar na UI
 - [X] Adicionar opção de backup (UI)
-- [ ] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
+- [X] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
 - [ ] Adicionar opção para importar dados a partir de tar.gz (CLI)
 - [ ] Adicionar opção para importar dados a partir de tar.gz (UI)
 - [ ] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
@@ -80,8 +80,17 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [ ] Exportar projeto para html
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
+- [ ] Exportar para docx
 - [ ] Criar logo
 - [ ] Criar instalador (inclui baixar o quill.js localmente)
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
+
+- v1.0.1 Melhorias
+
+- [ ] Documentos únicos (editar sem associar a projetos)
+- [ ] Contador de linhas
+- [ ] Contador de palavras
+- [ ] Exportar/Importar projetos seletivamente
+- [ ] Tema darkmode (e outros)
 
