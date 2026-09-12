@@ -320,7 +320,7 @@ def deleta_capitulo():
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
     
-    retorno = maracuja_funcs.excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id);
+    retorno = maracuja_funcs.excluir_capitulo(Path, sqlite3, project_id, chapter_id, version_id);
 
     if retorno == 1:
         message = "Não pode excluir capítulos canon. Canonize outro capítulo antes de deletar este";
