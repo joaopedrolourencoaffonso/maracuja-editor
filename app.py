@@ -84,9 +84,12 @@ def editarCapitulo():
     print(project_id, chapter_id);
     if chapter_id == "Novo":
         chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
-        file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
-        json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
-        file.close()
+        #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
+        #json.dump({"text": '{"text": "<p>Era uma vez...</p>"}'}, file)
+        #file.close()
+        file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
+        with file_path.open("w", encoding="utf-8") as file:
+            json.dump({"text": '{"text": "Era uma vez..."}'}, file);
     
     file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id  + ".json", "r")
     rawChapterData = file.read();
