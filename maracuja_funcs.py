@@ -211,7 +211,7 @@ def retorna_projetos_recentes(sqlite3):
 
     return order_desc;
 
-def excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id):
+def excluir_capitulo(Path, sqlite3, project_id, chapter_id, version_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
@@ -221,7 +221,9 @@ def excluir_capitulo(os, sqlite3, project_id, chapter_id, version_id):
     else:
         retorno = 0;
         cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
-        os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
+        #os.remove("capitulos//" + project_id + "-" + chapter_id + "-" + version_id + ".json");
+        file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
+        file_path.unlink(missing_ok=True)
 
     conn.commit();
     conn.close();
@@ -244,7 +246,9 @@ def excluir_projeto(os, Path, sqlite3, project_id):
 
     capa = capa[0][0];
 
-    os.remove("localdata//" + capa);
+    file_path = Path("localdata") / capa;
+    file_path.unlink(missing_ok=True);
+
     cursor.execute("delete from capas where project_id = ?;",(project_id,));
 
     conn.commit();
@@ -314,41 +318,68 @@ def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
     conn.commit();
     conn.close();
 
-def exporta_arquivos(argv,tarfile):
-    if (len(argv) > 2):
+def exporta_arquivos(argv, tarfile):
+    if len(argv) > 2:
         print("aqui")
-        print("-> ", argv);
-        nome_do_projeto = argv[2];
+        print("-> ", argv)
+        nome_do_projeto = argv[2]
     else:
         nome_do_projeto = "meusProjetosExport.tar.gz"
 
     with tarfile.open(nome_do_projeto, "w:gz") as archive:
-        archive.add(".\\capitulos", arcname="capitulos");
-        archive.add(".\\localdata", arcname="localdata");
-        archive.add(".\\userdata", arcname="userdata");
+        # Pass string paths without backslashes ('\\') or use Path objects.
+        # tarfile accepts both, but standard forward slashes / Path objects ensure OS neutrality.
+        archive.add("capitulos", arcname="capitulos")
+        archive.add("localdata", arcname="localdata")
+        archive.add("userdata", arcname="userdata")
+
 
 def clean(Path, shutil):
     for folder_name in ("localdata", "capitulos"):
         folder = Path(folder_name)
+        
+        # Prevent FileNotFoundError on Linux/Windows if the directory doesn't exist yet
+        if not folder.exists():
+            continue
+
         for item in folder.iterdir():
             if item.is_dir():
-                shutil.rmtree(item)
+                shutil.rmtree(item, ignore_errors=True)
             else:
-                item.unlink()
+                item.unlink(missing_ok=True)
 
-    Path("userdata").unlink(missing_ok=True)
+    userdata = Path("userdata")
+    if userdata.exists():
+        if userdata.is_dir():
+            shutil.rmtree(userdata, ignore_errors=True)
+        else:
+            userdata.unlink(missing_ok=True)
+
     print("Arquivos deletados.")
 
 def importa_arquivos(argv,tarfile, filepath,Path, shutil):
     clean(Path, shutil);
 
+    temp_dir = Path("temp_folder");
+
     with tarfile.open(filepath, "r:gz") as tar:
-        tar.extractall(path="temp_folder")
+        tar.extractall(path=temp_dir)
     
-    shutil.rmtree(".\\localdata");
-    shutil.rmtree(".\\capitulos");
-    shutil.move(".\\temp_folder\\localdata",".")
-    shutil.move(".\\temp_folder\\capitulos",".");
-    shutil.move(".\\temp_folder\\userdata",".\\userdata");
-    shutil.rmtree(".\\temp_folder");
+    # 2. Use pathlib with ignore_errors=True for safe directory removal
+    shutil.rmtree(Path("localdata"), ignore_errors=True)
+    shutil.rmtree(Path("capitulos"), ignore_errors=True)
+    
+    # 3. Move folders using Path objects
+    shutil.move(temp_dir / "localdata", Path("."))
+    shutil.move(temp_dir / "capitulos", Path("."))
+    
+    # Note: shutil.move behavior varies if destination exists; 
+    # ensure target is clear before moving directory trees.
+    userdata_dst = Path("userdata")
+    if userdata_dst.exists():
+        shutil.rmtree(userdata_dst)
+    shutil.move(temp_dir / "userdata", userdata_dst)
+    
+    # 4. Clean up temporary directory
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
