@@ -338,3 +338,17 @@ def clean(Path, shutil):
 
     Path("userdata").unlink(missing_ok=True)
     print("Arquivos deletados.")
+
+def importa_arquivos(argv,tarfile, filepath,Path, shutil):
+    clean(Path, shutil);
+
+    with tarfile.open(filepath, "r:gz") as tar:
+        tar.extractall(path="temp_folder")
+    
+    shutil.rmtree(".\\localdata");
+    shutil.rmtree(".\\capitulos");
+    shutil.move(".\\temp_folder\\localdata",".")
+    shutil.move(".\\temp_folder\\capitulos",".");
+    shutil.move(".\\temp_folder\\userdata",".\\userdata");
+    shutil.rmtree(".\\temp_folder");
+

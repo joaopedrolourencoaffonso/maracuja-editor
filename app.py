@@ -368,6 +368,16 @@ if __name__ == '__main__':
                     maracuja_funcs.clean(Path, shutil);
                 else:
                     print("Deleção cancelada.")
+            
+            if (argv[1] == "--import"):
+                if(len(argv) != 3):
+                    print("Somente um arquivo por vez. Revise o número de entradas");
+                    exit();
+                print("Importando dados do arquivo especificado")
+
+                maracuja_funcs.importa_arquivos(argv,tarfile, argv[2],Path, shutil);
+
+                print("Arquivos importados com sucesso!")
 
             exit();
 

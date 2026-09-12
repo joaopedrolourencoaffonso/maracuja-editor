@@ -179,3 +179,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
+
+## 0.2.7 - 12-09-2026
+
+### Added
+
+- Adicionar opção para importar dados a partir de tar.gz (CLI)
