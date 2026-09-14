@@ -70,7 +70,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - 0.4.0 Introduzir coluna de posicionamento
 
 - [X] Método para mover arquivos de posição está quebrado. Solução é introduzir coluna de posição.
-- [ ] Quill.js provido localmente ou pelo menos instalado apenas uma vez (como a criação da DB)
+- [X] Quill.js provido localmente ou pelo menos instalado apenas uma vez (como a criação da DB)
 
 - v0.5.0 Adaptando para Escritores
 

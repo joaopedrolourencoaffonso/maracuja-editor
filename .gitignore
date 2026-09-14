@@ -3,3 +3,5 @@ __pycache__
 userdata
 capitulos/*
 *.tar.gz
+quill.css
+quill.js

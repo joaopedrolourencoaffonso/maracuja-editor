@@ -9,6 +9,7 @@ import tarfile;
 from pathlib import Path
 import shutil
 import tempfile
+import urllib.request as requests_lib;
 import maracuja_funcs;
 
 app = Flask(__name__)
@@ -278,6 +279,14 @@ def img(filename):
         return send_file(".\\static\\under_contruction.png", mimetype='image/gif')
     return send_file(".\\localdata\\" + filename, mimetype='image/gif')
 
+@app.route('/quilljs', methods=['GET'])
+def quilljs():
+    return send_file("quill.js", mimetype='application/javascript')
+
+@app.route('/quillcss', methods=['GET'])
+def quillcss():
+    return send_file("quill.css", mimetype='text/css')
+
 @app.route('/img_app/<int:image_id>', methods=['GET'])
 def img_app(image_id):
     if (image_id == 1):
@@ -427,7 +436,7 @@ if __name__ == '__main__':
             exit();
 
         # tirando para teste
-        maracuja_funcs.DB_start(sqlite3);
+        maracuja_funcs.DB_start(sqlite3,requests_lib);
         app.run(debug=True);
     
     except Exception as e:

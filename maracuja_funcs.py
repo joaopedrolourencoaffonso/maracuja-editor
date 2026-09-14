@@ -4,7 +4,7 @@ def verifica_array_tuples(vetor,elemento):
             return True;
     return False;
 
-def DB_start(sqlite3):
+def DB_start(sqlite3, requests_lib):
     print("Updating DB")
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
@@ -30,6 +30,13 @@ def DB_start(sqlite3):
         conn.commit();
     
     conn.close();
+
+    js_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js";
+    requests_lib.urlretrieve(js_file_url, "quill.js");
+
+    css_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css";
+    requests_lib.urlretrieve(css_file_url, "quill.css");
+
     return True;
 
 def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):

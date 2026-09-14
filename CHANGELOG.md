@@ -204,3 +204,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Inserindo nova coluna "posicao" na tabela de capitulos. Resolve questão de mover e excluir capítulos de forma segura.
+
+## 0.4.0 - 14-09-2026
+
+### Added
+
+- Durante o primeiro start, programa faz download do [quill.js](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js) e [quill.css](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css), de forma a permitir self-hosting e dispensar baixar os arquivos novamente a cada recarregar da página.
+- No momento, estou fixando completamente no quill.snow.css, no futuro, posso pensar em adicionar mais temas, mas isso é para outro momento.

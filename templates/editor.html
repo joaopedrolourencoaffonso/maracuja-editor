@@ -6,10 +6,8 @@
     </head>
     <body onload="iniciaPagina()">
         <!-- Include Quill stylesheet -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
-            rel="stylesheet"
-        />
+        <!--<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>-->
+        <link href="/quillcss" rel="stylesheet"/>
 
         <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto">Página do Projeto</a>
 
@@ -90,7 +88,8 @@
         </dialog>
 
         <!-- Include the Quill library -->
-        <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+        <!--<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>-->
+        <script src="/quilljs"></script>
 
         <!-- Initialize Quill editor -->
         <script>
