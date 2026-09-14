@@ -23,7 +23,7 @@ def DB_start(sqlite3):
         cursor.execute('CREATE TABLE titulos (PROJECT_ID INTEGER, name TEXT)');
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
-        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)');
+        cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER, POSICAO INTEGER)');
         #cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
@@ -36,15 +36,25 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
+    posicao = cursor.execute('SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
     if (id == [(None,)]):
         id = 0;
     else:
         id = id[0][0];
+    
+    if (posicao == [(None,)]):
+        posicao = 0;
+    else:
+        posicao = posicao[0][0];
+
     id = id + 1;
     id = str(id);
 
+    posicao = posicao + 1;
+    posicao = str(posicao);
+
     # (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1));
+    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
     
     conn.commit();
     conn.close();
@@ -86,7 +96,7 @@ def pega_capitulos(sqlite3, project_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    capitulos = cursor.execute('select CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY CHAPTER_ID ASC',(project_id,)).fetchall();
+    capitulos = cursor.execute('select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,)).fetchall();
     
     conn.commit();
     conn.close();
@@ -236,7 +246,7 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
 
     mover_capitulo(sqlite3, project_id, chapter_id, 888888);
 
-    cursor.execute("delete from capitulos where project_id = ? AND chapter_id = 888888;",(project_id,));
+    cursor.execute("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
     
     conn.commit();
     conn.close();
@@ -283,7 +293,7 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
         capituloASerMovido = int(capituloASerMovido)
         novaPosicaoDoCapitulo = int(novaPosicaoDoCapitulo)
     except (TypeError, ValueError):
-        raise ValueError("Os IDs dos capítulos devem ser inteiros")
+        raise ValueError("A posição dos capítulos devem ser inteiros")
 
     if capituloASerMovido == novaPosicaoDoCapitulo:
         return
@@ -291,14 +301,14 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    cursor.execute("UPDATE capitulos set chapter_id = 7777777777 where project_id = ? AND chapter_id = ?;",(project_id, capituloASerMovido));
+    cursor.execute("UPDATE capitulos set posicao = 7777777777 where project_id = ? AND posicao = ?;",(project_id, capituloASerMovido));
     
     if (capituloASerMovido < novaPosicaoDoCapitulo):
-        cursor.execute("UPDATE capitulos set chapter_id = chapter_id - 1 where project_id = ? AND chapter_id <= ? AND chapter_id > ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));
+        cursor.execute("UPDATE capitulos set posicao = posicao - 1 where project_id = ? AND posicao <= ? AND posicao > ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));
     else:
-        cursor.execute("UPDATE capitulos set chapter_id = chapter_id + 1 where project_id = ? AND chapter_id >= ? AND chapter_id < ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));    
+        cursor.execute("UPDATE capitulos set posicao = posicao + 1 where project_id = ? AND posicao >= ? AND posicao < ?;",(project_id, novaPosicaoDoCapitulo, capituloASerMovido));    
     
-    cursor.execute("UPDATE capitulos set chapter_id = ? where project_id = ? AND chapter_id = 7777777777;",(novaPosicaoDoCapitulo, project_id));
+    cursor.execute("UPDATE capitulos set posicao = ? where project_id = ? AND posicao = 7777777777;",(novaPosicaoDoCapitulo, project_id));
     
     conn.commit();
     conn.close();
@@ -310,8 +320,11 @@ def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_no
     novo_id = cursor.execute('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
     novo_id = novo_id[0][0] + 1;
 
+    posicao = cursor.execute('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    posicao = posicao[0][0];
+
     # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0));
+    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
     
     conn.commit();
     conn.close();
@@ -333,7 +346,7 @@ def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
-    cursor.execute("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? ;",(project_id, chapter_id));
+    cursor.execute("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
     cursor.execute("UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
 
     conn.commit();

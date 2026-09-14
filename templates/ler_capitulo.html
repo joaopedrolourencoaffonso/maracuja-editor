@@ -145,7 +145,7 @@
                 element = document.getElementById('listaDeCapitulos');
                 element.innerHTML = element.innerHTML  + `<option value="a;b">Selecione Capítulo</option>`;
                 projectData.capitulos.forEach(capitulo => {
-                    element.innerHTML = element.innerHTML  + `<option value="${capitulo[0]};${capitulo[2]}">${capitulo[1]}</option>`;
+                    element.innerHTML = element.innerHTML  + `<option value="${capitulo[1]};${capitulo[3]}">${capitulo[2]}</option>`;
                 });
             }
         </script>

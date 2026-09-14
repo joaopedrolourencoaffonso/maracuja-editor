@@ -198,3 +198,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Permitindo exportar arquivos, importar arquivos, limpar os dados e solução de bugs
+
+## 0.3.1 - 14-09-2026
+
+### Added
+
+- Inserindo nova coluna "posicao" na tabela de capitulos. Resolve questão de mover e excluir capítulos de forma segura.
