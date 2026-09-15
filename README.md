@@ -67,15 +67,14 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
 - [X] Resolver bug na deleção de arquivos
 
-- 0.4.0 Introduzir coluna de posicionamento
+- 0.4.0 Resolvendo bugs e aprimorando eficiência
 
 - [X] Método para mover arquivos de posição está quebrado. Solução é introduzir coluna de posição.
 - [X] Quill.js provido localmente ou pelo menos instalado apenas uma vez (como a criação da DB)
 
 - v0.5.0 Adaptando para Escritores
 
-- [ ] Criando seção de personagens
-- [ ] Criando seção de notas do projeto
+- [ ] Criando seção de notas do projeto (personagens, lugares, etc...)
 - [ ] Adicionando opção de adicionar notas aos documentos em si.
 
 - v1.0.0 Editor de Texto Completo
@@ -87,16 +86,16 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar para docx
-- [ ] Criar logo
 - [ ] Criar instalador (inclui baixar o quill.js localmente)
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
+- [ ] Criar logo
 
-- v1.0.1 Melhorias
+- v1.0.1 Melhorias (sem prazo para implementação)
 
 - [ ] Documentos únicos (editar sem associar a projetos)
 - [ ] Contador de linhas
 - [ ] Contador de palavras
 - [ ] Exportar/Importar projetos seletivamente
-- [ ] Tema darkmode (e outros)
+- [ ] Implementar testes para averiguar qualidade de código
 

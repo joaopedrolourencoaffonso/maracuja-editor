@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Maracujá</title>
+        <title>{{ tituloCapitulo }}</title>
 
     </head>
     <body onload="iniciaPagina()">
@@ -149,7 +149,7 @@
             function enviarTexto() {
                 const contents = quill.getContents();
 
-                const chapter_title = document.getElementById("tituloDoCapitulo").value
+                const chapter_title = document.getElementById("tituloDoCapitulo").value;
 
                 fetch("/data", {
                     method: "POST",

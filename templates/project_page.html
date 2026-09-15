@@ -68,6 +68,7 @@
                     </button>
                 </div>
                 <div>
+                    <h3><a href="/notasDoprojeto/{{ projectID }}">Notas do Projeto</a></h3>
                     <h2>Título do Projeto</h2>
                     <textarea id="tituloField" rows="2" cols="100"></textarea>
 
@@ -144,6 +145,7 @@
                 document.getElementById("tituloField").value = projectData.name;
                 document.getElementById("sinopseField").value = projectData.sinopse;
                 document.getElementById("imageCapa").src = "/img/" + projectData.capa;
+                document.title = projectData.name;
 
                 fileInput = document.getElementById("fileInput");
                 preview = document.getElementById("imageCapa");
