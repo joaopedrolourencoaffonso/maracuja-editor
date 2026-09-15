@@ -78,14 +78,16 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Criando seção de notas do projeto (personagens, lugares, etc...)
 - [ ] Refatorar UI para ficar mais amigável.
 
-- v1.0.0 Editor de Texto Completo
+- v0.6.0 Exportando arquivos
 
-- [ ] Adicionar dark mode.
 - [ ] Exportar projeto para `.md`
 - [ ] Exportar projeto para html
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar para docx
+
+- v1.0.0 Versão para release
+
 - [ ] Criar instalador (inclui baixar o quill.js localmente)
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
@@ -93,9 +95,12 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v1.0.1 Melhorias (sem prazo para implementação)
 
+- [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
+- [ ] Revisar código como um todo
+- [ ] Implementar testes para averiguar qualidade de código
+- [ ] Adicionar dark mode.
 - [ ] Documentos únicos (editar sem associar a projetos)
 - [ ] Contador de linhas
 - [ ] Contador de palavras
 - [ ] Exportar/Importar projetos seletivamente
-- [ ] Implementar testes para averiguar qualidade de código
 
