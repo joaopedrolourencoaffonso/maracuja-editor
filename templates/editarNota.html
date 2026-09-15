@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ tituloNota }}</title>
+
+    </head>
+    <body onload="iniciaPagina()">
+        <!-- Include Quill stylesheet -->
+        <!--<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>-->
+        <link href="/quillcss" rel="stylesheet"/>
+        <script src="/quilljs"></script>
+
+        <a href="/notasDoprojeto//{{ projectID }}" id="linkPaginaDoProjeto">Outras Notas</a>
+
+        <button id="enviar" onclick="enviarTexto()">Salvar Nota</button>
+        <br><br>
+        
+        <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Título: <input id="tituloDaNota" value="{{ tituloNota }}">
+        </div>
+        <br><br>
+        <div>
+            Descricão: <input id="descricaoNota" value="{{ descricaoNota }}">
+        </div>
+        <br><br>
+
+        <!-- Create the editor container -->
+        <div id="editor">
+
+        </div>
+
+        <br><br>
+        <button id="deletar" onclick="deletarNota()">Deletar Nota</button>
+
+        <!-- Include the Quill library -->
+        <!--<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>-->
+
+        <!-- Initialize Quill editor -->
+        <script>
+            const project_id = "{{ projectID }}";
+            const nota_id = "{{ notasID }}";
+            const titulo_nota = "{{ tituloNota }}";
+            const descricao_nota = "{{ descricaoNota }}";
+            const chapter_data = {{ chapterData | tojson }};
+
+            console.log("--> banana ",project_id, nota_id, titulo_nota, descricao_nota);
+            console.log("titulo: ", titulo_nota);
+            console.log("descricao: ", descricao_nota);
+            console.log("nota_id: ", nota_id)
+            
+            const quill = new Quill("#editor", {
+                theme: "snow",
+            });
+           
+            function iniciaPagina() {
+                quill.setContents(chapter_data);
+            }
+
+            function enviarTexto() {
+                const contents = quill.getContents();
+
+                const titulo_da_nota = document.getElementById("tituloDaNota").value;
+                const descricao_da_nota = document.getElementById("descricaoNota").value;
+
+                console.log("titulo:", titulo_da_nota);
+
+                fetch("/dataNota", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: project_id,
+                        nota_id: nota_id,
+                        titulo_da_nota: titulo_da_nota,
+                        descricao_da_nota: descricao_da_nota,
+                        contents: contents
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.msg);
+                    //window.location.href = window.location.href;
+                    window.location.href = `/editarNota/?project_id=${project_id}&nota_id=${nota_id}`;
+                })
+                .catch(error => {
+                    console.error("Erro ao enviar o texto:", error);
+                });
+            }
+
+            function deletarNota() {
+                decisao = window.confirm("Essa ação irá deletar essa anotação. Tem certeza que deseja prosseguir?");
+                //console.log("-> ", decisao);
+                if (decisao) {
+                    fetch("/deleta_nota", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            project_id: project_id,
+                            nota_id: nota_id
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.msg);
+                        if (data.msg == "ok") {
+                            alert("Capítulo deletado com sucesso!");
+                            window.location.href = `http://127.0.0.1:5000/notasDoprojeto/${project_id}`
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao deletar o arquivo:", error);
+                    });
+                }
+            }
+        </script>
+    </body>
+
+</html>

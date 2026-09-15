@@ -74,12 +74,12 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v0.5.0 Adaptando para Escritores
 
-- [ ] Criando seção de notas do projeto (personagens, lugares, etc...)
-- [ ] Adicionando opção de adicionar notas aos documentos em si.
+- [X] Melhora títulos das páginas
+- [X] Criando seção de notas do projeto (personagens, lugares, etc...)
+- [ ] Refatorar UI para ficar mais amigável.
 
 - v1.0.0 Editor de Texto Completo
 
-- [ ] Refatorar UI para ficar mais amigável.
 - [ ] Adicionar dark mode.
 - [ ] Exportar projeto para `.md`
 - [ ] Exportar projeto para html

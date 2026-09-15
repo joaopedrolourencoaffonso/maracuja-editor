@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Notas do Projeto</title>
+        <style>
+            
+        </style>
+    </head>
+    <body onload="populaPagina()">
+        <a href="/project_page/{{ projectID }}">Página do Projeto</a>
+
+        <button onclick="mostraDialog('novaNota')">Adicionar Nota!</button>
+
+        <!-- Include Quill stylesheet -->
+        <h1>Notas do Projeto</h1>
+
+        <div id="listaDeNotasVaiAqui"></div>
+
+        <dialog id="novaNota"  class="dialogBox" close>
+            <form method="dialog" id="modalForm">
+                <h3>Detalhes da nova nota!</h3>
+                
+                <label for="tituloDaNota">Título:</label>
+                <input type="text" id="tituloDaNota" name="tituloDaNota" required />
+                <br><br>
+
+                <label for="descricaoDaNota">Descrição:</label>
+                <input type="text" id="descricaoDaNota" name="descricaoDaNota" required />
+                <br><br>
+
+                <button type="button" id="cancelBtn" onClick="fechaDialog('novaNota')">Cancelar</button>
+                <button type="button" id="saveBtn" onClick="salvaNovaNota()">Salvar Nota</button>
+            </form>
+        </dialog>
+
+        <script>
+            const projectID = "{{ projectID }}";
+
+            async function populaPagina() {
+                const response = await fetch("/retornaNotasProjeto/" + projectID);
+                listaDeNotas = await response.json();
+
+                console.log("-> ", listaDeNotas);
+                
+                listaHTML = "";
+                listaDeNotas.lista.forEach(nota => {
+                    listaHTML = listaHTML + `<a href="/editarNota/?project_id={{ projectID }}&nota_id=${nota[0]}"><div class='box-nota'><h3>${nota[1]}</h3> <p>${nota[2]}</p></div></a>`;
+                });
+
+                var element = document.getElementById("listaDeNotasVaiAqui");
+                element.innerHTML = listaHTML;
+            }
+
+            async function salvaNovaNota() {
+                const tituloNota = document.getElementById("tituloDaNota").value;
+                const descricaoNota = document.getElementById("descricaoDaNota").value;
+
+                fetch("/adicionaNota", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_id: projectID,
+                        titulo: tituloNota,
+                        descricao: descricaoNota
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("->", data.msg);
+                    if (data.msg == "ok") {
+                        alert("Nota salva com sucesso!");
+                        window.location.href = `/editarNota/?project_id=${projectID}&nota_id=${data.nota_id}`;
+                    } else {
+                        alert("Algo deu errado! Tente novamente!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar a nova versão:", error);
+                });
+            }
+
+            function mostraDialog(idDoDialog) {
+                const dialog = document.getElementById(idDoDialog);
+                dialog.showModal();
+            }
+
+            function fechaDialog(idDoDialog) {
+                const dialog = document.getElementById(idDoDialog);
+                dialog.close();
+            }
+        </script>
+    </body>
+
+</html>

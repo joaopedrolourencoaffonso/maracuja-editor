@@ -212,8 +212,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Durante o primeiro start, programa faz download do [quill.js](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js) e [quill.css](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css), de forma a permitir self-hosting e dispensar baixar os arquivos novamente a cada recarregar da página.
 - No momento, estou fixando completamente no quill.snow.css, no futuro, posso pensar em adicionar mais temas, mas isso é para outro momento.
 
-
-
 ## 0.4.1 - 15-09-2026
 
 ### Added

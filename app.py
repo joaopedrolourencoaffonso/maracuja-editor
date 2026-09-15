@@ -63,9 +63,22 @@ def retornaBackup():
         download_name="meusProjetosExport.tar.gz"
     )
 
-@app.route('/editor')
-def editor():
-    return render_template('editor.html')
+@app.route('/editarNota/', methods=['GET'])
+def editarNota():
+    project_id = request.args.getlist('project_id')[0];
+    nota_id = request.args.getlist('nota_id')[0];
+
+    nota = maracuja_funcs.retorna_nota_especifica(sqlite3, project_id, nota_id);
+
+    file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
+    with file_path.open("r", encoding="utf-8") as file:
+        rawChapterData = file.read()
+
+    chapterData = json.loads(rawChapterData);
+
+    print("nota: ", nota, nota_id, project_id)
+
+    return render_template('editarNota.html',projectID=project_id,notasID=nota_id, tituloNota = nota[0][0], descricaoNota = nota[0][1],chapterData=chapterData)
 
 @app.route('/editarCapitulo/', methods=['GET'])
 def editarCapitulo():
@@ -145,9 +158,6 @@ def data():
     contents = data["contents"]
     chapter_title = data["chapter_title"]
 
-    #file = open("capitulos/" + project_id + "-" + chapter_id + "-" + version_id + ".json", "w")
-    #json.dump(contents, file)
-    #file.close()
     file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
     with file_path.open("w", encoding="utf-8") as file:
         json.dump(contents, file);
@@ -157,6 +167,26 @@ def data():
     maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
 
     return jsonify({"message": "ok"})
+
+@app.route('/dataNota', methods=['POST'])
+def dataNota():
+    data = request.get_json()
+
+    print("1 -> ",  data["titulo_da_nota"]);
+
+    project_id = data["project_id"]
+    nota_id = data["nota_id"]
+    titulo_da_nota = data["titulo_da_nota"]
+    descricao_da_nota = data["descricao_da_nota"]
+    contents = data["contents"]
+
+    file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
+    with file_path.open("w", encoding="utf-8") as file:
+        json.dump(contents, file);
+
+    maracuja_funcs.atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota);
+
+    return jsonify({"msg": "ok"})
 
 @app.route('/nova_versao_capitulo', methods=['POST'])
 def nova_versao_capitulo():
@@ -200,6 +230,22 @@ def chapterData():
 
     return jsonify({"chapterData": data})
 
+@app.route('/adicionaNota', methods=['POST'])
+def adicionaNota():
+    data = request.get_json();
+
+    project_id = data["project_id"]
+    titulo = data["titulo"]
+    descricao = data["descricao"]
+
+    nota_id = maracuja_funcs.insere_notas_projeto(sqlite3, project_id, titulo, descricao);
+
+    file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
+    with file_path.open("w", encoding="utf-8") as file:
+        json.dump('{"ops": [{"insert": ""}]}', file);
+
+    return jsonify({"msg": "ok","nota_id":nota_id})
+
 @app.route('/lista_projetos_recentes')
 def lista_projetos_recentes():
     order_desc = maracuja_funcs.retorna_projetos_recentes(sqlite3);
@@ -222,6 +268,17 @@ def lista_todos_projetos():
 def project_page(project_id):
     print(project_id);
     return render_template('project_page.html',projectID=project_id)
+
+@app.route('/notasDoprojeto/<int:project_id>', methods=['GET'])
+def notasDoprojeto(project_id):
+    print(project_id);
+    return render_template('notas_projeto.html',projectID=project_id)
+
+@app.route('/retornaNotasProjeto/<int:project_id>', methods=['GET'])
+def retornaNotasProjeto(project_id):
+    print(project_id);
+    lista_de_notas = maracuja_funcs.retorna_notas_projeto(sqlite3, project_id);
+    return jsonify({"msg": "ok", "lista":lista_de_notas})
 
 @app.route('/criar_projeto', methods=['GET'])
 def criar_projeto():
@@ -343,6 +400,17 @@ def deleta_capitulo():
     message = maracuja_funcs.excluir_capitulo(Path, sqlite3, project_id, chapter_id);
 
     return jsonify({"message": message})
+
+@app.route('/deleta_nota', methods=['POST'])
+def deleta_nota():
+    data = request.get_json()
+
+    project_id = data["project_id"]
+    nota_id = data["nota_id"]
+    
+    message = maracuja_funcs.excluir_nota(Path, sqlite3, project_id, nota_id);
+
+    return jsonify({"msg": message})
 
 @app.route('/deleta_projeto', methods=['POST'])
 def deleta_projeto():

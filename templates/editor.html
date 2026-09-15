@@ -18,7 +18,7 @@
             
         </select>
         
-        <button id="versionar" onclick="mostraDialog('multiInputModal')">Nova Versão</button>
+        <button id="versionar" onclick="mostraDialog('novaVersao')">Nova Versão</button>
         &nbsp;&nbsp;&nbsp;
         <button id="comparar" onclick="mostraDialog('compararVersao')">Comparar versões</button>
         &nbsp;&nbsp;&nbsp;
@@ -46,7 +46,7 @@
         <br><br>
         <button id="deletar" onclick="deletarVersao()">Deletar Versão</button>
 
-        <dialog id="multiInputModal"  class="dialogBox" close>
+        <dialog id="novaVersao"  class="dialogBox" close>
             <form method="dialog" id="modalForm">
                 <h3>Digite o nome da nova versão!</h3>
                 
@@ -54,7 +54,7 @@
                 <input type="text" id="nomeNovaVersao" name="nomeNovaVersao" required />
                 <br><br>
 
-                <button type="button" id="cancelBtn" onClick="fechaDialog('multiInputModal')">Cancelar</button>
+                <button type="button" id="cancelBtn" onClick="fechaDialog('novaVersao')">Cancelar</button>
                 <button type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
             </form>
         </dialog>

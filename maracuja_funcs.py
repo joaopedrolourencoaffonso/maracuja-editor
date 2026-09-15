@@ -26,6 +26,7 @@ def DB_start(sqlite3, requests_lib):
         cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER, POSICAO INTEGER)');
         #cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
+        cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
         # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
     
@@ -89,6 +90,61 @@ def retorna_titulo_versao(sqlite3, project_id, chapter_id, version_id):
     conn.close();
 
     return titulo;
+
+def retorna_notas_projeto(sqlite3, project_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    lista_de_notas = cursor.execute('select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
+
+    conn.close();
+
+    print(lista_de_notas)
+
+    return lista_de_notas;
+
+def retorna_nota_especifica(sqlite3, project_id, nota_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    nota = cursor.execute('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id)).fetchall();
+
+    conn.close();
+
+    print(nota)
+
+    return nota;
+
+def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    nota_id = cursor.execute('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
+    nota_id = nota_id[0][0];
+
+    if (nota_id == None):
+        nota_id = 0
+    
+    nota_id += 1;
+
+    cursor.execute('insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
+
+    conn.commit();
+    conn.close();
+    
+    return nota_id;
+
+def atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    print("2 -> ", titulo_da_nota)
+
+    # cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
+    cursor.execute('UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
+    
+    conn.commit();
+    conn.close();
 
 def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_name):
     conn = sqlite3.connect('userdata');
@@ -258,8 +314,6 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
     conn.commit();
     conn.close();
     
-    #file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
-    #file_path.unlink(missing_ok=True)
     folder = Path("capitulos")
     pattern = f"{project_id}-{chapter_id}-*.json"
 
@@ -268,6 +322,19 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
 
     return "ok";
 
+def excluir_nota(Path, sqlite3, project_id, nota_id):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+
+    cursor.execute("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
+    
+    conn.commit();
+    conn.close();
+    
+    file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json";
+    file_path.unlink(missing_ok=True)
+
+    return "ok";
 
 def excluir_projeto(os, Path, sqlite3, project_id):
     conn = sqlite3.connect('userdata');
@@ -372,11 +439,12 @@ def exporta_arquivos(argv, tarfile):
         # tarfile accepts both, but standard forward slashes / Path objects ensure OS neutrality.
         archive.add("capitulos", arcname="capitulos")
         archive.add("localdata", arcname="localdata")
+        archive.add("notas", arcname="notas")
         archive.add("userdata", arcname="userdata")
 
 
 def clean(Path, shutil):
-    for folder_name in ("localdata", "capitulos"):
+    for folder_name in ("localdata", "capitulos","notas"):
         folder = Path(folder_name)
         
         # Prevent FileNotFoundError on Linux/Windows if the directory doesn't exist yet
@@ -409,10 +477,12 @@ def importa_arquivos(argv,tarfile, filepath,Path, shutil):
     # 2. Use pathlib with ignore_errors=True for safe directory removal
     shutil.rmtree(Path("localdata"), ignore_errors=True)
     shutil.rmtree(Path("capitulos"), ignore_errors=True)
+    shutil.rmtree(Path("notas"), ignore_errors=True)
     
     # 3. Move folders using Path objects
     shutil.move(temp_dir / "localdata", Path("."))
     shutil.move(temp_dir / "capitulos", Path("."))
+    shutil.move(temp_dir / "notas", Path("."))
     
     # Note: shutil.move behavior varies if destination exists; 
     # ensure target is clear before moving directory trees.
