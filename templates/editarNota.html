@@ -2,6 +2,259 @@
 <html>
     <head>
         <title>{{ tituloNota }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+                --danger: #a64e45;
+                --danger-soft: #fff0ec;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 980px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 52px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(50px, 10vh, 92px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .back-link {
+                color: var(--green);
+                font-size: .85rem;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .back-link:hover,
+            .back-link:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .note-heading,
+            .note-form {
+                width: min(100%, 760px);
+                margin-right: auto;
+                margin-left: auto;
+            }
+
+            .eyebrow {
+                margin: 0 0 14px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            .note-heading h1 {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(2.5rem, 6vw, 4.3rem);
+                font-weight: normal;
+                letter-spacing: -.04em;
+                line-height: 1.05;
+                overflow-wrap: anywhere;
+            }
+
+            .note-form {
+                margin-top: 42px;
+            }
+
+            .field-group {
+                margin-bottom: 22px;
+            }
+
+            .field-label {
+                display: block;
+                margin-bottom: 9px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .12em;
+                text-transform: uppercase;
+            }
+
+            .note-input {
+                display: block;
+                width: 100%;
+                min-height: 48px;
+                padding: 10px 13px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                color: var(--ink);
+                background: rgba(255, 255, 255, .48);
+                font: 1.02rem/1.5 Georgia, "Times New Roman", serif;
+                transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+            }
+
+            .note-input:focus {
+                border-color: var(--yellow);
+                background: var(--paper);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .description-input {
+                min-height: 48px;
+            }
+
+            .editor-label {
+                margin-top: 34px;
+            }
+
+            #editor {
+                min-height: 50vh;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: rgba(255, 255, 255, .58);
+                box-shadow: 0 12px 34px rgba(47, 77, 53, .05);
+            }
+
+            #editor.ql-container {
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.08rem;
+            }
+
+            #editor .ql-editor {
+                min-height: 50vh;
+                padding: 26px clamp(18px, 4vw, 42px);
+                color: var(--ink);
+                line-height: 1.75;
+            }
+
+            .save-area {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 22px;
+            }
+
+            .save-button,
+            .delete-button {
+                min-height: 42px;
+                padding: 9px 18px;
+                border-radius: 3px;
+                cursor: pointer;
+                font: .82rem "Trebuchet MS", "Segoe UI", sans-serif;
+                transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+            }
+
+            .save-button {
+                border: 1px solid var(--yellow);
+                color: var(--green-dark);
+                background: var(--yellow);
+            }
+
+            .save-button:hover,
+            .save-button:focus-visible {
+                border-color: var(--green-dark);
+                background: #f7d766;
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            .delete-area {
+                display: flex;
+                justify-content: center;
+                margin-top: 38px;
+                padding-top: 24px;
+                border-top: 1px solid var(--line);
+            }
+
+            .delete-button {
+                border: 1px solid var(--danger);
+                color: var(--danger);
+                background: var(--danger-soft);
+            }
+
+            .delete-button:hover,
+            .delete-button:focus-visible {
+                color: #fffaf8;
+                background: var(--danger);
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            @media (max-width: 600px) {
+                .page-shell {
+                    width: min(100% - 28px, 540px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 68px;
+                }
+
+                .save-button {
+                    width: 100%;
+                }
+
+                .save-area {
+                    display: block;
+                }
+
+                #editor,
+                #editor .ql-editor {
+                    min-height: 54vh;
+                }
+            }
+        </style>
 
     </head>
     <body onload="iniciaPagina()">
@@ -10,27 +263,43 @@
         <link href="/quillcss" rel="stylesheet"/>
         <script src="/quilljs"></script>
 
-        <a href="/notasDoprojeto//{{ projectID }}" id="linkPaginaDoProjeto">Outras Notas</a>
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação da nota">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <a href="/notasDoprojeto//{{ projectID }}" id="linkPaginaDoProjeto" class="back-link">Outras notas</a>
+            </nav>
 
-        <button id="enviar" onclick="enviarTexto()">Salvar Nota</button>
-        <br><br>
-        
-        <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Título: <input id="tituloDaNota" value="{{ tituloNota }}">
-        </div>
-        <br><br>
-        <div>
-            Descricão: <input id="descricaoNota" value="{{ descricaoNota }}">
-        </div>
-        <br><br>
+            <section class="note-heading" aria-labelledby="note-title">
+                <p class="eyebrow">Nota do projeto</p>
+                <h1 id="note-title">Editar nota</h1>
+            </section>
 
-        <!-- Create the editor container -->
-        <div id="editor">
+            <section class="note-form" aria-label="Conteúdo da nota">
+                <div class="field-group">
+                    <label class="field-label" for="tituloDaNota">Título</label>
+                    <input class="note-input" id="tituloDaNota" value="{{ tituloNota }}">
+                </div>
 
-        </div>
+                <div class="field-group">
+                    <label class="field-label" for="descricaoNota">Descrição</label>
+                    <input class="note-input description-input" id="descricaoNota" value="{{ descricaoNota }}">
+                </div>
 
-        <br><br>
-        <button id="deletar" onclick="deletarNota()">Deletar Nota</button>
+                <label class="field-label editor-label" for="editor">Texto da nota</label>
+                <!-- Create the editor container -->
+                <div id="editor"></div>
+
+                <div class="save-area">
+                    <button class="save-button" id="enviar" onclick="enviarTexto()">Salvar nota</button>
+                </div>
+
+                <div class="delete-area">
+                    <button class="delete-button" id="deletar" onclick="deletarNota()">Deletar nota</button>
+                </div>
+            </section>
 
         <!-- Include the Quill library -->
         <!--<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>-->

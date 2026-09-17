@@ -2,34 +2,199 @@
 <html>
     <head>
         <title>Novo Projeto</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 980px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 52px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(64px, 12vh, 116px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .back-links {
+                display: flex;
+                gap: 22px;
+            }
+
+            .back-links a {
+                color: var(--green);
+                font-size: .85rem;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .back-links a:hover,
+            .back-links a:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .welcome {
+                max-width: 620px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .eyebrow {
+                margin: 0 0 14px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(2.6rem, 7vw, 4.7rem);
+                font-weight: normal;
+                letter-spacing: -.04em;
+                line-height: .98;
+            }
+
+            .intro {
+                max-width: 430px;
+                margin: 18px auto 0;
+                color: var(--muted);
+                font-size: .98rem;
+                line-height: 1.65;
+            }
+
             .infoProjeto {
                 display: grid;
-                grid-template-columns: 30% 70%;
-                width: 100%;
+                grid-template-columns: minmax(190px, 30%) minmax(0, 1fr);
+                gap: clamp(32px, 7vw, 76px);
+                max-width: 760px;
+                margin: 62px auto 0;
                 align-items: start;
             }
 
-            .infoProjeto > div:first-child {
-                width: 100%;
+            .cover-area {
+                text-align: center;
             }
 
-            .infoProjeto > div:last-child {
-                width: 100%;
-                min-width: 0;
-                overflow-wrap: break-word;
+            .cover-label,
+            .field-label {
+                display: block;
+                margin: 0 0 10px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .12em;
+                text-align: left;
+                text-transform: uppercase;
+            }
+
+            .cover-label {
+                text-align: center;
             }
 
             .imagemBotao {
                 position: relative;
-                border: none;
+                display: block;
+                width: 100%;
                 padding: 0;
-                background: none;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: var(--yellow-soft);
                 cursor: pointer;
+                transition: border-color .2s ease, transform .2s ease;
+            }
+
+            .imagemBotao::after {
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                left: 10px;
+                padding: 7px 4px;
+                color: var(--green-dark);
+                background: rgba(255, 253, 247, .88);
+                content: "Escolher capa";
+                font-size: .72rem;
+                letter-spacing: .04em;
+                opacity: 0;
+                transition: opacity .2s ease;
+            }
+
+            .imagemBotao:hover,
+            .imagemBotao:focus-visible {
+                border-color: var(--yellow);
+                outline: none;
+                transform: translateY(-2px);
+            }
+
+            .imagemBotao:hover::after,
+            .imagemBotao:focus-visible::after {
+                opacity: 1;
             }
 
             .imagemBotao img {
                 display: block;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                object-fit: cover;
             }
 
             .imagemHover {
@@ -44,36 +209,140 @@
                 display: block !important;
             }
 
-            img {
-                width: 95%;
-                align-items: center;
+            .fields-area {
+                min-width: 0;
+                padding-top: 25px;
+            }
+
+            .field-group {
+                margin-bottom: 26px;
+            }
+
+            textarea {
+                display: block;
+                width: 100%;
+                min-height: 54px;
+                padding: 12px 14px;
+                resize: vertical;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                color: var(--ink);
+                background: rgba(255, 255, 255, .48);
+                font: 1.02rem/1.5 Georgia, "Times New Roman", serif;
+                transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+            }
+
+            textarea#sinopseField {
+                min-height: 120px;
+            }
+
+            textarea:focus {
+                border-color: var(--yellow);
+                background: var(--paper);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .submit-button {
+                min-height: 44px;
+                padding: 10px 20px;
+                border: 1px solid var(--yellow);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: var(--yellow);
+                cursor: pointer;
+                font: .85rem "Trebuchet MS", "Segoe UI", sans-serif;
+                transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+            }
+
+            .submit-button:hover,
+            .submit-button:focus-visible {
+                border-color: var(--green-dark);
+                background: #f7d766;
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            @media (max-width: 650px) {
+                .page-shell {
+                    width: min(100% - 28px, 520px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 76px;
+                }
+
+                .back-links {
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 7px;
+                }
+
+                .infoProjeto {
+                    grid-template-columns: 1fr;
+                    gap: 18px;
+                    margin-top: 50px;
+                }
+
+                .cover-area {
+                    width: min(100%, 220px);
+                    margin: 0 auto;
+                }
+
+                .fields-area {
+                    padding-top: 12px;
+                }
+
+                .submit-button {
+                    width: 100%;
+                }
             }
         </style>
     </head>
     <body>
-        <!-- Include Quill stylesheet -->
-        <p><a href="/">Voltar ao Início</a></p>
-        <p><a href="/todos_projetos">Lista de Projetos</a></p>
-        <div class="campo" id="campo">
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação principal">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <div class="back-links">
+                    <a href="/">Início</a>
+                    <a href="/todos_projetos">Projetos</a>
+                </div>
+            </nav>
+
+            <section class="welcome" aria-labelledby="new-project-title">
+                <p class="eyebrow">Um novo começo</p>
+                <h1 id="new-project-title">Criar projeto</h1>
+                <p class="intro">Dê forma à próxima história com um nome, uma breve sinopse e uma capa para guiá-la.</p>
+            </section>
+
             <div class="infoProjeto">
-                <div>
+                <div class="cover-area">
                     <input type="file" id="fileInput" style="display: none;">
+                    <span class="cover-label">Imagem de capa</span>
                     <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
                         <img class="imagemNormal" src="/img_app/1" alt="" id="imageCapa">
                         <img class="imagemHover" src="/img_app/2" alt="">
                     </button>
                 </div>
-                <div>
-                    <h2>Título do Projeto</h2>
+                <div class="fields-area">
+                    <div class="field-group">
+                        <label class="field-label" for="tituloField">Título do projeto</label>
                     <textarea id="tituloField" rows="2" cols="100">As Aventuras de...</textarea>
+                    </div>
 
-                    <h2>Sinopse</h2>
+                    <div class="field-group">
+                        <label class="field-label" for="sinopseField">Sinopse</label>
                     <textarea id="sinopseField" rows="2" cols="100">Uma história sobre...</textarea>
-                    <br>
-                    <button onclick="cadastrarProjeto()">Cadastrar Projeto</button>
+                    </div>
+                    <button class="submit-button" onclick="cadastrarProjeto()">Cadastrar projeto</button>
                 </div>
             </div>
-        </div>
+        </main>
 
         <script>
             const fileInput = document.getElementById("fileInput");

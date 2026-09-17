@@ -2,19 +2,325 @@
 <html>
     <head>
         <title>Notas do Projeto</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-            
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 980px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 52px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(62px, 12vh, 116px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .project-link {
+                color: var(--green);
+                font-size: .85rem;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .project-link:hover,
+            .project-link:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .notes-heading {
+                display: flex;
+                align-items: end;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: 28px;
+            }
+
+            .eyebrow {
+                margin: 0 0 14px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(2.5rem, 6vw, 4.4rem);
+                font-weight: normal;
+                letter-spacing: -.04em;
+                line-height: .98;
+            }
+
+            .add-note {
+                min-height: 42px;
+                padding: 9px 16px;
+                border: 1px solid var(--yellow);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: var(--yellow);
+                cursor: pointer;
+                font: .84rem "Trebuchet MS", "Segoe UI", sans-serif;
+                transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+            }
+
+            .add-note:hover,
+            .add-note:focus-visible {
+                border-color: var(--green-dark);
+                background: #f7d766;
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            #listaDeNotasVaiAqui {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 14px;
+                padding-top: 20px;
+                border-top: 1px solid var(--line);
+            }
+
+            #listaDeNotasVaiAqui > a {
+                min-width: 0;
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .box-nota {
+                position: relative;
+                height: 142px;
+                padding: 18px 18px 16px;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: rgba(255, 255, 255, .55);
+                transition: border-color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+            }
+
+            .box-nota::before {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                height: 3px;
+                background: var(--yellow);
+                content: "";
+            }
+
+            .box-nota h3 {
+                display: -webkit-box;
+                max-height: 1.45em;
+                margin: 0 0 10px;
+                overflow: hidden;
+                color: var(--green-dark);
+                font: bold 1.05rem/1.45 Georgia, "Times New Roman", serif;
+                overflow-wrap: anywhere;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 1;
+            }
+
+            .box-nota p {
+                display: -webkit-box;
+                max-height: 3.6em;
+                margin: 0;
+                overflow: hidden;
+                color: var(--muted);
+                font-size: .84rem;
+                line-height: 1.5;
+                overflow-wrap: anywhere;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+            }
+
+            #listaDeNotasVaiAqui > a:hover .box-nota,
+            #listaDeNotasVaiAqui > a:focus-visible .box-nota {
+                border-color: var(--yellow);
+                background: var(--yellow-soft);
+                box-shadow: 0 8px 20px rgba(47, 77, 53, .08);
+                outline: none;
+                transform: translateY(-2px);
+            }
+
+            dialog {
+                width: min(100% - 32px, 440px);
+                padding: 28px;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                color: var(--ink);
+                background: var(--paper);
+                box-shadow: 0 20px 60px rgba(47, 77, 53, .18);
+            }
+
+            dialog::backdrop {
+                background: rgba(47, 77, 53, .22);
+            }
+
+            dialog h3 {
+                margin: 0 0 24px;
+                color: var(--green-dark);
+                font: normal 1.45rem Georgia, "Times New Roman", serif;
+            }
+
+            dialog label {
+                display: block;
+                margin: 16px 0 7px;
+                color: var(--green);
+                font-size: .78rem;
+                font-weight: bold;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            dialog input {
+                width: 100%;
+                min-height: 40px;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                background: #fff;
+                font: 1rem Georgia, "Times New Roman", serif;
+            }
+
+            dialog input:focus {
+                border-color: var(--yellow);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .dialog-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 26px;
+            }
+
+            .dialog-button {
+                min-height: 40px;
+                padding: 8px 15px;
+                border: 1px solid var(--green);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: transparent;
+                cursor: pointer;
+                font: .8rem "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .dialog-button.primary {
+                border-color: var(--yellow);
+                background: var(--yellow);
+            }
+
+            .dialog-button:hover,
+            .dialog-button:focus-visible {
+                border-color: var(--green-dark);
+                background: var(--yellow-soft);
+                outline: none;
+            }
+
+            @media (max-width: 600px) {
+                .page-shell {
+                    width: min(100% - 28px, 520px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 76px;
+                }
+
+                .notes-heading {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .add-note {
+                    width: 100%;
+                }
+
+                #listaDeNotasVaiAqui {
+                    grid-template-columns: 1fr;
+                }
+            }
         </style>
     </head>
     <body onload="populaPagina()">
-        <a href="/project_page/{{ projectID }}">Página do Projeto</a>
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação principal">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <a href="/project_page/{{ projectID }}" class="project-link">Página do projeto</a>
+            </nav>
 
-        <button onclick="mostraDialog('novaNota')">Adicionar Nota!</button>
+            <section class="notes-heading" aria-labelledby="notes-title">
+                <div>
+                    <p class="eyebrow">Ideias para guardar</p>
+                    <h1 id="notes-title">Notas do projeto</h1>
+                </div>
+                <button class="add-note" onclick="mostraDialog('novaNota')">Adicionar nota</button>
+            </section>
 
-        <!-- Include Quill stylesheet -->
-        <h1>Notas do Projeto</h1>
-
-        <div id="listaDeNotasVaiAqui"></div>
+            <section id="listaDeNotasVaiAqui" aria-label="Notas do projeto"></section>
 
         <dialog id="novaNota"  class="dialogBox" close>
             <form method="dialog" id="modalForm">
@@ -28,8 +334,10 @@
                 <input type="text" id="descricaoDaNota" name="descricaoDaNota" required />
                 <br><br>
 
-                <button type="button" id="cancelBtn" onClick="fechaDialog('novaNota')">Cancelar</button>
-                <button type="button" id="saveBtn" onClick="salvaNovaNota()">Salvar Nota</button>
+                <div class="dialog-actions">
+                    <button class="dialog-button" type="button" id="cancelBtn" onClick="fechaDialog('novaNota')">Cancelar</button>
+                    <button class="dialog-button primary" type="button" id="saveBtn" onClick="salvaNovaNota()">Salvar nota</button>
+                </div>
             </form>
         </dialog>
 

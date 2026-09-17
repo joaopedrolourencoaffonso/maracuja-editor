@@ -2,35 +2,291 @@
 <html>
     <head>
         <title>{{ titulo_capitulo }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                overflow-x: hidden;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 980px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 64px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(52px, 11vh, 105px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .project-link {
+                color: var(--green);
+                font-size: .85rem;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .project-link:hover,
+            .project-link:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .reading-heading {
+                max-width: 760px;
+                margin: 0 auto 28px;
+            }
+
+            .eyebrow {
+                margin: 0 0 14px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            #tituloDoCapitulo {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(2.4rem, 6vw, 4.3rem);
+                font-weight: normal;
+                letter-spacing: -.04em;
+                line-height: 1.05;
+                overflow-wrap: anywhere;
+            }
+
+            .reading-controls {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 12px;
+                max-width: 760px;
+                margin: 0 auto 34px;
+                padding: 12px 0;
+                border-top: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+            }
+
+            .control-label {
+                color: var(--muted);
+                font-size: .72rem;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+            }
+
+            .reading-controls select {
+                min-height: 38px;
+                min-width: 160px;
+                padding: 8px 12px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: rgba(255, 255, 255, .56);
+                cursor: pointer;
+                font: .8rem "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .reading-controls select:focus {
+                border-color: var(--yellow);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .reading-column {
+                width: min(100%, 760px);
+                min-width: 0;
+                margin: 0 auto;
+                padding: 10px clamp(8px, 3vw, 28px) 30px;
+                overflow: hidden;
+            }
+
+            #leitor {
+                width: 100%;
+                min-width: 0;
+                color: var(--ink);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(1.04rem, 1.5vw, 1.16rem);
+                line-height: 1.85;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            #leitor > * {
+                max-width: 100%;
+            }
+
+            #leitor p,
+            #leitor ol,
+            #leitor ul,
+            #leitor blockquote,
+            #leitor pre {
+                max-width: 100%;
+                margin: 0 0 1.1em;
+                overflow-wrap: anywhere;
+            }
+
+            #leitor h1,
+            #leitor h2,
+            #leitor h3,
+            #leitor h4,
+            #leitor h5,
+            #leitor h6 {
+                margin: 1.7em 0 .6em;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                line-height: 1.25;
+            }
+
+            #leitor blockquote {
+                margin-right: 0;
+                padding: 8px 22px;
+                border-left: 3px solid var(--yellow);
+                color: var(--green);
+                font-style: italic;
+            }
+
+            #leitor a {
+                color: var(--green-dark);
+                text-decoration-color: var(--yellow);
+                text-underline-offset: 3px;
+            }
+
+            #leitor img {
+                display: block;
+                max-width: 100%;
+                height: auto;
+            }
+
+            #leitor table {
+                display: block;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            #leitor pre {
+                max-width: 100%;
+                overflow-x: auto;
+                white-space: pre-wrap;
+            }
+
+            #temp {
+                display: none;
+            }
+
+            @media (max-width: 600px) {
+                .page-shell {
+                    width: min(100% - 28px, 540px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 70px;
+                }
+
+                .reading-controls {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .reading-controls select {
+                    width: 100%;
+                }
+
+                #leitor {
+                    padding-right: 4px;
+                    padding-left: 4px;
+                    font-size: 1.04rem;
+                    line-height: 1.78;
+                }
+            }
+        </style>
 
     </head>
     <body onload="iniciaPagina()">
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação de leitura">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto" class="project-link">Página do projeto</a>
+            </nav>
 
-        <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto">Página do Projeto</a>
+            <section class="reading-heading" aria-labelledby="tituloDoCapitulo">
+                <p class="eyebrow">Leitura de capítulo</p>
+                <h1 id="tituloDoCapitulo">{{ titulo_capitulo }}</h1>
+            </section>
 
-        <!--<label for="version">Versão:</label>-->
-        <select name="listaDeVersao" id="listaVersoes">
-            
-        </select>
-        
-        <select name="listaDeCapitulos" id="listaDeCapitulos">
-            
-        </select>
-        
-        
-        <br><br>
+            <div class="reading-controls" aria-label="Navegação do capítulo">
+                <label class="control-label" for="listaVersoes">Versão</label>
+                <select name="listaDeVersao" id="listaVersoes"></select>
+                <label class="control-label" for="listaDeCapitulos">Capítulo</label>
+                <select name="listaDeCapitulos" id="listaDeCapitulos"></select>
+            </div>
 
-        <div>
-            <h2 id="tituloDoCapitulo">{{ titulo_capitulo }}</h2>
-        </div>
-        <br>
+            <div class="reading-column">
+                <article id="leitor"></article>
+            </div>
 
-        <div id="leitor">
-
-        </div>
-
-        <!-- Create the editor container -->
-        <div id="temp">
+            <!-- Create the editor container -->
+            <div id="temp">
+            </div>
+        </main>
         </div>
 
         <!-- Include the Quill library -->
