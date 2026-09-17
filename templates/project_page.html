@@ -2,34 +2,210 @@
 <html>
     <head>
         <title>Projeto</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 980px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 52px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(52px, 10vh, 96px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .topbar-links {
+                display: flex;
+                align-items: center;
+                gap: 22px;
+            }
+
+            .topbar-links a,
+            .topbar-links button {
+                color: var(--green);
+                font: .85rem "Trebuchet MS", "Segoe UI", sans-serif;
+                text-decoration: none;
+                border: 0;
+                border-bottom: 1px solid transparent;
+                background: none;
+                cursor: pointer;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .topbar-links a:hover,
+            .topbar-links a:focus-visible,
+            .topbar-links button:hover,
+            .topbar-links button:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .topbar-links .danger {
+                color: #8a5b4f;
+            }
+
+            .welcome {
+                max-width: 670px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .eyebrow {
+                margin: 0 0 14px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: clamp(2.6rem, 7vw, 4.7rem);
+                font-weight: normal;
+                letter-spacing: -.04em;
+                line-height: .98;
+            }
+
+            .intro {
+                max-width: 430px;
+                margin: 18px auto 0;
+                color: var(--muted);
+                font-size: .98rem;
+                line-height: 1.65;
+            }
+
             .infoProjeto {
                 display: grid;
-                grid-template-columns: 30% 70%;
-                width: 100%;
+                grid-template-columns: minmax(190px, 30%) minmax(0, 1fr);
+                gap: clamp(32px, 7vw, 76px);
+                max-width: 760px;
+                margin: 62px auto 0;
                 align-items: start;
             }
 
-            .infoProjeto > div:first-child {
-                width: 100%;
+            .cover-area {
+                text-align: center;
             }
 
-            .infoProjeto > div:last-child {
-                width: 100%;
-                min-width: 0;
-                overflow-wrap: break-word;
+            .cover-label,
+            .field-label {
+                display: block;
+                margin: 0 0 10px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .12em;
+                text-align: left;
+                text-transform: uppercase;
+            }
+
+            .cover-label {
+                text-align: center;
             }
 
             .imagemBotao {
                 position: relative;
-                border: none;
+                display: block;
+                width: 100%;
                 padding: 0;
-                background: none;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: var(--yellow-soft);
                 cursor: pointer;
+                transition: border-color .2s ease, transform .2s ease;
+            }
+
+            .imagemBotao::after {
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                left: 10px;
+                padding: 7px 4px;
+                color: var(--green-dark);
+                background: rgba(255, 253, 247, .88);
+                content: "Trocar capa";
+                font-size: .72rem;
+                letter-spacing: .04em;
+                opacity: 0;
+                transition: opacity .2s ease;
+            }
+
+            .imagemBotao:hover,
+            .imagemBotao:focus-visible {
+                border-color: var(--yellow);
+                outline: none;
+                transform: translateY(-2px);
+            }
+
+            .imagemBotao:hover::after,
+            .imagemBotao:focus-visible::after {
+                opacity: 1;
             }
 
             .imagemBotao img {
                 display: block;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                object-fit: cover;
             }
 
             .imagemHover {
@@ -44,43 +220,325 @@
                 display: block !important;
             }
 
-            img {
-                width: 95%;
+            .fields-area {
+                min-width: 0;
+                padding-top: 25px;
+            }
+
+            .field-group {
+                margin-bottom: 26px;
+            }
+
+            textarea {
+                display: block;
+                width: 100%;
+                min-height: 54px;
+                padding: 12px 14px;
+                resize: vertical;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                color: var(--ink);
+                background: rgba(255, 255, 255, .48);
+                font: 1.02rem/1.5 Georgia, "Times New Roman", serif;
+                transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+            }
+
+            textarea#sinopseField {
+                min-height: 112px;
+            }
+
+            textarea:focus,
+            input:focus {
+                border-color: var(--yellow);
+                background: var(--paper);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .project-actions,
+            .chapter-actions {
+                display: flex;
+                flex-wrap: wrap;
                 align-items: center;
+                gap: 12px;
+            }
+
+            .project-actions {
+                margin-top: 32px;
+            }
+
+            .action-link,
+            .action-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 42px;
+                padding: 9px 16px;
+                border: 1px solid var(--green);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: transparent;
+                cursor: pointer;
+                font: .83rem "Trebuchet MS", "Segoe UI", sans-serif;
+                text-decoration: none;
+                transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+            }
+
+            .action-link.primary,
+            .action-button.primary {
+                border-color: var(--yellow);
+                background: var(--yellow);
+            }
+
+            .action-link:hover,
+            .action-link:focus-visible,
+            .action-button:hover,
+            .action-button:focus-visible {
+                border-color: var(--green-dark);
+                background: var(--yellow-soft);
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            .chapters-section {
+                max-width: 760px;
+                margin: 76px auto 0;
+            }
+
+            .section-heading {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: 20px;
+                padding-bottom: 13px;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .section-heading h2 {
+                margin: 0;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.35rem;
+                font-weight: normal;
+            }
+
+            .section-heading span {
+                color: var(--muted);
+                font-size: .78rem;
+            }
+
+            .chapter-actions {
+                margin: 20px 0 18px;
+            }
+
+            #listaDeCapitulos {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            #listaDeCapitulos li {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 7px;
+                min-height: 55px;
+                padding: 9px 10px;
+                border-bottom: 1px solid var(--line);
+                color: var(--ink);
+                font-family: Georgia, "Times New Roman", serif;
+                line-height: 1.5;
+            }
+
+            #listaDeCapitulos li::before {
+                width: 7px;
+                height: 7px;
+                margin-right: 5px;
+                flex: 0 0 auto;
+                background: var(--yellow);
+                border-radius: 50%;
+                content: "";
+            }
+
+            #listaDeCapitulos a,
+            #listaDeCapitulos button {
+                color: var(--green);
+                font: .78rem "Trebuchet MS", "Segoe UI", sans-serif;
+                text-decoration: none;
+            }
+
+            #listaDeCapitulos a:hover,
+            #listaDeCapitulos a:focus-visible {
+                color: var(--green-dark);
+                text-decoration: underline;
+                text-decoration-color: var(--yellow);
+                text-underline-offset: 3px;
+            }
+
+            #listaDeCapitulos button {
+                padding: 0;
+                border: 0;
+                background: none;
+                cursor: pointer;
+            }
+
+            #listaDeCapitulos button:hover,
+            #listaDeCapitulos button:focus-visible {
+                color: #8a5b4f;
+                outline: none;
+            }
+
+            dialog {
+                width: min(100% - 32px, 420px);
+                padding: 28px;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                color: var(--ink);
+                background: var(--paper);
+                box-shadow: 0 20px 60px rgba(47, 77, 53, .18);
+            }
+
+            dialog::backdrop {
+                background: rgba(47, 77, 53, .22);
+            }
+
+            dialog h3 {
+                margin: 0 0 24px;
+                color: var(--green-dark);
+                font: normal 1.45rem Georgia, "Times New Roman", serif;
+            }
+
+            dialog label {
+                display: block;
+                margin: 16px 0 7px;
+                color: var(--green);
+                font-size: .78rem;
+                font-weight: bold;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            dialog input {
+                width: 100%;
+                min-height: 40px;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                background: #fff;
+                font: 1rem Georgia, "Times New Roman", serif;
+            }
+
+            .dialog-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 26px;
+            }
+
+            @media (max-width: 650px) {
+                .page-shell {
+                    width: min(100% - 28px, 520px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 70px;
+                }
+
+                .topbar-links {
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 7px;
+                }
+
+                .infoProjeto {
+                    grid-template-columns: 1fr;
+                    gap: 18px;
+                    margin-top: 50px;
+                }
+
+                .cover-area {
+                    width: min(100%, 220px);
+                    margin: 0 auto;
+                }
+
+                .fields-area {
+                    padding-top: 12px;
+                }
+
+                .chapters-section {
+                    margin-top: 58px;
+                }
+
+                .section-heading {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .action-link,
+                .action-button {
+                    width: 100%;
+                }
             }
         </style>
     </head>
     <body onload="populaPagina()">
-        <div>
-            <button onclick="salvaInfo()">Salvar Mudanças</button>
-            <a href="/">Voltar para a página principal</a>
-            <button onclick="deletaProjeto()">Deletar Projeto</button>
-            <br><br>
-        </div>
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação principal">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <div class="topbar-links">
+                    <a href="/">Início</a>
+                    <button class="danger" onclick="deletaProjeto()">Deletar projeto</button>
+                </div>
+            </nav>
 
-        <div class="campo" id="campo">
-            <div class="infoProjeto">
-                <div>
+            <section class="welcome" aria-labelledby="project-title">
+                <p class="eyebrow">Área do projeto</p>
+                <h1 id="project-title">Seu projeto</h1>
+                <p class="intro">Organize a história, acompanhe seus capítulos e mantenha suas ideias por perto.</p>
+            </section>
+
+            <div class="infoProjeto" id="campo">
+                <div class="cover-area">
                     <input type="file" id="fileInput" style="display: none;">
+                    <span class="cover-label">Imagem de capa</span>
                     <button class="imagemBotao" type="button" onclick="document.getElementById('fileInput').click()">
                         <img class="imagemNormal" src="/img/CAPA_DO_PROJETO" alt="" id="imageCapa">
                         <img class="imagemHover" src="/img_app/2" alt="">
                     </button>
                 </div>
-                <div>
-                    <h3><a href="/notasDoprojeto/{{ projectID }}">Notas do Projeto</a></h3>
-                    <h2>Título do Projeto</h2>
+                <div class="fields-area">
+                    <div class="field-group">
+                        <label class="field-label" for="tituloField">Título do projeto</label>
                     <textarea id="tituloField" rows="2" cols="100"></textarea>
-
-                    <h2>Sinopse</h2>
-                    <textarea id="sinopseField" rows="2" cols="100"></textarea>
-
-                    <div>
-                        <a href="/editarCapitulo/?project_id={{ projectID }}&chapter_id=Novo&version_id=1">Criar Capítulo</a>
-                        <button onclick="moveCapituloDialog()">Mover capítulo ↹</button>
                     </div>
 
-                    <h2>Capítulos</h2>
+                    <div class="field-group">
+                        <label class="field-label" for="sinopseField">Sinopse</label>
+                    <textarea id="sinopseField" rows="2" cols="100"></textarea>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-button primary" onclick="salvaInfo()">Salvar mudanças</button>
+                        <a class="action-link" href="/notasDoprojeto/{{ projectID }}">Notas do projeto</a>
+                    </div>
+                </div>
+            </div>
+
+            <section class="chapters-section" aria-labelledby="chapters-title">
+                <div class="section-heading">
+                    <h2 id="chapters-title">Capítulos</h2>
+                    <span>Construa a sequência da sua história</span>
+                </div>
+                <div class="chapter-actions">
+                    <a class="action-link primary" href="/editarCapitulo/?project_id={{ projectID }}&chapter_id=Novo&version_id=1">Criar capítulo</a>
+                    <button class="action-button" onclick="moveCapituloDialog()">Mover capítulo ↹</button>
+                </div>
                     <ul id="listaDeCapitulos">
 
                     </ul>
@@ -102,9 +560,8 @@
                             </div>
                         </form>
                     </dialog>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
 
         <script>
             let livros;

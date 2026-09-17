@@ -76,7 +76,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - [X] Melhora títulos das páginas
 - [X] Criando seção de notas do projeto (personagens, lugares, etc...)
-- [ ] Refatorar UI para ficar mais amigável.
+- [X] Refatorar UI para ficar mais amigável.
 
 - v0.6.0 Exportando arquivos
 
@@ -96,6 +96,8 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - v1.0.1 Melhorias (sem prazo para implementação)
 
 - [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
+- [ ] Trazer CSS para arquivos centralizados
+- [ ] Trazer JS para arquivos centralizados
 - [ ] Revisar código como um todo
 - [ ] Implementar testes para averiguar qualidade de código
 - [ ] Adicionar dark mode.

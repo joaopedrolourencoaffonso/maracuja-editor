@@ -2,6 +2,399 @@
 <html>
     <head>
         <title>{{ tituloCapitulo }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            :root {
+                --ink: #243229;
+                --muted: #6f7a70;
+                --paper: #fffdf7;
+                --line: #e7e9d9;
+                --yellow: #f3c84b;
+                --yellow-soft: #fff3bf;
+                --green: #426548;
+                --green-dark: #2f4d35;
+                --danger: #a64e45;
+                --danger-soft: #fff0ec;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                color: var(--ink);
+                background:
+                    radial-gradient(circle at 86% 7%, rgba(243, 200, 75, .18), transparent 28rem),
+                    linear-gradient(135deg, #fffefb 0%, var(--paper) 55%, #f4f7e9 100%);
+                font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .page-shell {
+                width: min(100% - 40px, 1120px);
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: 28px 0 52px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: clamp(42px, 9vh, 86px);
+            }
+
+            .brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--green-dark);
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.2rem;
+                font-weight: bold;
+                letter-spacing: .02em;
+                text-decoration: none;
+            }
+
+            .brand-mark {
+                display: grid;
+                width: 30px;
+                height: 30px;
+                place-items: center;
+                color: var(--green-dark);
+                background: var(--yellow);
+                border-radius: 50% 50% 50% 8px;
+                font-size: .9rem;
+                transform: rotate(-10deg);
+            }
+
+            .project-link {
+                color: var(--green);
+                font-size: .85rem;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: color .2s ease, border-color .2s ease;
+            }
+
+            .project-link:hover,
+            .project-link:focus-visible {
+                color: var(--green-dark);
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .editor-heading {
+                max-width: 760px;
+                margin: 0 auto 26px;
+            }
+
+            .eyebrow {
+                margin: 0 0 12px;
+                color: var(--green);
+                font-size: .72rem;
+                font-weight: bold;
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+
+            .chapter-title {
+                width: 100%;
+                padding: 0 0 12px;
+                border: 0;
+                border-bottom: 1px solid var(--line);
+                color: var(--green-dark);
+                background: transparent;
+                font: normal clamp(2rem, 5vw, 3.25rem)/1.05 Georgia, "Times New Roman", serif;
+                letter-spacing: -.03em;
+            }
+
+            .chapter-title:focus {
+                border-color: var(--yellow);
+                outline: none;
+            }
+
+            .toolbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 18px;
+                max-width: 760px;
+                margin: 0 auto 22px;
+                padding: 12px 0;
+                border-top: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+            }
+
+            .toolbar-group {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 9px;
+            }
+
+            .toolbar-group.secondary {
+                justify-content: flex-end;
+            }
+
+            .toolbar-label {
+                margin-right: 2px;
+                color: var(--muted);
+                font-size: .72rem;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+            }
+
+            .toolbar-button,
+            .toolbar-select {
+                min-height: 38px;
+                padding: 8px 12px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: rgba(255, 255, 255, .5);
+                cursor: pointer;
+                font: .78rem "Trebuchet MS", "Segoe UI", sans-serif;
+                transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+            }
+
+            .toolbar-button:hover,
+            .toolbar-button:focus-visible,
+            .toolbar-select:hover,
+            .toolbar-select:focus-visible {
+                border-color: var(--green);
+                background: var(--yellow-soft);
+                outline: none;
+            }
+
+            .toolbar-button.primary {
+                border-color: var(--yellow);
+                background: var(--yellow);
+                font-weight: bold;
+            }
+
+            .toolbar-button.primary:hover,
+            .toolbar-button.primary:focus-visible {
+                background: #f7d766;
+                transform: translateY(-1px);
+            }
+
+            .toolbar-select {
+                min-width: 145px;
+                appearance: auto;
+            }
+
+            .editor-frame {
+                max-width: 760px;
+                margin: 0 auto;
+            }
+
+            #editor {
+                min-height: 58vh;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: rgba(255, 255, 255, .58);
+                box-shadow: 0 12px 34px rgba(47, 77, 53, .05);
+            }
+
+            #editor.ql-container {
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 1.08rem;
+            }
+
+            #editor .ql-editor {
+                min-height: 58vh;
+                padding: 28px clamp(20px, 5vw, 50px);
+                color: var(--ink);
+                line-height: 1.75;
+            }
+
+            #editor .ql-editor.ql-blank::before {
+                left: clamp(20px, 5vw, 50px);
+                color: #9aa397;
+                font-style: normal;
+            }
+
+            .delete-area {
+                display: flex;
+                justify-content: center;
+                max-width: 760px;
+                margin: 34px auto 0;
+                padding-top: 24px;
+                border-top: 1px solid var(--line);
+            }
+
+            .delete-button {
+                min-height: 42px;
+                padding: 9px 18px;
+                border: 1px solid var(--danger);
+                border-radius: 3px;
+                color: var(--danger);
+                background: var(--danger-soft);
+                cursor: pointer;
+                font: .8rem "Trebuchet MS", "Segoe UI", sans-serif;
+                transition: color .2s ease, background-color .2s ease, transform .2s ease;
+            }
+
+            .delete-button:hover,
+            .delete-button:focus-visible {
+                color: #fffaf8;
+                background: var(--danger);
+                outline: none;
+                transform: translateY(-1px);
+            }
+
+            dialog {
+                width: min(100% - 32px, 440px);
+                padding: 28px;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                color: var(--ink);
+                background: var(--paper);
+                box-shadow: 0 20px 60px rgba(47, 77, 53, .18);
+            }
+
+            dialog::backdrop {
+                background: rgba(47, 77, 53, .22);
+            }
+
+            dialog h3 {
+                margin: 0 0 24px;
+                color: var(--green-dark);
+                font: normal 1.45rem Georgia, "Times New Roman", serif;
+            }
+
+            dialog p {
+                margin: 18px 0 7px;
+                color: var(--green);
+                font-size: .78rem;
+                font-weight: bold;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            dialog label {
+                display: block;
+                margin: 16px 0 7px;
+                color: var(--green);
+                font-size: .78rem;
+                font-weight: bold;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            dialog input,
+            dialog select {
+                width: 100%;
+                min-height: 40px;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 3px;
+                background: #fff;
+                font: 1rem Georgia, "Times New Roman", serif;
+            }
+
+            dialog input:focus,
+            dialog select:focus {
+                border-color: var(--yellow);
+                box-shadow: 0 0 0 3px rgba(243, 200, 75, .18);
+                outline: none;
+            }
+
+            .dialog-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 26px;
+            }
+
+            .dialog-button {
+                min-height: 40px;
+                padding: 8px 15px;
+                border: 1px solid var(--green);
+                border-radius: 3px;
+                color: var(--green-dark);
+                background: transparent;
+                cursor: pointer;
+                font: .8rem "Trebuchet MS", "Segoe UI", sans-serif;
+            }
+
+            .dialog-button.primary {
+                border-color: var(--yellow);
+                background: var(--yellow);
+            }
+
+            .dialog-button:hover,
+            .dialog-button:focus-visible {
+                border-color: var(--green-dark);
+                background: var(--yellow-soft);
+                outline: none;
+            }
+
+            @media (max-width: 760px) {
+                .page-shell {
+                    width: min(100% - 28px, 620px);
+                    padding-top: 20px;
+                }
+
+                .topbar {
+                    align-items: flex-start;
+                    margin-bottom: 58px;
+                }
+
+                .toolbar {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .toolbar-group,
+                .toolbar-group.secondary {
+                    justify-content: flex-start;
+                }
+
+                .toolbar-button,
+                .toolbar-select {
+                    flex: 1 1 auto;
+                }
+
+                #editor,
+                #editor .ql-editor {
+                    min-height: 54vh;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .topbar {
+                    margin-bottom: 48px;
+                }
+
+                .toolbar-group {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .toolbar-label,
+                .toolbar-select {
+                    grid-column: 1 / -1;
+                }
+
+                .toolbar-button,
+                .toolbar-select {
+                    width: 100%;
+                }
+
+                .toolbar-group.secondary {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .toolbar-group.secondary .toolbar-button,
+                .toolbar-group.secondary .toolbar-select {
+                    width: 100%;
+                }
+            }
+        </style>
 
     </head>
     <body onload="iniciaPagina()">
@@ -9,42 +402,46 @@
         <!--<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>-->
         <link href="/quillcss" rel="stylesheet"/>
 
-        <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto">Página do Projeto</a>
+        <main class="page-shell">
+            <nav class="topbar" aria-label="Navegação do editor">
+                <a class="brand" href="/">
+                    <span class="brand-mark" aria-hidden="true">m</span>
+                    <span>Maracujá</span>
+                </a>
+                <a href="/project_page/{{ projectID }}" id="linkPaginaDoProjeto" class="project-link">Página do projeto</a>
+            </nav>
 
-        <button id="enviar" onclick="enviarTexto()">Salvar Capítulo</button>
-        
-        <!--<label for="version">Versão:</label>-->
-        <select name="listaDeVersao" id="listaVersoes">
-            
-        </select>
-        
-        <button id="versionar" onclick="mostraDialog('novaVersao')">Nova Versão</button>
-        &nbsp;&nbsp;&nbsp;
-        <button id="comparar" onclick="mostraDialog('compararVersao')">Comparar versões</button>
-        &nbsp;&nbsp;&nbsp;
-        <button id="canonizar" onclick="mostraDialog('confirmaCanonizar')">Canonizar</button>
-        &nbsp;&nbsp;&nbsp;
-        <select name="listaDeCapitulos" id="listaDeCapitulos">
-            
-        </select>
-        
-        
-        <br><br>
+            <section class="editor-heading" aria-labelledby="chapter-heading">
+                <p class="eyebrow">Editor de capítulo</p>
+                <input class="chapter-title" id="tituloDoCapitulo" value="{{ tituloCapitulo }}" aria-label="Título do capítulo">
+            </section>
 
-        <div>
-            <input id="tituloDoCapitulo" value="{{ tituloCapitulo }}">
-        </div>
-        <br>
+            <section class="toolbar" aria-label="Ferramentas do capítulo">
+                <div class="toolbar-group">
+                    <button class="toolbar-button primary" id="enviar" onclick="enviarTexto()">Salvar capítulo</button>
+                    <label class="toolbar-label" for="listaVersoes">Versão</label>
+                    <select class="toolbar-select" name="listaDeVersao" id="listaVersoes"></select>
+                </div>
+                <div class="toolbar-group secondary">
+                    <button class="toolbar-button" id="versionar" onclick="mostraDialog('novaVersao')">Nova versão</button>
+                    <button class="toolbar-button" id="comparar" onclick="mostraDialog('compararVersao')">Comparar</button>
+                    <button class="toolbar-button" id="canonizar" onclick="mostraDialog('confirmaCanonizar')">Canonizar</button>
+                    <select class="toolbar-select" name="listaDeCapitulos" id="listaDeCapitulos" aria-label="Selecionar capítulo"></select>
+                </div>
+            </section>
 
-        <!-- Create the editor container -->
-        <div id="editor">
-            <div id="textoVaiAqui">
-                
+            <section class="editor-frame" aria-labelledby="chapter-heading">
+                <!-- Create the editor container -->
+                <div id="editor">
+                    <div id="textoVaiAqui">
+                    </div>
+                </div>
+            </section>
+
+            <div class="delete-area">
+                <button class="delete-button" id="deletar" onclick="deletarVersao()">Deletar versão</button>
             </div>
-        </div>
-
-        <br><br>
-        <button id="deletar" onclick="deletarVersao()">Deletar Versão</button>
+        </main>
 
         <dialog id="novaVersao"  class="dialogBox" close>
             <form method="dialog" id="modalForm">
@@ -54,8 +451,8 @@
                 <input type="text" id="nomeNovaVersao" name="nomeNovaVersao" required />
                 <br><br>
 
-                <button type="button" id="cancelBtn" onClick="fechaDialog('novaVersao')">Cancelar</button>
-                <button type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
+                <button class="dialog-button" type="button" id="cancelBtn" onClick="fechaDialog('novaVersao')">Cancelar</button>
+                <button class="dialog-button primary" type="button" id="saveBtn" onClick="salvaNovaVersao()">Salvar</button>
             </form>
         </dialog>
 
@@ -63,8 +460,8 @@
             <form method="dialog" id="modalFormCanonizar">
                 <h3>Confirma canonização do capítulo?</h3>
 
-                <button type="button" id="cancelBtn" onClick="fechaDialog('confirmaCanonizar')">Cancelar</button>
-                <button type="button" id="saveBtn" onClick="canonizar()">Salvar</button>
+                <button class="dialog-button" type="button" id="cancelBtn" onClick="fechaDialog('confirmaCanonizar')">Cancelar</button>
+                <button class="dialog-button primary" type="button" id="saveBtn" onClick="canonizar()">Salvar</button>
             </form>
         </dialog>
 
@@ -82,8 +479,8 @@
                     
                 </select>
                 <br><br>
-                <button type="button" id="cancelBtn" onClick="fechaDialog('compararVersao')">Cancelar</button>
-                <button type="button" id="saveBtn" onClick="abreJanelaComparacao()">Comparar!</button>
+                <button class="dialog-button" type="button" id="cancelBtn" onClick="fechaDialog('compararVersao')">Cancelar</button>
+                <button class="dialog-button primary" type="button" id="saveBtn" onClick="abreJanelaComparacao()">Comparar!</button>
             </form>
         </dialog>
 
