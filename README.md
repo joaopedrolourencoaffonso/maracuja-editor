@@ -98,6 +98,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
 - [ ] Trazer CSS para arquivos centralizados
 - [ ] Trazer JS para arquivos centralizados
+- [ ] Opção de pesquisar por palavras em todo o projeto.
 - [ ] Revisar código como um todo
 - [ ] Implementar testes para averiguar qualidade de código
 - [ ] Adicionar dark mode.
