@@ -67,6 +67,8 @@ def quill_to_md(path_do_arquivo, path_arquivo_saida):
         file.write(string_final)
 
     #print(jsonData);
+    string_final = string_final.replace("\n", "\n\n");
+
     return string_final
 
 string_final = quill_to_md(file_path_entrada, file_path_saida);
