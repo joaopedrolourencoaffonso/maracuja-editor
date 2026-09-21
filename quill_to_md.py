@@ -57,6 +57,9 @@ def quill_to_md(path_do_arquivo, path_arquivo_saida):
         if 'italic' in lista[i+1]['attributes']:
             string_final = string_final + lista[i]["insert"] + "*"  + lista[i+1]["insert"] + "*";
         
+        if 'underline' in lista[i+1]['attributes']:
+            string_final = string_final + lista[i]["insert"] + "<u>"  + lista[i+1]["insert"] + "</u>";
+        
         if 'link' in lista[i+1]['attributes']:
             string_final = string_final + lista[i]["insert"] + f"<a href='${lista[i+1]['attributes']['link']}'>"  + lista[i+1]["insert"] + "</a>";
         
