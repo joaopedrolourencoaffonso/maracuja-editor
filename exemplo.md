@@ -34,7 +34,7 @@ Ela se referia a um estranho "*tuc-tuc*" que estava ecoando pelo corredor. Não 
 
 --Está vindo da parede!--disse o dono da loja de roupas íntimas do outro lado do corredor
 
-<u>Ele estava correto. Tão correto</u>, que meros segundos após dizer aquelas palavras, a rachadura cresceu... E cresceu...
+<ins>Ele estava correto. Tão correto</ins>, que meros segundos após dizer aquelas palavras, a rachadura cresceu... E cresceu...
 
 E então a parede inteira colapsou revelando um homem alto, musculoso, de pele cinza, com uma picareta numa mão e ódio nos olhos:
 
