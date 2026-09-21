@@ -80,7 +80,8 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v0.6.0 Exportando arquivos
 
-- [ ] Exportar projeto para `.md`
+- [X] Criar script que converte formato quill para `.md`
+- [ ] Adicionar opção para exportar projeto inteiro para `.md` (iterar sobre arquivos do projeto)
 - [ ] Exportar projeto para html
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
@@ -107,3 +108,6 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [ ] Contador de palavras
 - [ ] Exportar/Importar projetos seletivamente
 
+# Discussões abertas
+
+[How to convert Delta JSON to Markdown using server-side Python](https://github.com/slab/quill/discussions/4828)
