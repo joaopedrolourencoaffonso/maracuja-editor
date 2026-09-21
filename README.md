@@ -89,7 +89,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v1.0.0 Versão para release
 
-- [ ] Criar instalador (inclui baixar o quill.js localmente)
+- [ ] Criar instalador (baixa binário e organiza repositório)
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
 - [ ] Criar logo
