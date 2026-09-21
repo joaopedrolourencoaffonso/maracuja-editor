@@ -6,7 +6,6 @@ import sqlite3
 from pathlib import Path
 from sys import argv;
 import tarfile;
-from pathlib import Path
 import shutil
 import tempfile
 import urllib.request as requests_lib;
