@@ -63,11 +63,12 @@ def quill_to_md(path_do_arquivo, path_arquivo_saida):
         #print(i, i+1);
         i += 2;
 
+    string_final = string_final.replace("\n", "\n\n");
+    
     with path_arquivo_saida.open("w", encoding="utf-8") as file:
         file.write(string_final)
 
     #print(jsonData);
-    string_final = string_final.replace("\n", "\n\n");
 
     return string_final
 
