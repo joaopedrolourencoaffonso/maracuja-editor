@@ -24,6 +24,29 @@ def index():
 def settings():
     return render_template('settings.html')
 
+@app.route('/export/<int:project_id>')
+def export(project_id):
+    return render_template('export.html',projectID=project_id)
+
+@app.route('/exportaProjeto/<string:code>', methods=['GET'])
+def exportaProjeto(code):
+    projeto = code.split(";")[0];
+    tipo = code.split(";")[1];
+
+    titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto);
+    titulo = titulo[:15]
+    titulo = titulo.replace(" ", "_");
+
+    if tipo == '3':
+        download_name = maracuja_funcs.exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, projeto, titulo);
+
+    return send_file(
+        download_name,
+        mimetype="application/gzip",
+        as_attachment=True,
+        download_name=download_name
+    )
+
 @app.route('/apagaTudo', methods=['GET'])
 def apagaTudo():
     try:
@@ -54,6 +77,7 @@ def importandoArquivos():
 
 @app.route('/retornaBackup', methods=['GET'])
 def retornaBackup():
+    # as duas strings são apenas uma forma de reutilizar a função escrita para a linha de comando
     maracuja_funcs.exporta_arquivos(["a","b","meusProjetosExport.tar.gz"],tarfile);
     return send_file(
         "meusProjetosExport.tar.gz",
