@@ -83,10 +83,9 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Criar script que converte formato quill para `.md`
 - [X] Adicionar opção para exportar projeto inteiro para múltiplos `.md`
 - [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.md`
-- [X] Exportar projeto para html
+- [X] Adicionar opção para exportar projeto inteiro para múltiplos `.html`
+- [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.html`
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
-- [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
-- [ ] Exportar para docx
 
 - v1.0.0 Versão para release
 
@@ -97,6 +96,9 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v1.0.1 Melhorias (sem prazo para implementação)
 
+- [ ] Suportar figuras nos projetos
+- [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
+- [ ] Exportar para docx
 - [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
 - [ ] Trazer CSS para arquivos centralizados
 - [ ] Trazer JS para arquivos centralizados
