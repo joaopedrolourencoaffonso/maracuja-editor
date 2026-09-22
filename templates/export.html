@@ -270,8 +270,12 @@
             project_id = "{{ projectID }}";
             function selecionaFormato(formato) {
                 if (formato == "Markdown - multiple files") {
-                    window.alert("teste" + project_id);
                     window.location.href = `/exportaProjeto/${project_id};3`;
+                    return;
+                }
+
+                if (formato == "Markdown - single file") {
+                    window.location.href = `/exportaProjeto/${project_id};4`;
                     return;
                 }
                 

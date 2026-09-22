@@ -572,7 +572,7 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
     
     # Fix: SQL parameter must be a single-element tuple (project_id,)
     lista_capitulos = cursor.execute(
-        "select project_id, chapter_id, version_id from capitulos where IS_CANON = 1 AND PROJECT_ID = ?", 
+        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
         (project_id,)
     ).fetchall()
     
@@ -589,9 +589,10 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
     # 3. Generate Markdown files and write them to export_temp
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        markdown_text = quill_to_md(json, capitulo_path)
+        markdown_text = quill_to_md(json, capitulo_path);
+        markdown_text = "# " + capitulo[3] + "\n" + markdown_text;
 
-        md_file_path = export_dir / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.md"
+        md_file_path = export_dir / f"{capitulo[4]}.md"
         with open(md_file_path, "w", encoding="utf-8") as file:
             file.write(markdown_text)
 
@@ -602,3 +603,26 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
         archive.add(export_dir, arcname="capitulos")
 
     return archive_filename
+
+def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
+    conn = sqlite3.connect('userdata')
+    cursor = conn.cursor()
+    
+    lista_capitulos = cursor.execute(
+        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
+        (project_id,)
+    ).fetchall()
+    conn.close()
+
+    markdown_text = ""
+
+    for capitulo in lista_capitulos:
+        capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
+        temp_text = quill_to_md(json, capitulo_path);
+        markdown_text = markdown_text + "\n\n# " + capitulo[3] + "\n\n" + temp_text;
+
+    md_file_path = f"{titulo}.md"
+    with open(md_file_path, "w", encoding="utf-8") as file:
+        file.write(markdown_text)
+
+    return md_file_path

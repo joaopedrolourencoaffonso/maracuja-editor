@@ -1,0 +1,230 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## 0.1 - 19-08-2026
+
+### Added
+
+- Ainda não funciona mas é uma fundação.
+- UIs básicas definidas
+- Base para começar a construir DB
+- Construção da DB necessária para seguir para trabalho com os capítulos
+
+## 0.2 - 20-08-2026
+
+### Added
+
+- Começando a trabalhar com DB: verifica e cria tabelas básicas e insere informação de projeto.
+- Salva e serve imagens de capa do usuário
+- Introduz [`maracuja_funcs`](./maracuja_funcs.py).
+
+## 0.0.1 - 24-08-2026
+
+### Added
+
+- Começando a usar info da DB na página de projeto
+
+## 0.0.2 - 25-08-2026
+
+### Added
+
+- Página de projetos carrega informação do banco de dados e atualiza informações no banco de dados.
+
+## 0.0.3 - 26-08-2026
+
+### Added
+
+- Usando API do quill para salvar o texto em arquivo
+- Usando API do quill para expôr texto dos arquivos para o usuário.
+
+## 0.0.4 - 26-08-2026
+
+### Added
+
+- Adicionando título aos capítulos
+- Adicionando variável `version_id` para rastrear versão do capítulo. Será usada em maior profundidade no futuro.
+
+## 0.0.5 - 27-08-2026
+
+### Added
+
+- Adicionando API para listar todos os projetos
+
+## 0.0.6 - 31-08-2026
+
+### Added
+
+- Adicionando API para listar projetos recentemente editados.
+
+## 0.0.7 - 31-08-2026
+
+### Added
+
+- Adicionando API e botão para remover capítulos. Botão no próprio capítulo.
+- Adicionando API e botão para remoção de projetos. Botão na própria página do projeto. 
+
+## 0.1.0 - 02-09-2026
+
+### Added
+
+- Adicionei ids dos capítulos ao lado dos seus títulos na listagem.
+- Adicionei funcionalidade para mover capítulos de posição (não é elegante, mas funciona). 
+
+## 0.1.1 - 03-09-2026
+
+### Added
+
+- Esquema de banco de dados refatorado para suportar o versionamento (percebi retroativamente uma forma melhor de fazer).
+- Provavelmente ainda serão necessárias outras mudanças, mas é um começo.
+
+## 0.1.2 - 05-09-2026
+
+### Added
+
+- Adicionado o `version_id=1` nos links do `/project_page` 
+- Endpoint `/editarCapitulo` editado para trabalhar com `version_id`
+
+## 0.1.3 - 05-09-2026
+
+### Added
+
+-  Permitir usuário cadastrar novas versões do capítulo.
+
+## 0.1.4 - 05-09-2026
+
+### Added
+
+-  Corrigindo bugs no cadastro de capítulos.
+
+## 0.1.5 - 05-09-2026
+
+### Added
+
+- Expôr versões de arquivos na página do capítulo
+- Permitir usuário clicar e visualizar versões de capítulo
+- Permitir usuário redefinir versão principal (canonizar capítulo)
+
+## 0.1.6 - 05-09-2026
+
+### Added
+
+- Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
+
+## 0.1.7 - 07-09-2026
+
+### Added
+
+- Expôr lista de capítulos na página de edição para permitir navegação mais fácil.
+
+## 0.1.8 - 08-09-2026
+
+### Added
+
+- Corrigindo bug da página principal que ocorria quando múltiplos projetos tinham o mesmo título. Projetos agora devem ter títulos diferentes.
+- Aceita projetos que não tem imagem de capa
+
+## 0.1.9 - 08-09-2026
+
+### Added
+
+- Implementar comparação de versões de capítulo lado a lado (vlw Daniel!).
+
+## 0.2.0 - 09-09-2026
+
+### Added
+
+- Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler.
+- Corrige bug da lista de versões que impede de acessar capítulo 1.
+
+## 0.2.1 - 10-09-2026
+
+### Added
+
+- Opção de apenas ler os capítulos.
+
+## 0.2.2 - 10-09-2026
+
+### Added
+
+- Adicionar "-v" na linha de comando
+- Adicionar opção de backup (CLI)
+
+## 0.2.3 - 10-09-2026
+
+### Added
+
+- Corrigir bug de capítulo criar capítulo novo quando é salvo
+
+## 0.2.4 - 10-09-2026
+
+### Added
+
+- Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (CLI)
+
+## 0.2.5 - 10-09-2026
+
+### Added
+
+- Transformar feature de limpar dados e exportação de dados em funções para reutilizar na UI
+- Adicionar opção de backup (UI)
+
+## 0.2.6 - 12-09-2026
+
+### Added
+
+- Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
+
+## 0.2.7 - 12-09-2026
+
+### Added
+
+- Adicionar opção para importar dados a partir de tar.gz (CLI)
+- Adicionar opção para importar dados a partir de tar.gz (UI)
+
+## 0.2.8 - 12-09-2026
+
+### Added
+
+- Adaptando para operar no Windows e no Linux
+
+## 0.3.0 - 12-09-2026
+
+### Added
+
+- Permitindo exportar arquivos, importar arquivos, limpar os dados e solução de bugs
+
+## 0.3.1 - 14-09-2026
+
+### Added
+
+- Inserindo nova coluna "posicao" na tabela de capitulos. Resolve questão de mover e excluir capítulos de forma segura.
+
+## 0.4.0 - 14-09-2026
+
+### Added
+
+- Durante o primeiro start, programa faz download do [quill.js](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js) e [quill.css](https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css), de forma a permitir self-hosting e dispensar baixar os arquivos novamente a cada recarregar da página.
+- No momento, estou fixando completamente no quill.snow.css, no futuro, posso pensar em adicionar mais temas, mas isso é para outro momento.
+
+## 0.4.1 - 15-09-2026
+
+### Added
+
+- Melhora títulos das páginas
+
+## 0.5.0 - 17-09-2026
+
+- Melhora apresentação visual da página
+
+## 0.5.3 - 22-09-2026
+
+### Added
+
+- Adiciona opção de exportar como tar.gz contendo múltiplos arquivos markdown, cada um sendo um capítulo do projeto.
+- Adiciona opção de exportar como um único arquivo markdown contendo todo o projeto
