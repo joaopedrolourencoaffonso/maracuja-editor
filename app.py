@@ -43,6 +43,12 @@ def exportaProjeto(code):
     if tipo == '4':
         download_name = maracuja_funcs.exporta_para_md_unico(sqlite3, Path, json, tarfile, projeto, titulo);
     
+    if tipo == '5':
+        download_name = maracuja_funcs.exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, projeto, titulo);
+
+    if tipo == '6':
+        download_name = maracuja_funcs.exporta_para_html_unico(sqlite3, Path, json, tarfile, projeto, titulo);
+    
     return send_file(
         download_name,
         mimetype="application/gzip",

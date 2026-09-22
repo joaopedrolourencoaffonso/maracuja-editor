@@ -278,6 +278,16 @@
                     window.location.href = `/exportaProjeto/${project_id};4`;
                     return;
                 }
+
+                if (formato == "HTML - multiple pages") {
+                    window.location.href = `/exportaProjeto/${project_id};5`;
+                    return;
+                }
+
+                if (formato == "HTML - single file") {
+                    window.location.href = `/exportaProjeto/${project_id};6`;
+                    return;
+                }
                 
                 window.alert("Selected export: " + formato);
             }

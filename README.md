@@ -83,7 +83,7 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Criar script que converte formato quill para `.md`
 - [X] Adicionar opção para exportar projeto inteiro para múltiplos `.md`
 - [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.md`
-- [ ] Exportar projeto para html
+- [X] Exportar projeto para html
 - [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar para docx

@@ -493,7 +493,6 @@ def importa_arquivos(argv,tarfile, filepath,Path, shutil):
     # 4. Clean up temporary directory
     shutil.rmtree(temp_dir, ignore_errors=True)
 
-#def quill_to_md(path_do_arquivo, path_arquivo_saida):
 def quill_to_md(json, path_do_arquivo):
     string_final = "";
     with path_do_arquivo.open("r", encoding="utf-8") as file:
@@ -624,5 +623,190 @@ def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
     md_file_path = f"{titulo}.md"
     with open(md_file_path, "w", encoding="utf-8") as file:
         file.write(markdown_text)
+
+    return md_file_path
+
+def quill_to_html(json, path_do_arquivo):
+    string_final = ""
+
+    with path_do_arquivo.open("r", encoding="utf-8") as file:
+        rawChapterData = file.read()
+
+    jsonData = json.loads(rawChapterData)
+    lista = jsonData["ops"]
+    tamanho_lista = len(lista)
+
+    i = 0
+
+    while i < tamanho_lista:
+
+        # Caso seja o último elemento
+        if i + 1 >= tamanho_lista:
+            string_final += lista[i]["insert"]
+            break
+
+        texto = lista[i]["insert"]
+        proximo = lista[i + 1]
+
+        atributos = proximo.get("attributes", {})
+
+        # HEADER
+        if "header" in atributos:
+            if atributos["header"] == 1:
+                primeiro_elemento = "<h1>"
+                segundo_elemento = "</h1>"
+
+            elif atributos["header"] == 2:
+                primeiro_elemento = "<h2>"
+                segundo_elemento = "</h2>"
+
+            elif atributos["header"] == 3:
+                primeiro_elemento = "<h3>"
+                segundo_elemento = "</h3>"
+
+            else:
+                primeiro_elemento = ""
+                segundo_elemento = ""
+
+            string_final += (
+                primeiro_elemento
+                + texto
+                + segundo_elemento
+                + proximo["insert"]
+            )
+
+        # LISTA
+        elif "list" in atributos:
+            tipo_lista = atributos["list"]
+
+            # Texto antes da última quebra de linha
+            temp = texto.split("\n")
+
+            if len(temp) > 1:
+                item_da_lista = temp[-1]
+                temp.pop()
+
+                intermediario = "\n".join(temp)
+
+                if intermediario:
+                    string_final += intermediario + "\n"
+            else:
+                item_da_lista = texto
+
+            if tipo_lista == "ordered":
+                string_final += "<ol><li>" + item_da_lista + "</li></ol>"
+            elif tipo_lista == "bullet":
+                string_final += "<ul><li>" + item_da_lista + "</li></ul>"
+
+            string_final += proximo["insert"]
+
+        # BOLD
+        elif "bold" in atributos:
+            string_final += (
+                texto
+                + "<strong>"
+                + proximo["insert"]
+                + "</strong>"
+            )
+
+        # ITALIC
+        elif "italic" in atributos:
+            string_final += (
+                texto
+                + "<em>"
+                + proximo["insert"]
+                + "</em>"
+            )
+
+        # UNDERLINE
+        elif "underline" in atributos:
+            string_final += (
+                texto
+                + "<ins>"
+                + proximo["insert"]
+                + "</ins>"
+            )
+
+        # LINK
+        elif "link" in atributos:
+            link = atributos["link"]
+
+            string_final += (
+                texto
+                + f"<a href='{link}'>"
+                + proximo["insert"]
+                + "</a>"
+            )
+
+        # Nenhum atributo
+        else:
+            string_final += texto + proximo["insert"]
+
+        i += 2
+
+    # Quebras de linha do Quill para HTML
+    string_final = string_final.replace("\n", "<br>\n")
+
+    return string_final
+
+def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
+    # 1. Fetch chapter metadata from SQLite
+    conn = sqlite3.connect('userdata')
+    cursor = conn.cursor()
+    
+    # Fix: SQL parameter must be a single-element tuple (project_id,)
+    lista_capitulos = cursor.execute(
+        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
+        (project_id,)
+    ).fetchall()
+    
+    conn.close()
+
+    # 2. Prepare export_temp directory (create if missing, clean out existing files)
+    export_dir = Path("export_temp")
+    export_dir.mkdir(parents=True, exist_ok=True)
+
+    for file_item in export_dir.iterdir():
+        if file_item.is_file():
+            file_item.unlink()
+
+    # 3. Generate Markdown files and write them to export_temp
+    for capitulo in lista_capitulos:
+        capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
+        html_text = quill_to_html(json, capitulo_path);
+        html_text = "<h1>" + capitulo[3] + "</h1>" + html_text;
+
+        md_file_path = export_dir / f"{capitulo[4]}.html"
+        with open(md_file_path, "w", encoding="utf-8") as file:
+            file.write(html_text)
+
+    # 4. Ensure filename ends with .tar.gz and create the archive after all files are generated
+    archive_filename = titulo if titulo.endswith(".tar.gz") else f"{titulo}.tar.gz"
+
+    with tarfile.open(archive_filename, "w:gz") as archive:
+        archive.add(export_dir, arcname="capitulos")
+
+    return archive_filename
+
+def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
+    conn = sqlite3.connect('userdata')
+    cursor = conn.cursor()
+    
+    lista_capitulos = cursor.execute(
+        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
+        (project_id,)
+    ).fetchall()
+    conn.close()
+
+    html_text = ""
+
+    for capitulo in lista_capitulos:
+        capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
+        temp_text = quill_to_html(json, capitulo_path);
+        html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
+
+    md_file_path = f"{titulo}.html"
+    with open(md_file_path, "w", encoding="utf-8") as file:
+        file.write(html_text)
 
     return md_file_path
