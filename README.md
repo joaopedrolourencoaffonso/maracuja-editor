@@ -21,6 +21,10 @@ Powered by:
 - exporte: Exporte seu projeto para pdf, html e markdown (epub e docx chegando em breve!)
 - armazenamento local: tudo armazenado localmente, sem nuvem, assinatura ou custos adicionais!
 
+## Usuários alvo
+
+Atualmente, o projeto ainda é focado em usuários com alguma experiência ou conforto com TI e informática, uma vez que ainda carece de instalador ou executável.
+
 ## Como Instalar?
 
 1. Faça o clone do projeto
