@@ -264,6 +264,14 @@
                     </div>
                     <button class="action-button" onclick="importaArquivos()">Importar backup</button>
                 </div>
+
+                <div class="setting-row">
+                    <div class="setting-copy">
+                        <h2>Ver Licenças</h2>
+                        <p>Ver licenças das dependências do projeto</p>
+                    </div>
+                    <button class="action-button" onclick="verLicencas()">Ver Licenças</button>
+                </div>
                 <input type="file" id="arquivoImportacao" accept=".tar.gz,application/gzip" style="display: none;">
             </section>
 
@@ -281,6 +289,10 @@
         <script>
             function geraBackup() {
                 window.location.href = "/retornaBackup";
+            }
+
+            function verLicencas() {
+                window.location.href = "/LICENSE";
             }
 
             function importaArquivos() {

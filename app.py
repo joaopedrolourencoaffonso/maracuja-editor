@@ -25,6 +25,10 @@ def index():
 def settings():
     return render_template('settings.html')
 
+@app.route('/LICENSE')
+def LICENSE():
+    return render_template('LICENSE.html')
+
 @app.route('/export/<int:project_id>')
 def export(project_id):
     return render_template('export.html',projectID=project_id)

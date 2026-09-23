@@ -242,3 +242,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Opção de exportar para pdf.
 - Ainda há alguns bugs a serem resolvidos, especialmente na formatação dos documentos, mas por enquanto, serve.
+
+## 0.6.1 - 23-09-2026
+
+### Added
+
+- Adiciona logo ao projeto
+- Adiciona página de licenças ao projeto e settings
+- Adiciona NOTICE.

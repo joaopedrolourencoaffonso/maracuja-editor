@@ -1,5 +1,7 @@
 # maracuja-editor
 
+![Logo](./img/logo.png)
+
 Um ambiente de escrita focado no armazenamento local para autores, que guarda projetos, capítulos, notas e revisões, permitindo também a exportação para formatos abertos.
 
 Powered by [quilljs](https://github.com/slab/quill/).
@@ -89,10 +91,11 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 - v1.0.0 Versão para release
 
-- [ ] Criar arquivo com licenças de terceiros
+- [X] Criar arquivo com licenças de terceiros
+- [X] Criar logo
+- [X] Criar notice
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
-- [ ] Criar logo
 
 - v1.0.1 Melhorias (sem prazo para implementação)
 - [ ] Suportar figuras nos projetos
