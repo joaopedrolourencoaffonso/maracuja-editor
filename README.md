@@ -1,119 +1,121 @@
 # maracuja-editor
 
+[![Versão](https://img.shields.io/badge/vers%C3%A3o-v1.0.0-blue)](https://github.com/joaopedrolourencoaffonso/maracuja-editor/releases)
+
 ![Logo](./img/logo.png)
 
 Um ambiente de escrita focado no armazenamento local para autores, que guarda projetos, capítulos, notas e revisões, permitindo também a exportação para formatos abertos.
 
-Powered by [quilljs](https://github.com/slab/quill/).
+Powered by:
 
-# O que é canonização?
+- [FPDF2](https://github.com/py-pdf/fpdf2)
+- [Flask](https://github.com/pallets/flask)
+- [quilljs](https://github.com/slab/quill/).
+
+## Features Atuais
+
+- edição e gerenciamento de projetos: Crie seus livros, adicione uma capa, organize os capítulos, tudo num só lugar!
+- versionamento de capítulos: Acha que um capítulo podia estar melhor, mas não quer mexer no texto? Crie uma nova versão! E se gostar [canonize](#o-que-é-canonização)!
+- notas: adicione notas sobre personagens, worldbuilding, temas, arcos de história e tudo mais que você quiser!
+- compare versões: está em dúvida em qual versão do capítulo você gostou mais? Compare-as e edite-as lado a lado em tempo real!
+- exporte: Exporte seu projeto para pdf, html e markdown (epub e docx chegando em breve!)
+- armazenamento local: tudo armazenado localmente, sem nuvem, assinatura ou custos adicionais!
+
+## Como Instalar?
+
+1. Faça o clone do projeto
+
+```
+git clone https://github.com/joaopedrolourencoaffonso/maracuja-editor.git
+```
+
+2. Acesse o diretório:
+
+```
+cd maracuja-editor
+```
+
+3. Instale as dependências
+
+```
+pip install -r requirements.txt
+```
+
+4. Inicie o aplicativo:
+
+```
+python .\app.py
+```
+Ou no linux
+
+```
+python ./app.py
+```
+
+Agora acesse http://127.0.0.1:5000/ e você verá uma página similar ao abaixo:
+
+![Página principal de nova instalação](./img/pagina-principal-nova-instalacao.png)
+
+
+## Como usar?
+
+Para ver um tutorial simples de como usar o projeto, veja [esse tutorial](./tutorial.md).
+
+## O que é canonização?
 
 Do inglês, "canon", geralmente usado para simbolizar aspectos imutáveis de uma certa história (a morte do tio Ben do homem aranha, por exemplo).
 
-A ideia é que quando um capítulo é "canonizado", ele é marcado como a versão 'oficial' ou no mínimo 'atual' do capítulo em questão, sendo o capítulo exposto por padrão quando se acessa o link pela página do projeto, assim como o capítulo que será adicionado ao texto em caso de exportação do projeto para html, pdf e/ou epub.
+A ideia é que quando um capítulo é "canonizado", ele é marcado como a versão 'oficial' ou no mínimo 'atual' do capítulo em questão, sendo o capítulo exposto por padrão quando se acessa o link pela página do projeto, assim como o capítulo que será adicionado ao texto em caso de exportação do projeto para html, markdown e pdf.
 
-# Objetivos
+## Limitações
 
-- v0.1.0 Editor de Texto Mínimo
+Ainda há bugs na função para exportar do formato json do quill para os demais formatos e como resultado, algumas formatações estão sendo perdidas, mas, para casos gerais, funciona
 
-- [X] Escolher framework de edição de texto em browser
-- [X] UI da página de edição básica
-- [X] UI para a página principal
-- [X] UI básica para visualizar detalhes de projeto (capítulos inclusos)
-- [X] UI básica para Listar Projetos
-- [X] UI para Criar Projeto 
-- [X] Salvando arquivo enviado pelo usuário
-- [X] UI para Criar Projeto (começando com o Sqlite)
-- [X] Adaptar UI's anteriores para usar o SQLite
-- [X] API para retornar imagens de capas
-- [X] API para receber imagens de projetos
-- [X] Adicionar título aos capítulos
-- [X] Listar capítulos corretamente à listagem de capítulos do projeto
-- [X] Adaptar página do projeto para exibir os verdadeiros capítulos
-- [X] Adaptar página "todos os projetos" à exibir verdadeiros projetos cadastrados
-- [X] Trabalhar em API para listar projetos recentes
-- [X] Adicionar botões para excluir capítulos
-- [X] Adicionar botões para excluir projetos
-- [X] Adicionar botões para trocar capítulos de ordem
+Do mesmo modo, ainda não é possível configurar a aparência do pdf final e figuras ainda não são incluídas. Essas features serão adicionadas em versões futuras
 
-- v0.2.0 Editor com versionamento
+## Próximos Objetivos
 
-- [X] Refatorar esquema de banco de dados para suportar o versionamento (percebi retroativamente)
-- [X] Adicionar o `version_id=1` nos links do `/project_page` 
-- [X] Editar endpoint `/editarCapitulo` para trabalhar com `version_id`
-- [X] Permitir usuário cadastrar novas versões do capítulo
-- [X] Expôr versões de arquivos na página do capítulo
-- [X] Permitir usuário clicar e visualizar versões de capítulo
-- [X] Permitir usuário redefinir versão principal (canonizar capítulo)
-- [X] Função `excluir_capitulo` retorna erro se usuário tentar excluir um capítulo canon.
-- [X] Expôr lista de capítulos na página de edição para permitir navegação mais fácil
-- [X] Corrigir bug na página principal em que novos projetos não estão sendo expostos (bug era resultado do código permitir múltiplos projetos com o mesmo nome)
-- [X] Aceitar projetos que não tem imagem de capa.
-- [X] Implementar comparação de versões de capítulo lado a lado.
-- [X] Na página de `editor` aglutinar as chamadas de dialog para deixar o código mais simples de ler
-- [X] Corrigir bug da lista de versões que impede de acessar capítulo 1. (não tem mudança para detectar)
-- [X] ~~Implementar árvore de mudanças~~(desnecessário, complicações demais para um aplicativo local)
+### v2.0.0 - revisão de código
 
-- v0.3.0 Editor de Texto Avançado
+- Revisar código, deixar mais limpo, eficiente e organizado
+- Corrigir problema de importar backup
 
-- [X] Opção de apenas ler os capítulos
-- [X] Adicionar "-v" na linha de comando
-- [X] Adicionar opção de backup (CLI)
-- [X] Corrigir bug de capítulo criar capítulo novo quando é salvo
-- [X] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (CLI)
-- [X] Transformar opções acima em funções para reciclar na UI
-- [X] Adicionar opção de backup (UI)
-- [X] Adicionar opção para limpar todos os dados do projeto (ajuda no teste e desenvolvimento) (UI)
-- [X] Adicionar opção para importar dados a partir de tar.gz (CLI)
-- [X] Adicionar opção para importar dados a partir de tar.gz (UI)
-- [X] Adequar para o linux (estou trabalhando no windows/sou preguiçoso)
-- [X] Resolver bug na deleção de arquivos
+### v3.0.0 - Exportar para PDF
 
-- 0.4.0 Resolvendo bugs e aprimorando eficiência
+- revisar bugs da exportação para PDF
+- permitir customização da função de exportar html
+- permitir customização da função de exportar PDF
 
-- [X] Método para mover arquivos de posição está quebrado. Solução é introduzir coluna de posição.
-- [X] Quill.js provido localmente ou pelo menos instalado apenas uma vez (como a criação da DB)
+### v4.0.0 - Imagens
 
-- v0.5.0 Adaptando para Escritores
+- Suportar figuras nos projetos
 
-- [X] Melhora títulos das páginas
-- [X] Criando seção de notas do projeto (personagens, lugares, etc...)
-- [X] Refatorar UI para ficar mais amigável.
+### v5.0.0 - Documentos
 
-- v0.6.0 Exportando arquivos
+- Documentos únicos (editar sem associar a projetos)
 
-- [X] Criar script que converte formato quill para `.md`
-- [X] Adicionar opção para exportar projeto inteiro para múltiplos `.md`
-- [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.md`
-- [X] Adicionar opção para exportar projeto inteiro para múltiplos `.html`
-- [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.html`
-- [X] Exportar projeto para PDF (ver [fpdf2](https://pypi.org/project/fpdf2/)) (serve para arquivos simples, mas ainda há bugs para resolver)
+### v6.0.0 - Pequenas melhorias
 
-- v1.0.0 Versão para release
+- Adicionar dark mode.
+- Contador de linhas
+- Contador de palavras
 
-- [X] Criar arquivo com licenças de terceiros
-- [X] Criar logo
-- [X] Criar notice
-- [ ] Criar site para o projeto
-- [ ] Criar tutoriais para usuários leigos
+### v7.0.0 - Exportação
 
-- v1.0.1 Melhorias (sem prazo para implementação)
-- [ ] Suportar figuras nos projetos
-- [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
-- [ ] Exportar para docx
-- [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
-- [ ] Trazer CSS para arquivos centralizados
-- [ ] Criar instalador (baixa binário e organiza repositório)
-- [ ] Trazer JS para arquivos centralizados
-- [ ] Opção de pesquisar por palavras em todo o projeto.
-- [ ] Revisar código como um todo
-- [ ] Implementar testes para averiguar qualidade de código
-- [ ] Adicionar dark mode.
-- [ ] Documentos únicos (editar sem associar a projetos)
-- [ ] Contador de linhas
-- [ ] Contador de palavras
-- [ ] Exportar/Importar projetos seletivamente
+- Exportar para docx
+- Exportar para epub
+- Outros formatos?
 
-# Discussões abertas
+### v8.0.0 - Instalador e Desktop
+
+- Converter em um projeto desktop
+- Criar instalador para facilitar para usuários leigos.
+
+### v9.0.0 - Outras Línguas
+
+- English
+- Español
+
+## Discussões abertas
 
 [How to convert Delta JSON to Markdown using server-side Python](https://github.com/slab/quill/discussions/4828)
