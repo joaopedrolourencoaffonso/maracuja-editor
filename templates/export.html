@@ -269,6 +269,15 @@
         <script>
             project_id = "{{ projectID }}";
             function selecionaFormato(formato) {
+                if (formato == "PDF") {
+                    window.location.href = `/exportaProjeto/${project_id};1`;
+                    return;
+                }
+
+                if (formato == "DOCX") {
+                    window.alert("A ser implementado em versão futura! Desculpa :(")
+                }
+
                 if (formato == "Markdown - multiple files") {
                     window.location.href = `/exportaProjeto/${project_id};3`;
                     return;
@@ -288,8 +297,6 @@
                     window.location.href = `/exportaProjeto/${project_id};6`;
                     return;
                 }
-                
-                window.alert("Selected export: " + formato);
             }
         </script>
     </body>

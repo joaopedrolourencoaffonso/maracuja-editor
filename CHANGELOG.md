@@ -235,3 +235,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adiciona opção de exportar como tar.gz contendo múltiplos arquivos html, cada um sendo um capítulo do projeto.
 - Adiciona opção de exportar como um único arquivo html contendo todo o projeto
+
+## 0.6.0 - 23-09-2026
+
+### Added
+
+- Opção de exportar para pdf.
+- Ainda há alguns bugs a serem resolvidos, especialmente na formatação dos documentos, mas por enquanto, serve.

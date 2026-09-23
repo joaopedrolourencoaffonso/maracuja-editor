@@ -741,11 +741,28 @@ def quill_to_html(json, path_do_arquivo):
         # Nenhum atributo
         else:
             string_final += texto + proximo["insert"]
+            #string_final += texto + "<p>" + proximo["insert"] + "</p>"
 
         i += 2
 
     # Quebras de linha do Quill para HTML
-    string_final = string_final.replace("\n", "<br>\n")
+    #string_final = string_final.replace("\n", "<br>\n")
+
+    # é feio, mas funciona
+    string_array = string_final.split("\n");
+    string_final = "";
+    for elemento in string_array:
+        if len(elemento) >= 1:
+            print("-->", elemento);
+            if elemento[0] == "<" and elemento[len(elemento) - 1] == ">":
+                string_final = string_final + elemento
+            elif elemento[0] == "<" and elemento[len(elemento) - 1] != ">":
+                string_final = string_final + elemento + "</p>"
+            elif elemento[0] != "<" and elemento[len(elemento) - 1] == ">":
+                string_final = string_final + "<p>" + elemento
+            else:
+                string_final = string_final + "<p>" + elemento + "</p>"
+
 
     return string_final
 
@@ -808,5 +825,52 @@ def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
     md_file_path = f"{titulo}.html"
     with open(md_file_path, "w", encoding="utf-8") as file:
         file.write(html_text)
+
+    return md_file_path
+
+def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
+    conn = sqlite3.connect('userdata')
+    cursor = conn.cursor()
+    
+    lista_capitulos = cursor.execute(
+        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
+        (project_id,)
+    ).fetchall()
+    conn.close()
+
+    html_text = ""
+
+    for capitulo in lista_capitulos:
+        capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
+        temp_text = quill_to_html(json, capitulo_path);
+        html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
+        #html_text = html_text.replace('<p>','<p style="line-height: 1.5;">')
+
+    md_file_path = f"{titulo}.pdf"
+
+    class htmlPDF(FPDF):
+        def header(self):
+            self.set_font("Helvetica", "B", 10)
+            self.set_text_color(128, 128, 128)
+            self.cell(0, 10, "Generated via fpdf2", border=0, new_x="LMARGIN", new_y="NEXT", align="R")
+            self.ln(5)
+
+    # Initialize PDF
+    pdf = htmlPDF()
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=11)
+
+    # Render Markdown string directly
+    pdf.write_html(html_text)
+
+    #print("-->\n", html_text.split("\n"))
+
+    # Save to file
+    #pdf.output("markdown_output.pdf")md_file_path
+    pdf.output(md_file_path)
+    print(f"PDF created successfully: {md_file_path}")
+
+    #with open(md_file_path, "w", encoding="utf-8") as file:
+    #    file.write(html_text)
 
     return md_file_path

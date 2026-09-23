@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request, send_file
+from fpdf import FPDF
 import json
 import os
 from time import time;
@@ -36,6 +37,9 @@ def exportaProjeto(code):
     titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto);
     titulo = titulo[:15]
     titulo = titulo.replace(" ", "_");
+
+    if tipo == '1':
+        download_name = maracuja_funcs.exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, projeto, titulo);
 
     if tipo == '3':
         download_name = maracuja_funcs.exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, projeto, titulo);

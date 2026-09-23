@@ -1,6 +1,6 @@
 # maracuja-editor
 
-Um editor de texto amigável ao usuário construído sobre o git para facilitar gerenciamento de textos longos.
+Um ambiente de escrita focado no armazenamento local para autores, que guarda projetos, capítulos, notas e revisões, permitindo também a exportação para formatos abertos.
 
 Powered by [quilljs](https://github.com/slab/quill/).
 
@@ -85,22 +85,22 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 - [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.md`
 - [X] Adicionar opção para exportar projeto inteiro para múltiplos `.html`
 - [X] Adicionar opção para exportar projeto inteiro para um único arquivo `.html`
-- [ ] Exportar projeto para PDF (ver [pandoc](https://github.com/jgm/pandoc))
+- [X] Exportar projeto para PDF (ver [fpdf2](https://pypi.org/project/fpdf2/)) (serve para arquivos simples, mas ainda há bugs para resolver)
 
 - v1.0.0 Versão para release
 
-- [ ] Criar instalador (baixa binário e organiza repositório)
+- [ ] Criar arquivo com licenças de terceiros
 - [ ] Criar site para o projeto
 - [ ] Criar tutoriais para usuários leigos
 - [ ] Criar logo
 
 - v1.0.1 Melhorias (sem prazo para implementação)
-
 - [ ] Suportar figuras nos projetos
 - [ ] Exportar projeto para epub (ver [pandoc](https://github.com/jgm/pandoc))
 - [ ] Exportar para docx
 - [ ] Agrupar interações com DB em uma única função para melhorar legibilidade de código
 - [ ] Trazer CSS para arquivos centralizados
+- [ ] Criar instalador (baixa binário e organiza repositório)
 - [ ] Trazer JS para arquivos centralizados
 - [ ] Opção de pesquisar por palavras em todo o projeto.
 - [ ] Revisar código como um todo
