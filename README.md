@@ -21,10 +21,6 @@ Powered by:
 - exporte: Exporte seu projeto para pdf, html e markdown (epub e docx chegando em breve!)
 - armazenamento local: tudo armazenado localmente, sem nuvem, assinatura ou custos adicionais!
 
-## Usuários alvo
-
-Atualmente, o projeto ainda é focado em usuários com alguma experiência ou conforto com TI e informática, uma vez que ainda carece de instalador ou executável.
-
 ## Como Instalar?
 
 1. Faça o clone do projeto
@@ -75,7 +71,15 @@ A ideia é que quando um capítulo é "canonizado", ele é marcado como a versã
 
 Ainda há bugs na função para exportar do formato json do quill para os demais formatos e como resultado, algumas formatações estão sendo perdidas, mas, para casos gerais, funciona
 
-Do mesmo modo, ainda não é possível configurar a aparência do pdf final e figuras ainda não são incluídas. Essas features serão adicionadas em versões futuras
+Do mesmo modo, ainda não é possível configurar a aparência do pdf final e figuras ainda não são incluídas. Essas features serão adicionadas em versões futuras.
+
+## Público-alvo
+
+Atualmente, o projeto ainda é focado em usuários com alguma experiência ou conforto com TI e informática, uma vez que ainda carece de instalador ou executável.
+
+Em caso de problemas, por favor, abra uma [issue](https://github.com/joaopedrolourencoaffonso/maracuja-editor/issues) o quanto antes. O projeto é mantido por uma única pessoa em seu tempo livre, portanto o atendimento pode não ser imediato, mas todo relato será analisado.
+
+Pull requests são bem vindos!
 
 ## Próximos Objetivos
 
