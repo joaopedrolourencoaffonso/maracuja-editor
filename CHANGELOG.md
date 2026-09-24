@@ -250,3 +250,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adiciona logo ao projeto
 - Adiciona página de licenças ao projeto e settings
 - Adiciona NOTICE.
+
+## 1.0.0 - 24-09-2026
+
+### Added
+
+- Primeira versão funcional
+- Adiciona Tutorial
+- Incrementa README
+- Página web do projeto
+- Corrige pequenos bugs
