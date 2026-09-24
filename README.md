@@ -87,6 +87,7 @@ Pull requests são bem vindos!
 
 - Revisar código, deixar mais limpo, eficiente e organizado
 - Corrigir problema de importar backup
+- Deletar arquivos temporários criado para exportação
 
 ### v3.0.0 - Exportar para PDF
 
