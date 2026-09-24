@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Maracujá é um ambiente de escrita local para organizar livros, capítulos, notas e versões.">
+	<title>Maracujá | Seu espaço de escrita</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
+
+		:root {
+			--ink: #243229;
+			--muted: #69776b;
+			--paper: #fffdf7;
+			--paper-deep: #f5f5e7;
+			--line: #dde3d0;
+			--yellow: #f4c843;
+			--yellow-soft: #fff1af;
+			--green: #426548;
+			--green-dark: #294c35;
+			--coral: #dc785e;
+		}
+
+		* { box-sizing: border-box; }
+
+		html { scroll-behavior: smooth; }
+
+		body {
+			margin: 0;
+			color: var(--ink);
+			background: var(--paper);
+			font-family: "DM Sans", "Trebuchet MS", sans-serif;
+			line-height: 1.5;
+		}
+
+		a { color: inherit; }
+
+		.page-shell { overflow: hidden; }
+
+		.topbar,
+		.section-inner,
+		.hero-inner,
+		.footer-inner {
+			width: min(100% - 48px, 1120px);
+			margin: 0 auto;
+		}
+
+		.topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			min-height: 82px;
+			gap: 24px;
+		}
+
+		.brand {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			color: var(--green-dark);
+			font-family: Fraunces, Georgia, serif;
+			font-size: 1.3rem;
+			text-decoration: none;
+		}
+
+		.brand img { width: 36px; height: 36px; object-fit: contain; }
+
+		.nav-links { display: flex; align-items: center; gap: 24px; font-size: .88rem; }
+		.nav-links a { color: var(--muted); text-decoration: none; }
+		.nav-links a:hover, .nav-links a:focus-visible { color: var(--green-dark); }
+
+		.nav-cta,
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 46px;
+			padding: 11px 18px;
+			border: 1px solid var(--green-dark);
+			border-radius: 3px;
+			color: var(--green-dark);
+			font-size: .88rem;
+			font-weight: 600;
+			text-decoration: none;
+			transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+		}
+
+		.nav-cta { min-height: 38px; padding: 8px 14px; background: var(--yellow); border-color: var(--yellow); }
+		.button.primary { background: var(--yellow); border-color: var(--yellow); }
+		.button:hover, .button:focus-visible, .nav-cta:hover, .nav-cta:focus-visible {
+			background: var(--yellow-soft);
+			box-shadow: 4px 4px 0 var(--green-dark);
+			outline: none;
+			transform: translate(-2px, -2px);
+		}
+
+		.hero {
+			position: relative;
+			padding: 88px 0 100px;
+			background:
+				radial-gradient(circle at 78% 25%, rgba(244, 200, 67, .34), transparent 17rem),
+				linear-gradient(135deg, #fffdf7 0%, #f4f5e7 100%);
+		}
+
+		.hero::after {
+			position: absolute;
+			right: -80px;
+			bottom: -115px;
+			width: 280px;
+			height: 280px;
+			border: 1px solid rgba(66, 101, 72, .18);
+			border-radius: 50%;
+			content: "";
+		}
+
+		.hero-inner { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr); align-items: center; gap: 72px; }
+		.eyebrow { margin: 0 0 18px; color: var(--green); font-size: .74rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+
+		h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 500; }
+		h1 { max-width: 690px; margin: 0; color: var(--green-dark); font-size: clamp(3.5rem, 8vw, 6.8rem); letter-spacing: -.065em; line-height: .92; }
+		.hero-copy { max-width: 555px; margin: 24px 0 0; color: var(--muted); font-size: 1.12rem; }
+		.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+		.hero-note { margin-top: 16px; color: var(--muted); font-size: .8rem; }
+
+		.hero-art { position: relative; min-height: 390px; }
+		.hero-art img { position: absolute; top: 15px; right: 42px; z-index: 1; width: min(72%, 280px); height: auto; transform: rotate(7deg); filter: drop-shadow(16px 18px 0 rgba(41, 76, 53, .1)); }
+		.art-sheet { position: absolute; right: 0; bottom: 18px; width: 75%; min-height: 250px; padding: 24px; border: 1px solid var(--line); background: rgba(255, 253, 247, .9); box-shadow: 15px 15px 0 var(--yellow); transform: rotate(-4deg); }
+		.art-sheet::before { display: block; width: 45%; height: 8px; margin-bottom: 22px; background: var(--green); content: ""; }
+		.art-line { height: 9px; margin: 18px 0; background: var(--line); }
+		.art-line.short { width: 62%; }
+		.art-tag { display: inline-block; margin-top: 8px; padding: 6px 10px; color: var(--green-dark); background: var(--yellow-soft); font-size: .72rem; font-weight: 700; }
+
+		.intro-strip { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+		.intro-strip .section-inner { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 25px 0; }
+		.stat { display: flex; align-items: baseline; gap: 10px; }
+		.stat strong { color: var(--green-dark); font-family: Fraunces, Georgia, serif; font-size: 1.5rem; }
+		.stat span { color: var(--muted); font-size: .83rem; }
+
+		.section { padding: 105px 0; }
+		.section.tinted { background: var(--paper-deep); }
+		.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 42px; }
+		.section-heading h2 { max-width: 550px; margin: 0; color: var(--green-dark); font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.04em; line-height: .98; }
+		.section-heading p { max-width: 330px; margin: 0; color: var(--muted); font-size: .95rem; }
+
+		.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid var(--line); background: var(--line); }
+		.feature { min-height: 238px; padding: 28px; background: var(--paper); }
+		.feature:nth-child(2) { background: var(--yellow-soft); }
+		.feature:nth-child(3) { background: #e7efe1; }
+		.feature-number { color: var(--coral); font-size: .75rem; font-weight: 700; letter-spacing: .12em; }
+		.feature h3 { margin: 40px 0 10px; color: var(--green-dark); font-size: 1.45rem; }
+		.feature p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+		.workflow { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+		.workflow h2 { max-width: 430px; margin: 0; color: var(--green-dark); font-size: clamp(2.2rem, 4vw, 3.6rem); letter-spacing: -.045em; line-height: 1; }
+		.workflow-intro { max-width: 390px; margin: 20px 0 30px; color: var(--muted); }
+		.steps { border-top: 1px solid var(--line); }
+		.step { display: grid; grid-template-columns: 42px 1fr; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+		.step-number { color: var(--coral); font-family: Fraunces, Georgia, serif; font-size: 1.4rem; }
+		.step strong { display: block; margin-bottom: 3px; color: var(--green-dark); }
+		.step span { color: var(--muted); font-size: .88rem; }
+
+		.install { display: grid; grid-template-columns: minmax(0, .8fr) minmax(320px, 1.2fr); gap: 70px; align-items: center; }
+		.install h2 { margin: 0; color: var(--green-dark); font-size: clamp(2.1rem, 4vw, 3.6rem); letter-spacing: -.045em; line-height: 1; }
+		.install p { color: var(--muted); }
+		.code-block { padding: 24px; color: #f8f6e9; background: var(--green-dark); font-family: "Courier New", monospace; font-size: .83rem; line-height: 1.9; box-shadow: 10px 10px 0 var(--yellow); }
+		.code-comment { color: #b6d39a; }
+		.install-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 22px; font-size: .86rem; font-weight: 600; }
+		.install-links a { color: var(--green-dark); text-decoration-color: var(--yellow); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+
+		.closing { padding: 92px 0; color: #f8f6e9; background: var(--green-dark); }
+		.closing-inner { display: flex; align-items: end; justify-content: space-between; gap: 40px; }
+		.closing h2 { max-width: 580px; margin: 0; font-size: clamp(2.4rem, 5vw, 4.8rem); letter-spacing: -.05em; line-height: .95; }
+		.closing p { max-width: 300px; margin: 0; color: #c8d5c2; font-size: .95rem; }
+		.footer { padding: 26px 0 36px; color: var(--muted); background: var(--green-dark); }
+		.footer-inner { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 20px; font-size: .78rem; }
+		.footer a { color: #f8f6e9; text-decoration: none; }
+		.footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+
+		@media (max-width: 760px) {
+			.topbar, .section-inner, .hero-inner, .footer-inner { width: min(100% - 32px, 560px); }
+			.topbar { min-height: 70px; }
+			.nav-links a:not(.nav-cta) { display: none; }
+			.hero { padding: 66px 0 72px; }
+			.hero-inner, .workflow, .install { grid-template-columns: 1fr; gap: 44px; }
+			.hero-art { min-height: 300px; }
+			.hero-art img { right: 16%; width: 210px; }
+			.art-sheet { right: 3%; width: 76%; min-height: 200px; }
+			.intro-strip .section-inner, .feature-grid { grid-template-columns: 1fr; }
+			.intro-strip .section-inner { gap: 12px; }
+			.section { padding: 72px 0; }
+			.section-heading, .closing-inner { display: block; }
+			.section-heading p, .closing p { margin-top: 18px; }
+			.feature { min-height: 0; }
+			.feature h3 { margin-top: 24px; }
+			.footer-inner { display: block; }
+			.footer-links { margin-top: 14px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page-shell">
+		<header class="topbar">
+			<a class="brand" href="/" aria-label="Maracujá, início">
+				<img src="./img/logo.png" alt="">
+				<span>Maracujá</span>
+			</a>
+			<nav class="nav-links" aria-label="Navegação principal">
+				<a href="#recursos">Recursos</a>
+				<a href="#instalar">Instalação</a>
+				<a href="/settings">Configurações</a>
+				<a class="nav-cta" href="/criar_projeto">Começar a escrever</a>
+			</nav>
+		</header>
+
+		<main>
+			<section class="hero">
+				<div class="hero-inner">
+					<div>
+						<p class="eyebrow">Seu espaço de escrita</p>
+						<h1>Ideias grandes pedem espaço.</h1>
+						<p class="hero-copy">O Maracujá é um ambiente de escrita local para transformar uma primeira frase em um projeto inteiro: livros, capítulos, notas e versões, tudo no mesmo lugar.</p>
+						<div class="hero-actions">
+							<a class="button primary" href="/criar_projeto">Criar novo projeto</a>
+							<a class="button" href="/todos_projetos">Ver meus projetos</a>
+						</div>
+						<p class="hero-note">Sem nuvem. Sem assinatura. Seus arquivos ficam com você.</p>
+					</div>
+					<div class="hero-art" aria-hidden="true">
+						<div class="art-sheet">
+							<span class="art-tag">rascunho em andamento</span>
+							<div class="art-line"></div>
+							<div class="art-line short"></div>
+							<div class="art-line"></div>
+							<div class="art-line short"></div>
+						</div>
+						<img src="./img/logo.png" alt="">
+					</div>
+				</div>
+			</section>
+
+			<section class="intro-strip" aria-label="Visão geral">
+				<div class="section-inner">
+					<div class="stat"><strong>Local</strong><span>dados armazenados no seu computador</span></div>
+					<div class="stat"><strong>Aberto</strong><span>exporte para formatos que você controla</span></div>
+					<div class="stat"><strong>Seu ritmo</strong><span>escreva, revise e volte quando quiser</span></div>
+				</div>
+			</section>
+
+			<section class="section" id="recursos">
+				<div class="section-inner">
+					<div class="section-heading">
+						<h2>Uma mesa de trabalho para a história inteira.</h2>
+						<p>Do primeiro rascunho à versão que você decide chamar de oficial, o Maracujá acompanha cada etapa sem tirar você do texto.</p>
+					</div>
+					<div class="feature-grid">
+						<article class="feature"><span class="feature-number">01 / ORGANIZE</span><h3>Projetos que fazem sentido</h3><p>Crie livros, adicione uma capa e organize os capítulos em um só lugar.</p></article>
+						<article class="feature"><span class="feature-number">02 / REVISE</span><h3>Versões sem medo</h3><p>Experimente novos caminhos, compare versões lado a lado e canonize a que virou oficial.</p></article>
+						<article class="feature"><span class="feature-number">03 / EXPLORE</span><h3>Notas para o mundo</h3><p>Guarde personagens, worldbuilding, temas, arcos de história e tudo o que não cabe no capítulo.</p></article>
+						<article class="feature"><span class="feature-number">04 / PUBLIQUE</span><h3>Exporte seu trabalho</h3><p>Leve seu projeto para PDF, HTML ou Markdown. EPUB e DOCX estão no caminho.</p></article>
+						<article class="feature"><span class="feature-number">05 / PRESERVE</span><h3>Você no controle</h3><p>Sem nuvem, assinatura ou custo adicional: o armazenamento é local por escolha.</p></article>
+						<article class="feature"><span class="feature-number">06 / CONTINUE</span><h3>Feito para crescer</h3><p>O projeto é mantido em público e evolui com relatos, ideias e contribuições.</p></article>
+					</div>
+				</div>
+			</section>
+
+			<section class="section tinted">
+				<div class="section-inner workflow">
+					<div>
+						<p class="eyebrow">Um fluxo simples</p>
+						<h2>Escreva primeiro. Arrume depois.</h2>
+						<p class="workflow-intro">A ferramenta fica quieta enquanto você trabalha e aparece quando é hora de organizar, comparar ou levar o texto para outro formato.</p>
+						<a class="button" href="./tutorial.md">Ler o tutorial</a>
+					</div>
+					<div class="steps" aria-label="Etapas do fluxo de escrita">
+						<div class="step"><span class="step-number">01</span><div><strong>Comece um projeto</strong><span>Defina o nome, a capa e o ponto de partida.</span></div></div>
+						<div class="step"><span class="step-number">02</span><div><strong>Construa os capítulos</strong><span>Escreva no editor e reorganize a estrutura quando precisar.</span></div></div>
+						<div class="step"><span class="step-number">03</span><div><strong>Faça perguntas ao texto</strong><span>Registre notas e compare versões para enxergar melhor a história.</span></div></div>
+						<div class="step"><span class="step-number">04</span><div><strong>Escolha e exporte</strong><span>Canonize a versão atual e gere o formato que combina com o próximo passo.</span></div></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="section" id="instalar">
+				<div class="section-inner install">
+					<div>
+						<p class="eyebrow">Comece em poucos minutos</p>
+						<h2>Seu próximo capítulo pode começar agora.</h2>
+						<p>O Maracujá é um projeto Python de código aberto. Clone, instale as dependências e abra o app no navegador.</p>
+						<div class="install-links">
+							<a href="https://github.com/joaopedrolourencoaffonso/maracuja-editor">Ver no GitHub</a>
+							<a href="https://github.com/joaopedrolourencoaffonso/maracuja-editor/releases">Versões</a>
+						</div>
+					</div>
+					<div class="code-block" aria-label="Comandos para instalar o Maracujá"><span class="code-comment"># baixe o projeto</span><br>git clone https://github.com/joaopedrolourencoaffonso/maracuja-editor.git<br>cd maracuja-editor<br><br><span class="code-comment"># instale e inicie</span><br>pip install -r requirements.txt<br>python .\app.py</div>
+				</div>
+			</section>
+
+			<section class="closing">
+				<div class="section-inner closing-inner">
+					<h2>Faça a ideia parar de flutuar.</h2>
+					<p>O projeto ainda está crescendo. Encontre um problema, conte o que você imaginou ou ajude a construir o próximo capítulo.</p>
+				</div>
+			</section>
+		</main>
+
+		<footer class="footer">
+			<div class="footer-inner">
+				<span>Maracujá · ambiente de escrita local</span>
+				<div class="footer-links">
+					<a href="https://github.com/py-pdf/fpdf2">FPDF2</a>
+					<a href="https://github.com/pallets/flask">Flask</a>
+					<a href="https://github.com/slab/quill">Quill</a>
+					<a href="https://github.com/joaopedrolourencoaffonso/maracuja-editor/issues">Abrir uma issue</a>
+					<a href="https://github.com/slab/quill/discussions/4828">Discussão técnica</a>
+					<a href="/LICENSE">Licença</a>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>
