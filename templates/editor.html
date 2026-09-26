@@ -496,7 +496,6 @@
             const iframeFlag = "{{ iframeFlag }}";
             const chapter_data = {{ chapterData | tojson }};
 
-            console.log("--> banana ",iframeFlag);
             
             const quill = new Quill("#editor", {
                 theme: "snow",
@@ -526,7 +525,6 @@
             const selectVersao = document.getElementById('listaVersoes');
             selectVersao.addEventListener('change', (event) => {
                 const selectedValue = event.target.value;
-                console.log(selectedValue);
                 window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${selectedValue}`;
             });
 
@@ -535,7 +533,6 @@
             selectCapitulo.addEventListener('change', (event) => {
                 const selectedValue = event.target.value;
                 const valores = selectedValue.split(";")
-                console.log(selectedValue.split(";"));
                 window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${valores[0]}&version_id=${valores[1]}`;
             });
 
@@ -563,8 +560,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
-                    //window.location.href = window.location.href;
+                    
                     if (iframeFlag == 1){
                         window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${version_id}&iframeFlag`
                     } else {
@@ -578,7 +574,6 @@
 
             function deletarVersao() {
                 decisao = window.confirm("Essa ação irá deletar essa versão do capítulo. Tem certeza que deseja prosseguir?");
-                //console.log("-> ", decisao);
                 if (decisao) {
                     fetch("/deleta_versao", {
                         method: "POST",
@@ -593,7 +588,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data.message);
+                        
                         if (data.message == "ok") {
                             alert("Capítulo deletado com sucesso!");
                             window.location.href = `http://127.0.0.1:5000/project_page/${project_id}`
@@ -637,7 +632,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
+                    
                     if (data.message == "ok") {
                         alert("Nova versão criada com sucesso!");
                         window.location.href = `/editarCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${data.version_id}`;
@@ -671,10 +666,9 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
+                    
                     if (data.message == "ok") {
-                        console.log("data.lista: ",data.lista);
-
+                        
                         const targetId = parseInt(version_id);
                         const index = data.lista.findIndex(versao => versao[0] == targetId);
                         if (index !== -1) {
@@ -715,7 +709,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
+                    
                     if (data.message == "ok") {
                         alert("Capítulo canonizado!")
                         window.location.href =  window.location.href;
@@ -731,8 +725,7 @@
             function abreJanelaComparacao() {
                 const v1 = document.getElementById("primeiraLista");
                 const v2 = document.getElementById("segundaLista");
-                console.log("-> ",v1.value, v2.value);
-
+                
                 if (v1.value != v2.value) {
                     window.location.href = `/compararVersoes/?project_id=${project_id}&chapter_id=${chapter_id}&v1=${v1.value}&v2=${v2.value}`;
                 } else {
@@ -744,9 +737,7 @@
             async function populaListaDeCapitulos() {
                 const response = await fetch("/project_info/" + project_id);
                 projectData = await response.json();
-
-                console.log("projectData.capitulos: ", projectData.capitulos);
-
+                
                 element = document.getElementById('listaDeCapitulos');
                 element.innerHTML = element.innerHTML  + `<option value="a;b">Selecione Capítulo</option>`;
                 projectData.capitulos.forEach(capitulo => {

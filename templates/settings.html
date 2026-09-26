@@ -324,22 +324,18 @@
 
             function apagarTudo() {
                 const resposta = window.confirm("Tem certeza que deseja limpar TODOS os dados da instalação?");
-                //console.log(resposta);
-
+                
                 if (resposta == false) {
                     console.log("cancelado!");
                     return
                 }
 
                 const resposta2 = window.confirm("Tem certeza MESMO? Essa ação não tem volta a menos que você tenha um backup dos dados");
-                //console.log(resposta);
-
+                
                 if (resposta2 == false) {
                     console.log("cancelado!");
                     return
                 }
-
-                console.log("banana")
 
                 resultado = fetch('/apagaTudo')
                     .then(response => response.json())

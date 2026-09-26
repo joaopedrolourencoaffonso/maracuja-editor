@@ -574,20 +574,16 @@
             let preview;
             let numeroDeCapitulos;
             const projectID = "{{ projectID }}";
-            console.log("--> ",projectID);
-
-
+            
             async function populaPagina() {
                 const response = await fetch("/project_info/" + projectID);
                 projectData = await response.json();
-                console.log("--> ",projectData.capitulos);
                 let temp = ``;
 
                 titulo = projectData.name;
                 sinopse = projectData.sinopse;
                 capa = projectData.capa;
 
-                console.log("número de capítulos: ", projectData.capitulos.length);
                 numeroDeCapitulos = projectData.capitulos.length;
                 
                 listaHTML = ""
@@ -618,12 +614,8 @@
             }
 
             function salvaInfo() {
-                console.log(titulo, sinopse, fileInput.files[0]);
-
                 let novo_titulo = document.getElementById("tituloField").value;
                 let nova_sinopse = document.getElementById("sinopseField").value;
-
-                console.log(novo_titulo, nova_sinopse);
 
                 const formData = new FormData();
                 formData.append("project_id", projectID);
@@ -654,7 +646,6 @@
             function deletaProjeto() {
                 decisao1 = window.confirm("Essa ação irá deletar o <b>projeto inteiro</b>. Tem certeza que deseja fazer isso?");
                 decisao2 = window.confirm("Tem certeza mesmo?");
-                //console.log("-> ", decisao);
                 if (decisao1 && decisao2) {
                     fetch("/deleta_projeto", {
                         method: "POST",
@@ -667,7 +658,6 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data.message);
                         if (data.message == "ok") {
                             alert("Projeto deletado com sucesso!");
                             window.location.href = `http://127.0.0.1:5000/`
@@ -728,7 +718,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
                     if (data.message == "ok") {
                         alert("Capítulo movido com sucesso!");
                         window.location.href = `/project_page/${projectID}`
@@ -739,9 +728,7 @@
             }
 
             function deletarCapitulo(id) {
-                console.log(id);
                 decisao = window.confirm("Essa ação irá deletar o capítulo e não poderá ser desfeita. Tem certeza que deseja prosseguir?");
-                //console.log("-> ", decisao);
                 if (decisao) {
                     fetch("/deleta_capitulo", {
                         method: "POST",
@@ -755,7 +742,6 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data.message);
                         if (data.message == "ok") {
                             alert("Capítulo deletado com sucesso!");
                             window.location.href = `http://127.0.0.1:5000/project_page/${projectID}`

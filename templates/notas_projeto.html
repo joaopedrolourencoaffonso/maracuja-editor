@@ -348,8 +348,6 @@
                 const response = await fetch("/retornaNotasProjeto/" + projectID);
                 listaDeNotas = await response.json();
 
-                console.log("-> ", listaDeNotas);
-                
                 listaHTML = "";
                 listaDeNotas.lista.forEach(nota => {
                     listaHTML = listaHTML + `<a href="/editarNota/?project_id={{ projectID }}&nota_id=${nota[0]}"><div class='box-nota'><h3>${nota[1]}</h3> <p>${nota[2]}</p></div></a>`;
@@ -376,7 +374,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("->", data.msg);
                     if (data.msg == "ok") {
                         alert("Nota salva com sucesso!");
                         window.location.href = `/editarNota/?project_id=${projectID}&nota_id=${data.nota_id}`;

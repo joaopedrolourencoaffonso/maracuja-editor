@@ -260,3 +260,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incrementa README
 - Página web do projeto
 - Corrige pequenos bugs
+
+## 26-09-2026 - Início do code-review. Criação da branch 'code-review'.
+
+## 1.0.1 - 26-09-2026
+
+### Added
+
+- Excluindo `console.log` e `print`s desnecessários.

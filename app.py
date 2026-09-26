@@ -116,8 +116,6 @@ def editarNota():
 
     chapterData = json.loads(rawChapterData);
 
-    print("nota: ", nota, nota_id, project_id)
-
     return render_template('editarNota.html',projectID=project_id,notasID=nota_id, tituloNota = nota[0][0], descricaoNota = nota[0][1],chapterData=chapterData)
 
 @app.route('/editarCapitulo/', methods=['GET'])
@@ -132,10 +130,7 @@ def editarCapitulo():
     else:
         iframeFlag = 1
     
-    print("-> ", iframeFlag);
     # PLACEHOLDER
-    #version_id = str(1);
-    print(project_id, chapter_id);
     if chapter_id == "Novo":
         chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
@@ -212,8 +207,6 @@ def data():
 def dataNota():
     data = request.get_json()
 
-    print("1 -> ",  data["titulo_da_nota"]);
-
     project_id = data["project_id"]
     nota_id = data["nota_id"]
     titulo_da_nota = data["titulo_da_nota"]
@@ -232,11 +225,8 @@ def dataNota():
 def nova_versao_capitulo():
     data = request.get_json()
 
-    print(data);
-
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
-    #version_id = data["version_id"]
     contents = data["contents"]
     chapter_title = data["chapter_title"]
     nome_nova_versao = data["nome_nova_versao"]
@@ -289,14 +279,11 @@ def adicionaNota():
 @app.route('/lista_projetos_recentes')
 def lista_projetos_recentes():
     order_desc = maracuja_funcs.retorna_projetos_recentes(sqlite3);
-    print(order_desc)
     data = {}
     for projeto in order_desc:
         titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto[0]);
         data[titulo] = projeto[0];
         
-    print(data);
-    
     return jsonify(data)
 
 @app.route('/lista_todos_projetos')
@@ -306,17 +293,14 @@ def lista_todos_projetos():
 
 @app.route('/project_page/<int:project_id>', methods=['GET'])
 def project_page(project_id):
-    print(project_id);
     return render_template('project_page.html',projectID=project_id)
 
 @app.route('/notasDoprojeto/<int:project_id>', methods=['GET'])
 def notasDoprojeto(project_id):
-    print(project_id);
     return render_template('notas_projeto.html',projectID=project_id)
 
 @app.route('/retornaNotasProjeto/<int:project_id>', methods=['GET'])
 def retornaNotasProjeto(project_id):
-    print(project_id);
     lista_de_notas = maracuja_funcs.retorna_notas_projeto(sqlite3, project_id);
     return jsonify({"msg": "ok", "lista":lista_de_notas})
 
@@ -326,8 +310,6 @@ def criar_projeto():
 
 @app.route('/cadastraProjeto', methods=['POST'])
 def cadastraProjeto():
-    print("images: ", request.files)
-
     titulo = request.form.get("titulo");
     sinopse = request.form.get("sinopse");
 
@@ -338,7 +320,6 @@ def cadastraProjeto():
         return jsonify(resposta)
     
     image = request.files.get("image");
-    print("---> ", image);
     if (image == None):
         image_name = "CAPA_DO_PROJETO";
     else:
@@ -359,8 +340,7 @@ def project_info(project_id):
     titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, project_id);
     sinopse = maracuja_funcs.pega_sinopse_por_id(sqlite3, project_id);
     capa = maracuja_funcs.pega_capa_por_id(sqlite3, project_id);
-    print(titulo, sinopse, capa);
-
+    
     capitulos = maracuja_funcs.pega_capitulos(sqlite3, project_id);
 
     data = {"name": titulo,"sinopse": sinopse, "capitulos":capitulos, "capa":capa}
@@ -395,16 +375,12 @@ def img_app(image_id):
 
 @app.route('/atualiza_projeto_info', methods=['POST'])
 def atualiza_projeto_info():
-    print("images: ", request.files)
-
     project_id = request.form.get("project_id");
     titulo = request.form.get("titulo");
     sinopse = request.form.get("sinopse");
     nome_imagem = "qiwuqiwuqoeuwhewh,djhbfejhv";
     
     image = request.files.get("image");
-
-    print(titulo, sinopse, image);
 
     if image != None:
         image.filename = image.filename.replace(' ','_');
@@ -498,14 +474,7 @@ def canonizar_capitulo():
     return jsonify({"message": "ok"});
 
 if __name__ == '__main__':
-    print(argv)
-
     try:
-        print(1);
-    
-        #file = open(".\\version", "r")
-        #version = file.read();
-        #file.close()
         file_path = Path(".") / "version"
         with file_path.open("r", encoding="utf-8") as file:
             data = file.read()

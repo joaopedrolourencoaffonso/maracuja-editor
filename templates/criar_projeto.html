@@ -353,8 +353,6 @@
                 const titulo = document.getElementById("tituloField");
                 const sinopse = document.getElementById("sinopseField");
 
-                console.log(titulo.textContent, sinopse.textContent, fileInput.files[0]);
-
                 const formData = new FormData();
                 formData.append("titulo",titulo.value);
                 formData.append("sinopse",sinopse.value);

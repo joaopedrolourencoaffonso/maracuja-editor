@@ -289,7 +289,6 @@
             async function populaPagina() {
                 const response = await fetch("/lista_projetos_recentes");
                 projetos = await response.json();
-                console.log("--> ", projetos);
                 let temp = `<ul>`;
                 
                 Object.entries(projetos).forEach(([key, value]) => {

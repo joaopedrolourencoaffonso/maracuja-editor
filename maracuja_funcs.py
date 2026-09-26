@@ -15,8 +15,7 @@ def DB_start(sqlite3, requests_lib):
     """).fetchall();
 
     teste_tudoBem = verifica_array_tuples(tabelas,('tudoBem',));
-    print(teste_tudoBem);
-
+    
     if (not teste_tudoBem):
         # cria DB
         cursor.execute('CREATE TABLE tudoBem (tudoBem INTEGER)');
@@ -99,8 +98,6 @@ def retorna_notas_projeto(sqlite3, project_id):
 
     conn.close();
 
-    print(lista_de_notas)
-
     return lista_de_notas;
 
 def retorna_nota_especifica(sqlite3, project_id, nota_id):
@@ -110,8 +107,6 @@ def retorna_nota_especifica(sqlite3, project_id, nota_id):
     nota = cursor.execute('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id)).fetchall();
 
     conn.close();
-
-    print(nota)
 
     return nota;
 
@@ -137,8 +132,6 @@ def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
 def atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-
-    print("2 -> ", titulo_da_nota)
 
     # cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
     cursor.execute('UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
@@ -235,7 +228,6 @@ def pega_sinopse_por_id(sqlite3, id):
 def titulo_ja_existe(sqlite3, titulo):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    print("------> ", titulo);
     numero = cursor.execute('SELECT count() FROM titulos where name = ?;', (str(titulo),)).fetchall()
     conn.close();
     if (numero[0][0] > 0):
@@ -427,8 +419,6 @@ def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
 
 def exporta_arquivos(argv, tarfile):
     if len(argv) > 2:
-        print("aqui")
-        print("-> ", argv)
         nome_do_projeto = argv[2]
     else:
         nome_do_projeto = "meusProjetosExport.tar.gz"
@@ -552,16 +542,10 @@ def quill_to_md(json, path_do_arquivo):
         if 'link' in lista[i+1]['attributes']:
             string_final = string_final + lista[i]["insert"] + f"<a href='${lista[i+1]['attributes']['link']}'>"  + lista[i+1]["insert"] + "</a>";
         
-        #print(i, i+1);
         i += 2;
 
     string_final = string_final.replace("\n", "\n\n");
     
-    #with path_arquivo_saida.open("w", encoding="utf-8") as file:
-    #    file.write(string_final)
-
-    #print(jsonData);
-
     return string_final
 
 def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
@@ -753,7 +737,6 @@ def quill_to_html(json, path_do_arquivo):
     string_final = "";
     for elemento in string_array:
         if len(elemento) >= 1:
-            print("-->", elemento);
             if elemento[0] == "<" and elemento[len(elemento) - 1] == ">":
                 string_final = string_final + elemento
             elif elemento[0] == "<" and elemento[len(elemento) - 1] != ">":
@@ -863,14 +846,7 @@ def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
     # Render Markdown string directly
     pdf.write_html(html_text)
 
-    #print("-->\n", html_text.split("\n"))
-
     # Save to file
-    #pdf.output("markdown_output.pdf")md_file_path
     pdf.output(md_file_path)
-    print(f"PDF created successfully: {md_file_path}")
-
-    #with open(md_file_path, "w", encoding="utf-8") as file:
-    #    file.write(html_text)
-
+    
     return md_file_path
