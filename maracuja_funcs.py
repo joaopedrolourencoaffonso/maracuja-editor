@@ -47,11 +47,18 @@ def DB_SELECT(sqlite3,query, params=()):
 
     return saida;
 
-def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
+def DB_EDIT(sqlite3,query, params=()):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
-    posicao = cursor.execute('SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
+    saida = cursor.execute(query, params).fetchall();
+    conn.commit();
+    conn.close();
+
+    return saida;
+
+def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
+    id = DB_SELECT(sqlite3,'SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
+    posicao = DB_SELECT(sqlite3, 'SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
     if (id == [(None,)]):
         id = 0;
     else:
@@ -69,11 +76,8 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     posicao = str(posicao);
 
     # (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
+    DB_EDIT(sqlite3,'INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
     
-    conn.commit();
-    conn.close();
-
     return id;
 
 def retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id):
@@ -99,10 +103,7 @@ def retorna_nota_especifica(sqlite3, project_id, nota_id):
     return nota;
 
 def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    nota_id = cursor.execute('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
+    nota_id = DB_EDIT(sqlite3, 'select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
     nota_id = nota_id[0][0];
 
     if (nota_id == None):
@@ -110,31 +111,15 @@ def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
     
     nota_id += 1;
 
-    cursor.execute('insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
+    DB_EDIT(sqlite3, 'insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
 
-    conn.commit();
-    conn.close();
-    
     return nota_id;
 
 def atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    # cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
-    cursor.execute('UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, 'UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
 
 def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_name):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(new_name, project_id, chapter_id, version_id));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, 'UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(new_name, project_id, chapter_id, version_id));
 
 def pega_capitulos(sqlite3, project_id):
     capitulos = DB_SELECT(sqlite3, 'select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,));
@@ -152,9 +137,7 @@ def todos_projetos(sqlite3):
     return rows;
 
 def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    id = cursor.execute('SELECT MAX(PROJECT_ID) FROM titulos;').fetchall();
+    id = DB_SELECT(sqlite3, 'SELECT MAX(PROJECT_ID) FROM titulos;',());
     if (id == [(None,)]):
         id = 0;
     else:
@@ -162,12 +145,10 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     id = id + 1;
     id = str(id);
     
-    cursor.execute('INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")');
-    cursor.execute('INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")');
-    cursor.execute('INSERT INTO capas VALUES (' + id + ', "' + filename + '")');
-    conn.commit();
-    conn.close();
-
+    DB_EDIT(sqlite3, 'INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")',());
+    DB_EDIT(sqlite3, 'INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")',());
+    DB_EDIT(sqlite3, 'INSERT INTO capas VALUES (' + id + ', "' + filename + '")',());
+    
     return id;
 
 def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
@@ -210,26 +191,14 @@ def pega_capa_por_id(sqlite3, id):
     return capa;
 
 def atualiza_projeto_mais_recente(sqlite3, time, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
     nova_hora = int(time());
 
-    cursor.execute('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, 'UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
 
 def insere_projeto_mais_recente(sqlite3, time, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
     nova_hora = int(time());
 
-    cursor.execute('insert into projetosRecentes values (?, ?);',(id, nova_hora));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3,'insert into projetosRecentes values (?, ?);',(id, nova_hora));
 
 def retorna_projetos_recentes(sqlite3):
     order_desc = DB_SELECT(sqlite3, 'select project_id from projetosRecentes order by last_open desc limit 10;',());
@@ -237,34 +206,23 @@ def retorna_projetos_recentes(sqlite3):
     return order_desc;
 
 def excluir_versao(Path, sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    is_canon = cursor.execute("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id)).fetchall();
+    is_canon = DB_SELECT(sqlite3, "select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
     if is_canon[0][0] == 1:
         retorno = "Não pode excluir versão canon. Canonize outra versão antes de deletar este";
     else:
         retorno = "ok";
-        cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+        
+        DB_EDIT(sqlite3, "delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
         
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
         file_path.unlink(missing_ok=True)
 
-    conn.commit();
-    conn.close();
-
     return retorno;
 
 def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
     mover_capitulo(sqlite3, project_id, chapter_id, 888888);
 
-    cursor.execute("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, "delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
     
     folder = Path("capitulos")
     pattern = f"{project_id}-{chapter_id}-*.json"
@@ -275,13 +233,7 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
     return "ok";
 
 def excluir_nota(Path, sqlite3, project_id, nota_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, "delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
     
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json";
     file_path.unlink(missing_ok=True)
@@ -289,25 +241,19 @@ def excluir_nota(Path, sqlite3, project_id, nota_id):
     return "ok";
 
 def excluir_projeto(os, Path, sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
+    DB_EDIT(sqlite3,"delete from titulos where project_id = ?;",(project_id,));
+    DB_EDIT(sqlite3,"delete from sinopses where project_id = ?;",(project_id,));
+    DB_EDIT(sqlite3,"delete from capitulos where project_id = ?;",(project_id,));
+    DB_EDIT(sqlite3,"delete from projetosRecentes where project_id = ?;",(project_id,));
 
-    cursor.execute("delete from titulos where project_id = ?;",(project_id,));
-    cursor.execute("delete from sinopses where project_id = ?;",(project_id,));
-    cursor.execute("delete from capitulos where project_id = ?;",(project_id,));
-    cursor.execute("delete from projetosRecentes where project_id = ?;",(project_id,));
-
-    capa = cursor.execute("select imagem_capa from capas where project_id = ?", (project_id,)).fetchall();
+    capa = DB_SELECT("select imagem_capa from capas where project_id = ?", (project_id,));
 
     capa = capa[0][0];
 
     file_path = Path("localdata") / capa;
     file_path.unlink(missing_ok=True);
 
-    cursor.execute("delete from capas where project_id = ?;",(project_id,));
-
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, "delete from capas where project_id = ?;",(project_id,));
 
     for f in Path("capitulos").glob(str(project_id) + "*.json"):
         f.unlink()
@@ -322,6 +268,7 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     if capituloASerMovido == novaPosicaoDoCapitulo:
         return
 
+    # prefiri deixar essas operações fora do DB_EDIT devido a grande carga de escrita.
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
@@ -338,21 +285,15 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     conn.close();
 
 def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    novo_id = cursor.execute('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    novo_id = DB_EDIT(sqlite3, 'SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     novo_id = novo_id[0][0] + 1;
 
-    posicao = cursor.execute('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    posicao = DB_EDIT(sqlite3, 'SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
     posicao = posicao[0][0];
 
     # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
+    DB_EDIT(sqlite3, 'INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
     
-    conn.commit();
-    conn.close();
-
     return novo_id;
 
 def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
@@ -361,14 +302,8 @@ def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
     return lista;
 
 def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
-    cursor.execute("UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
-
-    conn.commit();
-    conn.close();
+    DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
+    DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
 
 def exporta_arquivos(argv, tarfile):
     if len(argv) > 2:
