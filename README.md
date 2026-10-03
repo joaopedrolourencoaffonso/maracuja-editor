@@ -83,21 +83,16 @@ Pull requests são bem vindos!
 
 ## Próximos Objetivos
 
-### v2.0.0 - revisão de código
+### v3.0.0 - Imagens
 
-- Revisar código, deixar mais limpo, eficiente e organizado
-- Corrigir problema de importar backup
+- Suportar figuras nos projetos
+
+### v4.0.0 - Exportar para PDF
+
 - Deletar arquivos temporários criado para exportação
-
-### v3.0.0 - Exportar para PDF
-
 - revisar bugs da exportação para PDF
 - permitir customização da função de exportar html
 - permitir customização da função de exportar PDF
-
-### v4.0.0 - Imagens
-
-- Suportar figuras nos projetos
 
 ### v5.0.0 - Documentos
 
