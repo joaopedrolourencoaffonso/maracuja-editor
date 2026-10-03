@@ -39,6 +39,14 @@ def DB_start(sqlite3, requests_lib):
 
     return True;
 
+def DB_SELECT(sqlite3,query, params=()):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    saida = cursor.execute(query, params).fetchall();
+    conn.close();
+
+    return saida;
+
 def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
@@ -69,44 +77,24 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     return id;
 
 def retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    titulo = cursor.execute('select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id)).fetchall();
+    titulo = DB_SELECT(sqlite3, 'select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
     titulo = titulo[0][0]
-
-    conn.close();
 
     return titulo;
 
 def retorna_titulo_versao(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    titulo = cursor.execute('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id)).fetchall();
+    titulo = DB_SELECT(sqlite3,'select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
     titulo = titulo[0][0]
-
-    conn.close();
 
     return titulo;
 
 def retorna_notas_projeto(sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    lista_de_notas = cursor.execute('select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
-
-    conn.close();
+    lista_de_notas = DB_SELECT(sqlite3,'select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,))
 
     return lista_de_notas;
 
 def retorna_nota_especifica(sqlite3, project_id, nota_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    nota = cursor.execute('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id)).fetchall();
-
-    conn.close();
+    nota = DB_SELECT(sqlite3, 'select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
 
     return nota;
 
@@ -149,29 +137,18 @@ def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_na
     conn.close();
 
 def pega_capitulos(sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    capitulos = cursor.execute('select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,)).fetchall();
+    capitulos = DB_SELECT(sqlite3, 'select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,));
     
-    conn.commit();
-    conn.close();
-
     return capitulos;
 
 def todos_projetos(sqlite3):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    projetos = cursor.execute('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;').fetchall();
+    projetos = DB_SELECT(sqlite3, 'select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
     rows = {};
     for projeto in projetos:
-        n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
+        #n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
+        n_capitulos = DB_SELECT(sqlite3, 'select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],));
         rows.update({f"{projeto[0]}": {"titulo": f"{projeto[1]}","src": f"{projeto[2]}","ncapitulos": f"{n_capitulos[0][0]}"}})
     
-    conn.commit();
-    conn.close();
-
     return rows;
 
 def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
@@ -210,35 +187,25 @@ def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
     return id;
 
 def pega_titulo_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    titulo = cursor.execute('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),)).fetchall()
+    titulo = DB_SELECT(sqlite3, 'SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),));
     titulo = titulo[0][0];
-    conn.close();
     return titulo
 
 def pega_sinopse_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    sinopse = cursor.execute('SELECT sinopse FROM sinopses where PROJECT_ID =' +  str(id) + ';').fetchall()
+    sinopse = DB_SELECT(sqlite3, 'SELECT sinopse FROM sinopses where PROJECT_ID = ?;', (str(id),))
     sinopse = sinopse[0][0];
-    conn.close();
     return sinopse
 
 def titulo_ja_existe(sqlite3, titulo):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    numero = cursor.execute('SELECT count() FROM titulos where name = ?;', (str(titulo),)).fetchall()
-    conn.close();
+    numero = DB_SELECT(sqlite3, 'SELECT count() FROM titulos where name = ?;', (str(titulo),));
+    
     if (numero[0][0] > 0):
         return True;
     else:
         return False;
 
 def pega_capa_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    capas = cursor.execute('SELECT imagem_capa FROM capas where PROJECT_ID =' +  str(id) + ';').fetchall()
+    capas = DB_SELECT(sqlite3, 'SELECT imagem_capa FROM capas where PROJECT_ID = ?;', (str(id),));
     capa = capas[0][0]
     return capa;
 
@@ -265,13 +232,7 @@ def insere_projeto_mais_recente(sqlite3, time, id):
     conn.close();
 
 def retorna_projetos_recentes(sqlite3):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    order_desc = cursor.execute('select project_id from projetosRecentes order by last_open desc limit 10;').fetchall()
-
-    conn.commit();
-    conn.close();
+    order_desc = DB_SELECT(sqlite3, 'select project_id from projetosRecentes order by last_open desc limit 10;',());
 
     return order_desc;
 
@@ -334,8 +295,6 @@ def excluir_projeto(os, Path, sqlite3, project_id):
     cursor.execute("delete from titulos where project_id = ?;",(project_id,));
     cursor.execute("delete from sinopses where project_id = ?;",(project_id,));
     cursor.execute("delete from capitulos where project_id = ?;",(project_id,));
-    # AINDA NÃO IMPLEMENTADO
-    #cursor.execute("delete from versoesCapitulos where project_id = ?;",(project_id,));
     cursor.execute("delete from projetosRecentes where project_id = ?;",(project_id,));
 
     capa = cursor.execute("select imagem_capa from capas where project_id = ?", (project_id,)).fetchall();
@@ -397,13 +356,7 @@ def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_no
     return novo_id;
 
 def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    lista = cursor.execute("select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id)).fetchall();
-
-    conn.commit();
-    conn.close();
+    lista = DB_SELECT(sqlite3,"select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id));
 
     return lista;
 
@@ -549,18 +502,8 @@ def quill_to_md(json, path_do_arquivo):
     return string_final
 
 def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    # 1. Fetch chapter metadata from SQLite
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
+    lista_capitulos = DB_SELECT(sqlite3, "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
-    # Fix: SQL parameter must be a single-element tuple (project_id,)
-    lista_capitulos = cursor.execute(
-        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    
-    conn.close()
-
     # 2. Prepare export_temp directory (create if missing, clean out existing files)
     export_dir = Path("export_temp")
     export_dir.mkdir(parents=True, exist_ok=True)
@@ -588,15 +531,7 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
     return archive_filename
 
 def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     markdown_text = ""
 
     for capitulo in lista_capitulos:
@@ -750,19 +685,8 @@ def quill_to_html(json, path_do_arquivo):
     return string_final
 
 def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    # 1. Fetch chapter metadata from SQLite
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
+    lista_capitulos = DB_SELECT(sqlite3, "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
-    # Fix: SQL parameter must be a single-element tuple (project_id,)
-    lista_capitulos = cursor.execute(
-        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    
-    conn.close()
-
-    # 2. Prepare export_temp directory (create if missing, clean out existing files)
     export_dir = Path("export_temp")
     export_dir.mkdir(parents=True, exist_ok=True)
 
@@ -789,15 +713,7 @@ def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_
     return archive_filename
 
 def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
@@ -812,15 +728,7 @@ def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
     return md_file_path
 
 def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:

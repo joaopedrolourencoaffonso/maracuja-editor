@@ -268,3 +268,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Excluindo `console.log` e `print`s desnecessários.
+
+## 1.0.2 - 26-09-2026
+
+### Added
+
+- Adicionando mudanças para que UI possa funcionar a partir de wsl.
+- Concentrando funções de consulta em uma única função `DB_SELECT` para diminuir redundância de código e incrementar legibilidade.

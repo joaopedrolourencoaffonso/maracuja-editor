@@ -514,7 +514,7 @@ if __name__ == '__main__':
 
         # tirando para teste
         maracuja_funcs.DB_start(sqlite3,requests_lib);
-        app.run(debug=True);
+        app.run(host="0.0.0.0",port=5000,debug=True);
     
     except Exception as e:
         print(e);
