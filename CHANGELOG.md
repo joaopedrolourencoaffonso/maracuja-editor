@@ -260,3 +260,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incrementa README
 - Página web do projeto
 - Corrige pequenos bugs
+
+## 26-09-2026 - Início do code-review. Criação da branch 'code-review'.
+
+## 1.0.1 - 26-09-2026
+
+### Added
+
+- Excluindo `console.log` e `print`s desnecessários.
+
+## 1.0.2 - 03-10-2026
+
+### Added
+
+- Adicionando mudanças para que UI possa funcionar a partir de wsl.
+- Concentrando funções de consulta em uma única função `DB_SELECT` para diminuir redundância de código e incrementar legibilidade. (redução em 116 linhas de código!)
+
+## 1.0.3 - 03-10-2026
+
+### Added
+
+- Concentrando funções de atualização do banco de dados em uma única função `DB_EDIT` para diminuir redundância de código e incrementar legibilidade. (redução em 65 linhas de código!)
+
+## 1.0.4 - 03-10-2026
+
+### Added
+
+- Excluindo funções redundantes, isto é, que podiam ser substituídas pela execução direta das funções `DB_EDIT` e `DB_SELECT`. (redução em 47 linhas de código!)
+
+## 1.0.5 - 03-10-2026
+
+### Added
+
+- Corrigindo importação das bibliotecas. Bibliotecas são agoras importadas diretamente no `maracuja_funcs`, eliminando a passagem das mesmas como objetos, simplificando futuro processo de criação de executável e leitura do código.
+
+## 2.0.0 - 03-10-2026
+
+### Added
+
+- Código enxuto.
+- Implementação de boas práticas.
+- Resolução de bugs.

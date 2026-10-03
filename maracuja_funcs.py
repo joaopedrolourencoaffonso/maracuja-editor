@@ -1,10 +1,19 @@
+import sqlite3
+import tarfile
+import shutil
+import json
+import urllib.request as requests_lib;
+from time import time;
+from fpdf import FPDF;
+from pathlib import Path;
+
 def verifica_array_tuples(vetor,elemento):
     for x in vetor:
         if (x == elemento):
             return True;
     return False;
 
-def DB_start(sqlite3, requests_lib):
+def DB_start():
     print("Updating DB")
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
@@ -15,8 +24,7 @@ def DB_start(sqlite3, requests_lib):
     """).fetchall();
 
     teste_tudoBem = verifica_array_tuples(tabelas,('tudoBem',));
-    print(teste_tudoBem);
-
+    
     if (not teste_tudoBem):
         # cria DB
         cursor.execute('CREATE TABLE tudoBem (tudoBem INTEGER)');
@@ -24,27 +32,37 @@ def DB_start(sqlite3, requests_lib):
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
         cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER, POSICAO INTEGER)');
-        #cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
         cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
-        # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
-    
-    conn.close();
+        conn.close();
+        
+        js_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js";
+        requests_lib.urlretrieve(js_file_url, "quill.js");
 
-    js_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js";
-    requests_lib.urlretrieve(js_file_url, "quill.js");
-
-    css_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css";
-    requests_lib.urlretrieve(css_file_url, "quill.css");
+        css_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css";
+        requests_lib.urlretrieve(css_file_url, "quill.css");
 
     return True;
 
-def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
+def DB_SELECT(query, params=()):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    id = cursor.execute('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
-    posicao = cursor.execute('SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,)).fetchall();
+    saida = cursor.execute(query, params).fetchall();
+    conn.close();
+
+    return saida;
+
+def DB_EDIT(query, params=()):
+    conn = sqlite3.connect('userdata');
+    cursor = conn.cursor();
+    cursor.execute(query, params);
+    conn.commit();
+    conn.close();
+
+def retorna_novo_chapter_id(project_id, chapter_id):
+    id = DB_SELECT('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
+    posicao = DB_SELECT('SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
     if (id == [(None,)]):
         id = 0;
     else:
@@ -62,64 +80,12 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     posicao = str(posicao);
 
     # (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
+    DB_EDIT('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
     
-    conn.commit();
-    conn.close();
-
     return id;
 
-def retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    titulo = cursor.execute('select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id)).fetchall();
-    titulo = titulo[0][0]
-
-    conn.close();
-
-    return titulo;
-
-def retorna_titulo_versao(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    titulo = cursor.execute('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id)).fetchall();
-    titulo = titulo[0][0]
-
-    conn.close();
-
-    return titulo;
-
-def retorna_notas_projeto(sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    lista_de_notas = cursor.execute('select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
-
-    conn.close();
-
-    print(lista_de_notas)
-
-    return lista_de_notas;
-
-def retorna_nota_especifica(sqlite3, project_id, nota_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    nota = cursor.execute('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id)).fetchall();
-
-    conn.close();
-
-    print(nota)
-
-    return nota;
-
-def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    nota_id = cursor.execute('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,)).fetchall();
+def insere_notas_projeto(project_id, titulo, descricao):
+    nota_id = DB_SELECT('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
     nota_id = nota_id[0][0];
 
     if (nota_id == None):
@@ -127,64 +93,21 @@ def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
     
     nota_id += 1;
 
-    cursor.execute('insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
+    DB_EDIT('insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
 
-    conn.commit();
-    conn.close();
-    
     return nota_id;
 
-def atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    print("2 -> ", titulo_da_nota)
-
-    # cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
-    cursor.execute('UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
-    
-    conn.commit();
-    conn.close();
-
-def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_name):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(new_name, project_id, chapter_id, version_id));
-    
-    conn.commit();
-    conn.close();
-
-def pega_capitulos(sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    capitulos = cursor.execute('select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,)).fetchall();
-    
-    conn.commit();
-    conn.close();
-
-    return capitulos;
-
-def todos_projetos(sqlite3):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    projetos = cursor.execute('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;').fetchall();
+def todos_projetos():
+    projetos = DB_SELECT('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
     rows = {};
     for projeto in projetos:
-        n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
+        n_capitulos = DB_SELECT('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],));
         rows.update({f"{projeto[0]}": {"titulo": f"{projeto[1]}","src": f"{projeto[2]}","ncapitulos": f"{n_capitulos[0][0]}"}})
     
-    conn.commit();
-    conn.close();
-
     return rows;
 
-def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    id = cursor.execute('SELECT MAX(PROJECT_ID) FROM titulos;').fetchall();
+def insere_titulo_sinopse(titulo, sinopse,filename):
+    id = DB_SELECT('SELECT MAX(PROJECT_ID) FROM titulos;',());
     if (id == [(None,)]):
         id = 0;
     else:
@@ -192,126 +115,89 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     id = id + 1;
     id = str(id);
     
-    cursor.execute('INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")');
-    cursor.execute('INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")');
-    cursor.execute('INSERT INTO capas VALUES (' + id + ', "' + filename + '")');
-    conn.commit();
-    conn.close();
-
+    DB_EDIT('INSERT INTO titulos VALUES (?, ?)',(id, titulo));
+    DB_EDIT('INSERT INTO sinopses VALUES (?, ?)',(id, sinopse));
+    DB_EDIT('INSERT INTO capas VALUES (?, ?)',(id, filename));
+    
     return id;
 
-def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
+def atualiza_titulo_sinopse(project_id, titulo, sinopse,filename):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     project_id = str(project_id);
     
-    cursor.execute('UPDATE titulos set name = "' + titulo + '" where PROJECT_ID = ' + project_id + ';');
-    cursor.execute('UPDATE sinopses set sinopse = "' + sinopse + '" where PROJECT_ID = ' + project_id + ';');
+    cursor.execute('UPDATE titulos set name = ? where PROJECT_ID = ?;',(titulo, project_id));
+    cursor.execute('UPDATE sinopses set sinopse = ? where PROJECT_ID = ?;',(sinopse,project_id));
     
     if (filename != 'qiwuqiwuqoeuwhewh,djhbfejhv'):
-        cursor.execute('UPDATE capas set imagem_capa = "' + filename + '" where PROJECT_ID = ' + project_id + ';');
+        cursor.execute('UPDATE capas set imagem_capa = ? where PROJECT_ID = ?;',(filename,project_id));
     
     conn.commit();
     conn.close();
 
-    return id;
+    #return id;
 
-def pega_titulo_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    titulo = cursor.execute('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),)).fetchall()
+def pega_titulo_por_id(id):
+    titulo = DB_SELECT('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),));
     titulo = titulo[0][0];
-    conn.close();
     return titulo
 
-def pega_sinopse_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    sinopse = cursor.execute('SELECT sinopse FROM sinopses where PROJECT_ID =' +  str(id) + ';').fetchall()
+def pega_sinopse_por_id(id):
+    sinopse = DB_SELECT('SELECT sinopse FROM sinopses where PROJECT_ID = ?;', (str(id),))
     sinopse = sinopse[0][0];
-    conn.close();
     return sinopse
 
-def titulo_ja_existe(sqlite3, titulo):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    print("------> ", titulo);
-    numero = cursor.execute('SELECT count() FROM titulos where name = ?;', (str(titulo),)).fetchall()
-    conn.close();
+def titulo_ja_existe(titulo):
+    numero = DB_SELECT('SELECT count() FROM titulos where name = ?;', (str(titulo),));
+    
     if (numero[0][0] > 0):
         return True;
     else:
         return False;
 
-def pega_capa_por_id(sqlite3, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-    capas = cursor.execute('SELECT imagem_capa FROM capas where PROJECT_ID =' +  str(id) + ';').fetchall()
+def pega_capa_por_id(id):
+    capas = DB_SELECT('SELECT imagem_capa FROM capas where PROJECT_ID = ?;', (str(id),));
     capa = capas[0][0]
     return capa;
 
-def atualiza_projeto_mais_recente(sqlite3, time, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
+def atualiza_projeto_mais_recente(id):
     nova_hora = int(time());
 
-    cursor.execute('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
 
-def insere_projeto_mais_recente(sqlite3, time, id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
+def insere_projeto_mais_recente(id):
     nova_hora = int(time());
 
-    cursor.execute('insert into projetosRecentes values (?, ?);',(id, nova_hora));
-    
-    conn.commit();
-    conn.close();
+    DB_EDIT('insert into projetosRecentes values (?, ?);',(id, nova_hora));
 
-def retorna_projetos_recentes(sqlite3):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    order_desc = cursor.execute('select project_id from projetosRecentes order by last_open desc limit 10;').fetchall()
-
-    conn.commit();
-    conn.close();
-
-    return order_desc;
-
-def excluir_versao(Path, sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    is_canon = cursor.execute("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id)).fetchall();
+def excluir_versao(project_id, chapter_id, version_id):
+    is_canon = DB_SELECT("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
     if is_canon[0][0] == 1:
         retorno = "Não pode excluir versão canon. Canonize outra versão antes de deletar este";
     else:
         retorno = "ok";
-        cursor.execute("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+        
+        DB_EDIT("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
         
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
         file_path.unlink(missing_ok=True)
 
-    conn.commit();
-    conn.close();
-
     return retorno;
 
-def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
+def excluir_capitulo(project_id, chapter_id):
+    while True:
+        posicoes = DB_SELECT(
+            "select posicao from capitulos where project_id = ? and chapter_id = ? limit 1;",
+            (project_id, chapter_id),
+        )
+        if not posicoes:
+            break
 
-    mover_capitulo(sqlite3, project_id, chapter_id, 888888);
-
-    cursor.execute("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
-    
-    conn.commit();
-    conn.close();
+        mover_capitulo(project_id, posicoes[0][0], 8888888)
+        DB_EDIT(
+            "delete from capitulos where project_id = ? and chapter_id = ? and posicao = ?;",
+            (project_id, chapter_id, 8888888),
+        )
     
     folder = Path("capitulos")
     pattern = f"{project_id}-{chapter_id}-*.json"
@@ -321,47 +207,33 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
 
     return "ok";
 
-def excluir_nota(Path, sqlite3, project_id, nota_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
-    
-    conn.commit();
-    conn.close();
+def excluir_nota(project_id, nota_id):
+    DB_EDIT("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
     
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json";
     file_path.unlink(missing_ok=True)
 
     return "ok";
 
-def excluir_projeto(os, Path, sqlite3, project_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
+def excluir_projeto(os, project_id):
+    DB_EDIT("delete from titulos where project_id = ?;",(project_id,));
+    DB_EDIT("delete from sinopses where project_id = ?;",(project_id,));
+    DB_EDIT("delete from capitulos where project_id = ?;",(project_id,));
+    DB_EDIT("delete from projetosRecentes where project_id = ?;",(project_id,));
 
-    cursor.execute("delete from titulos where project_id = ?;",(project_id,));
-    cursor.execute("delete from sinopses where project_id = ?;",(project_id,));
-    cursor.execute("delete from capitulos where project_id = ?;",(project_id,));
-    # AINDA NÃO IMPLEMENTADO
-    #cursor.execute("delete from versoesCapitulos where project_id = ?;",(project_id,));
-    cursor.execute("delete from projetosRecentes where project_id = ?;",(project_id,));
-
-    capa = cursor.execute("select imagem_capa from capas where project_id = ?", (project_id,)).fetchall();
+    capa = DB_SELECT("select imagem_capa from capas where project_id = ?", (project_id,));
 
     capa = capa[0][0];
 
     file_path = Path("localdata") / capa;
     file_path.unlink(missing_ok=True);
 
-    cursor.execute("delete from capas where project_id = ?;",(project_id,));
+    DB_EDIT("delete from capas where project_id = ?;",(project_id,));
 
-    conn.commit();
-    conn.close();
-
-    for f in Path("capitulos").glob(str(project_id) + "*.json"):
+    for f in Path("capitulos").glob(str(project_id) + "-*.json"):
         f.unlink()
 
-def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo):
+def mover_capitulo(project_id, capituloASerMovido, novaPosicaoDoCapitulo):
     try:
         capituloASerMovido = int(capituloASerMovido)
         novaPosicaoDoCapitulo = int(novaPosicaoDoCapitulo)
@@ -371,6 +243,7 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     if capituloASerMovido == novaPosicaoDoCapitulo:
         return
 
+    # prefiri deixar essas operações fora do DB_EDIT devido a grande carga de escrita.
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
 
@@ -386,49 +259,20 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     conn.commit();
     conn.close();
 
-def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    novo_id = cursor.execute('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+def registra_nova_versao(project_id, chapter_id, chapter_title, nome_nova_versao):
+    novo_id = DB_SELECT('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     novo_id = novo_id[0][0] + 1;
 
-    posicao = cursor.execute('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    posicao = DB_SELECT('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     posicao = posicao[0][0];
 
     # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
-    cursor.execute('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
+    DB_EDIT('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
     
-    conn.commit();
-    conn.close();
-
     return novo_id;
 
-def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    lista = cursor.execute("select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id)).fetchall();
-
-    conn.commit();
-    conn.close();
-
-    return lista;
-
-def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
-    conn = sqlite3.connect('userdata');
-    cursor = conn.cursor();
-
-    cursor.execute("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
-    cursor.execute("UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
-
-    conn.commit();
-    conn.close();
-
-def exporta_arquivos(argv, tarfile):
+def exporta_arquivos(argv):
     if len(argv) > 2:
-        print("aqui")
-        print("-> ", argv)
         nome_do_projeto = argv[2]
     else:
         nome_do_projeto = "meusProjetosExport.tar.gz"
@@ -442,7 +286,7 @@ def exporta_arquivos(argv, tarfile):
         archive.add("userdata", arcname="userdata")
 
 
-def clean(Path, shutil):
+def clean():
     for folder_name in ("localdata", "capitulos","notas"):
         folder = Path(folder_name)
         
@@ -465,8 +309,8 @@ def clean(Path, shutil):
 
     print("Arquivos deletados.")
 
-def importa_arquivos(argv,tarfile, filepath,Path, shutil):
-    clean(Path, shutil);
+def importa_arquivos(argv, filepath):
+    clean();
 
     temp_dir = Path("temp_folder");
 
@@ -493,7 +337,7 @@ def importa_arquivos(argv,tarfile, filepath,Path, shutil):
     # 4. Clean up temporary directory
     shutil.rmtree(temp_dir, ignore_errors=True)
 
-def quill_to_md(json, path_do_arquivo):
+def quill_to_md(path_do_arquivo):
     string_final = "";
     with path_do_arquivo.open("r", encoding="utf-8") as file:
         rawChapterData = file.read()
@@ -552,31 +396,15 @@ def quill_to_md(json, path_do_arquivo):
         if 'link' in lista[i+1]['attributes']:
             string_final = string_final + lista[i]["insert"] + f"<a href='${lista[i+1]['attributes']['link']}'>"  + lista[i+1]["insert"] + "</a>";
         
-        #print(i, i+1);
         i += 2;
 
     string_final = string_final.replace("\n", "\n\n");
     
-    #with path_arquivo_saida.open("w", encoding="utf-8") as file:
-    #    file.write(string_final)
-
-    #print(jsonData);
-
     return string_final
 
-def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    # 1. Fetch chapter metadata from SQLite
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
+def exporta_para_md_multiplos(project_id, titulo):
+    lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
-    # Fix: SQL parameter must be a single-element tuple (project_id,)
-    lista_capitulos = cursor.execute(
-        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    
-    conn.close()
-
     # 2. Prepare export_temp directory (create if missing, clean out existing files)
     export_dir = Path("export_temp")
     export_dir.mkdir(parents=True, exist_ok=True)
@@ -588,7 +416,7 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
     # 3. Generate Markdown files and write them to export_temp
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        markdown_text = quill_to_md(json, capitulo_path);
+        markdown_text = quill_to_md(capitulo_path);
         markdown_text = "# " + capitulo[3] + "\n" + markdown_text;
 
         md_file_path = export_dir / f"{capitulo[4]}.md"
@@ -603,21 +431,13 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
 
     return archive_filename
 
-def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+def exporta_para_md_unico(project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     markdown_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_md(json, capitulo_path);
+        temp_text = quill_to_md(capitulo_path);
         markdown_text = markdown_text + "\n\n# " + capitulo[3] + "\n\n" + temp_text;
 
     md_file_path = f"{titulo}.md"
@@ -626,7 +446,7 @@ def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
 
     return md_file_path
 
-def quill_to_html(json, path_do_arquivo):
+def quill_to_html(path_do_arquivo):
     string_final = ""
 
     with path_do_arquivo.open("r", encoding="utf-8") as file:
@@ -753,7 +573,6 @@ def quill_to_html(json, path_do_arquivo):
     string_final = "";
     for elemento in string_array:
         if len(elemento) >= 1:
-            print("-->", elemento);
             if elemento[0] == "<" and elemento[len(elemento) - 1] == ">":
                 string_final = string_final + elemento
             elif elemento[0] == "<" and elemento[len(elemento) - 1] != ">":
@@ -766,20 +585,9 @@ def quill_to_html(json, path_do_arquivo):
 
     return string_final
 
-def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    # 1. Fetch chapter metadata from SQLite
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
+def exporta_para_html_multiplos(project_id, titulo):
+    lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
-    # Fix: SQL parameter must be a single-element tuple (project_id,)
-    lista_capitulos = cursor.execute(
-        "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    
-    conn.close()
-
-    # 2. Prepare export_temp directory (create if missing, clean out existing files)
     export_dir = Path("export_temp")
     export_dir.mkdir(parents=True, exist_ok=True)
 
@@ -790,7 +598,7 @@ def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_
     # 3. Generate Markdown files and write them to export_temp
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        html_text = quill_to_html(json, capitulo_path);
+        html_text = quill_to_html(capitulo_path);
         html_text = "<h1>" + capitulo[3] + "</h1>" + html_text;
 
         md_file_path = export_dir / f"{capitulo[4]}.html"
@@ -805,21 +613,13 @@ def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_
 
     return archive_filename
 
-def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+def exporta_para_html_unico(project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_html(json, capitulo_path);
+        temp_text = quill_to_html(capitulo_path);
         html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
 
     md_file_path = f"{titulo}.html"
@@ -828,23 +628,14 @@ def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
 
     return md_file_path
 
-def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
-    conn = sqlite3.connect('userdata')
-    cursor = conn.cursor()
-    
-    lista_capitulos = cursor.execute(
-        "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", 
-        (project_id,)
-    ).fetchall()
-    conn.close()
-
+def exporta_para_pdf(project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_html(json, capitulo_path);
+        temp_text = quill_to_html(capitulo_path);
         html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
-        #html_text = html_text.replace('<p>','<p style="line-height: 1.5;">')
 
     md_file_path = f"{titulo}.pdf"
 
@@ -863,14 +654,7 @@ def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
     # Render Markdown string directly
     pdf.write_html(html_text)
 
-    #print("-->\n", html_text.split("\n"))
-
     # Save to file
-    #pdf.output("markdown_output.pdf")md_file_path
     pdf.output(md_file_path)
-    print(f"PDF created successfully: {md_file_path}")
-
-    #with open(md_file_path, "w", encoding="utf-8") as file:
-    #    file.write(html_text)
-
+    
     return md_file_path

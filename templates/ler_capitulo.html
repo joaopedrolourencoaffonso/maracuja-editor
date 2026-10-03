@@ -303,8 +303,6 @@
             const titulo_capitulo = "{{ titulo_capitulo }}";
             const chapter_data = {{ chapterData | tojson }};
 
-            //console.log("--> banana ",iframeFlag);
-            
             const quill = new Quill("#temp", {
                 theme: "snow",
             });
@@ -319,7 +317,6 @@
             const selectVersao = document.getElementById('listaVersoes');
             selectVersao.addEventListener('change', (event) => {
                 const selectedValue = event.target.value;
-                console.log(selectedValue);
                 window.location.href = `/lerCapitulo/?project_id=${project_id}&chapter_id=${chapter_id}&version_id=${selectedValue}`;
             });
 
@@ -328,7 +325,6 @@
             selectCapitulo.addEventListener('change', (event) => {
                 const selectedValue = event.target.value;
                 const valores = selectedValue.split(";")
-                console.log(selectedValue.split(";"));
                 window.location.href = `/lerCapitulo/?project_id=${project_id}&chapter_id=${valores[0]}&version_id=${valores[1]}`;
             });
 
@@ -361,10 +357,8 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
                     if (data.message == "ok") {
-                        console.log("data.lista: ",data.lista);
-
+                        
                         const targetId = parseInt(version_id);
                         const index = data.lista.findIndex(versao => versao[0] == targetId);
                         if (index !== -1) {
@@ -394,8 +388,6 @@
             async function populaListaDeCapitulos() {
                 const response = await fetch("/project_info/" + project_id);
                 projectData = await response.json();
-
-                console.log("projectData.capitulos: ", projectData.capitulos);
 
                 element = document.getElementById('listaDeCapitulos');
                 element.innerHTML = element.innerHTML  + `<option value="a;b">Selecione Capítulo</option>`;

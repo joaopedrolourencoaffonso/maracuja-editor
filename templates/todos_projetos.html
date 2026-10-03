@@ -263,11 +263,9 @@
             async function populaPagina() {
                 const response = await fetch("/lista_todos_projetos");
                 livros = await response.json();
-                console.log(livros);
                 let temp = "";
                 
                 Object.entries(livros).forEach(([key, value]) => {
-                    console.log(key, value.titulo);
                     temp = temp + `<a href="/project_page/${key}">
                         <div class="projetoBox">
                             <div>
