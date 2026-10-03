@@ -1,10 +1,12 @@
+import sqlite3
+
 def verifica_array_tuples(vetor,elemento):
     for x in vetor:
         if (x == elemento):
             return True;
     return False;
 
-def DB_start(sqlite3, requests_lib):
+def DB_start(requests_lib):
     print("Updating DB")
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
@@ -39,7 +41,7 @@ def DB_start(sqlite3, requests_lib):
 
     return True;
 
-def DB_SELECT(sqlite3,query, params=()):
+def DB_SELECT(query, params=()):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     saida = cursor.execute(query, params).fetchall();
@@ -47,7 +49,7 @@ def DB_SELECT(sqlite3,query, params=()):
 
     return saida;
 
-def DB_EDIT(sqlite3,query, params=()):
+def DB_EDIT(query, params=()):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     saida = cursor.execute(query, params).fetchall();
@@ -56,9 +58,9 @@ def DB_EDIT(sqlite3,query, params=()):
 
     return saida;
 
-def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
-    id = DB_SELECT(sqlite3,'SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
-    posicao = DB_SELECT(sqlite3, 'SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
+def retorna_novo_chapter_id(project_id, chapter_id):
+    id = DB_SELECT('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
+    posicao = DB_SELECT('SELECT MAX(posicao) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
     if (id == [(None,)]):
         id = 0;
     else:
@@ -76,12 +78,12 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     posicao = str(posicao);
 
     # (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER)
-    DB_EDIT(sqlite3,'INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
+    DB_EDIT('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?, ?)', (project_id, id, "Capítulo " + id, 1, "v1", 1,posicao));
     
     return id;
 
-def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
-    nota_id = DB_EDIT(sqlite3, 'select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
+def insere_notas_projeto(project_id, titulo, descricao):
+    nota_id = DB_EDIT('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
     nota_id = nota_id[0][0];
 
     if (nota_id == None):
@@ -89,22 +91,22 @@ def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
     
     nota_id += 1;
 
-    DB_EDIT(sqlite3, 'insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
+    DB_EDIT('insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
 
     return nota_id;
 
-def todos_projetos(sqlite3):
-    projetos = DB_SELECT(sqlite3, 'select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
+def todos_projetos():
+    projetos = DB_SELECT('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
     rows = {};
     for projeto in projetos:
         #n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
-        n_capitulos = DB_SELECT(sqlite3, 'select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],));
+        n_capitulos = DB_SELECT('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],));
         rows.update({f"{projeto[0]}": {"titulo": f"{projeto[1]}","src": f"{projeto[2]}","ncapitulos": f"{n_capitulos[0][0]}"}})
     
     return rows;
 
-def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
-    id = DB_SELECT(sqlite3, 'SELECT MAX(PROJECT_ID) FROM titulos;',());
+def insere_titulo_sinopse(titulo, sinopse,filename):
+    id = DB_SELECT('SELECT MAX(PROJECT_ID) FROM titulos;',());
     if (id == [(None,)]):
         id = 0;
     else:
@@ -112,13 +114,13 @@ def insere_titulo_sinopse(sqlite3, titulo, sinopse,filename):
     id = id + 1;
     id = str(id);
     
-    DB_EDIT(sqlite3, 'INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")',());
-    DB_EDIT(sqlite3, 'INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")',());
-    DB_EDIT(sqlite3, 'INSERT INTO capas VALUES (' + id + ', "' + filename + '")',());
+    DB_EDIT('INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")',());
+    DB_EDIT('INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")',());
+    DB_EDIT('INSERT INTO capas VALUES (' + id + ', "' + filename + '")',());
     
     return id;
 
-def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
+def atualiza_titulo_sinopse(project_id, titulo, sinopse,filename):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
     project_id = str(project_id);
@@ -134,57 +136,57 @@ def atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse,filename):
 
     return id;
 
-def pega_titulo_por_id(sqlite3, id):
-    titulo = DB_SELECT(sqlite3, 'SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),));
+def pega_titulo_por_id(id):
+    titulo = DB_SELECT('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),));
     titulo = titulo[0][0];
     return titulo
 
-def pega_sinopse_por_id(sqlite3, id):
-    sinopse = DB_SELECT(sqlite3, 'SELECT sinopse FROM sinopses where PROJECT_ID = ?;', (str(id),))
+def pega_sinopse_por_id(id):
+    sinopse = DB_SELECT('SELECT sinopse FROM sinopses where PROJECT_ID = ?;', (str(id),))
     sinopse = sinopse[0][0];
     return sinopse
 
-def titulo_ja_existe(sqlite3, titulo):
-    numero = DB_SELECT(sqlite3, 'SELECT count() FROM titulos where name = ?;', (str(titulo),));
+def titulo_ja_existe(titulo):
+    numero = DB_SELECT('SELECT count() FROM titulos where name = ?;', (str(titulo),));
     
     if (numero[0][0] > 0):
         return True;
     else:
         return False;
 
-def pega_capa_por_id(sqlite3, id):
-    capas = DB_SELECT(sqlite3, 'SELECT imagem_capa FROM capas where PROJECT_ID = ?;', (str(id),));
+def pega_capa_por_id(id):
+    capas = DB_SELECT('SELECT imagem_capa FROM capas where PROJECT_ID = ?;', (str(id),));
     capa = capas[0][0]
     return capa;
 
-def atualiza_projeto_mais_recente(sqlite3, time, id):
+def atualiza_projeto_mais_recente(time, id):
     nova_hora = int(time());
 
-    DB_EDIT(sqlite3, 'UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
+    DB_EDIT('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
 
-def insere_projeto_mais_recente(sqlite3, time, id):
+def insere_projeto_mais_recente(time, id):
     nova_hora = int(time());
 
-    DB_EDIT(sqlite3,'insert into projetosRecentes values (?, ?);',(id, nova_hora));
+    DB_EDIT('insert into projetosRecentes values (?, ?);',(id, nova_hora));
 
-def excluir_versao(Path, sqlite3, project_id, chapter_id, version_id):
-    is_canon = DB_SELECT(sqlite3, "select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+def excluir_versao(Path, project_id, chapter_id, version_id):
+    is_canon = DB_SELECT("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
     if is_canon[0][0] == 1:
         retorno = "Não pode excluir versão canon. Canonize outra versão antes de deletar este";
     else:
         retorno = "ok";
         
-        DB_EDIT(sqlite3, "delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
+        DB_EDIT("delete from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
         
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json";
         file_path.unlink(missing_ok=True)
 
     return retorno;
 
-def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
-    mover_capitulo(sqlite3, project_id, chapter_id, 888888);
+def excluir_capitulo(Path, project_id, chapter_id):
+    mover_capitulo(project_id, chapter_id, 888888);
 
-    DB_EDIT(sqlite3, "delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
+    DB_EDIT("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
     
     folder = Path("capitulos")
     pattern = f"{project_id}-{chapter_id}-*.json"
@@ -194,19 +196,19 @@ def excluir_capitulo(Path, sqlite3, project_id, chapter_id):
 
     return "ok";
 
-def excluir_nota(Path, sqlite3, project_id, nota_id):
-    DB_EDIT(sqlite3, "delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
+def excluir_nota(Path, project_id, nota_id):
+    DB_EDIT("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
     
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json";
     file_path.unlink(missing_ok=True)
 
     return "ok";
 
-def excluir_projeto(os, Path, sqlite3, project_id):
-    DB_EDIT(sqlite3,"delete from titulos where project_id = ?;",(project_id,));
-    DB_EDIT(sqlite3,"delete from sinopses where project_id = ?;",(project_id,));
-    DB_EDIT(sqlite3,"delete from capitulos where project_id = ?;",(project_id,));
-    DB_EDIT(sqlite3,"delete from projetosRecentes where project_id = ?;",(project_id,));
+def excluir_projeto(os, Path, project_id):
+    DB_EDIT("delete from titulos where project_id = ?;",(project_id,));
+    DB_EDIT("delete from sinopses where project_id = ?;",(project_id,));
+    DB_EDIT("delete from capitulos where project_id = ?;",(project_id,));
+    DB_EDIT("delete from projetosRecentes where project_id = ?;",(project_id,));
 
     capa = DB_SELECT("select imagem_capa from capas where project_id = ?", (project_id,));
 
@@ -215,12 +217,12 @@ def excluir_projeto(os, Path, sqlite3, project_id):
     file_path = Path("localdata") / capa;
     file_path.unlink(missing_ok=True);
 
-    DB_EDIT(sqlite3, "delete from capas where project_id = ?;",(project_id,));
+    DB_EDIT("delete from capas where project_id = ?;",(project_id,));
 
     for f in Path("capitulos").glob(str(project_id) + "*.json"):
         f.unlink()
 
-def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo):
+def mover_capitulo(project_id, capituloASerMovido, novaPosicaoDoCapitulo):
     try:
         capituloASerMovido = int(capituloASerMovido)
         novaPosicaoDoCapitulo = int(novaPosicaoDoCapitulo)
@@ -246,15 +248,15 @@ def mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitul
     conn.commit();
     conn.close();
 
-def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao):
-    novo_id = DB_EDIT(sqlite3, 'SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
+def registra_nova_versao(project_id, chapter_id, chapter_title, nome_nova_versao):
+    novo_id = DB_EDIT('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     novo_id = novo_id[0][0] + 1;
 
-    posicao = DB_EDIT(sqlite3, 'SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    posicao = DB_EDIT('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
     posicao = posicao[0][0];
 
     # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
-    DB_EDIT(sqlite3, 'INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
+    DB_EDIT('INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
     
     return novo_id;
 
@@ -389,8 +391,8 @@ def quill_to_md(json, path_do_arquivo):
     
     return string_final
 
-def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    lista_capitulos = DB_SELECT(sqlite3, "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
+def exporta_para_md_multiplos(tempfile, Path, json, tarfile, project_id, titulo):
+    lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
     # 2. Prepare export_temp directory (create if missing, clean out existing files)
     export_dir = Path("export_temp")
@@ -418,8 +420,8 @@ def exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id
 
     return archive_filename
 
-def exporta_para_md_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
+def exporta_para_md_unico(Path, json, tarfile, project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     markdown_text = ""
 
     for capitulo in lista_capitulos:
@@ -572,8 +574,8 @@ def quill_to_html(json, path_do_arquivo):
 
     return string_final
 
-def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_id, titulo):
-    lista_capitulos = DB_SELECT(sqlite3, "select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
+def exporta_para_html_multiplos(tempfile, Path, json, tarfile, project_id, titulo):
+    lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
     export_dir = Path("export_temp")
     export_dir.mkdir(parents=True, exist_ok=True)
@@ -600,8 +602,8 @@ def exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, project_
 
     return archive_filename
 
-def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
-    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
+def exporta_para_html_unico(Path, json, tarfile, project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
@@ -615,8 +617,8 @@ def exporta_para_html_unico(sqlite3, Path, json, tarfile, project_id, titulo):
 
     return md_file_path
 
-def exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, project_id, titulo):
-    lista_capitulos = DB_SELECT(sqlite3, "SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
+def exporta_para_pdf(FPDF, Path, json, tarfile, project_id, titulo):
+    lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:

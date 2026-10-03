@@ -3,7 +3,6 @@ from fpdf import FPDF
 import json
 import os
 from time import time;
-import sqlite3
 from pathlib import Path
 from sys import argv;
 import tarfile;
@@ -38,24 +37,24 @@ def exportaProjeto(code):
     projeto = code.split(";")[0];
     tipo = code.split(";")[1];
 
-    titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto);
+    titulo = maracuja_funcs.pega_titulo_por_id(projeto);
     titulo = titulo[:15]
     titulo = titulo.replace(" ", "_");
 
     if tipo == '1':
-        download_name = maracuja_funcs.exporta_para_pdf(sqlite3, FPDF, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_pdf(FPDF, Path, json, tarfile, projeto, titulo);
 
     if tipo == '3':
-        download_name = maracuja_funcs.exporta_para_md_multiplos(sqlite3, tempfile, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_md_multiplos(tempfile, Path, json, tarfile, projeto, titulo);
 
     if tipo == '4':
-        download_name = maracuja_funcs.exporta_para_md_unico(sqlite3, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_md_unico(Path, json, tarfile, projeto, titulo);
     
     if tipo == '5':
-        download_name = maracuja_funcs.exporta_para_html_multiplos(sqlite3, tempfile, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_html_multiplos(tempfile, Path, json, tarfile, projeto, titulo);
 
     if tipo == '6':
-        download_name = maracuja_funcs.exporta_para_html_unico(sqlite3, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_html_unico(Path, json, tarfile, projeto, titulo);
     
     return send_file(
         download_name,
@@ -108,7 +107,7 @@ def editarNota():
     project_id = request.args.getlist('project_id')[0];
     nota_id = request.args.getlist('nota_id')[0];
 
-    nota = maracuja_funcs. DB_SELECT(sqlite3, 'select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
+    nota = maracuja_funcs. DB_SELECT('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
 
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
     with file_path.open("r", encoding="utf-8") as file:
@@ -132,7 +131,7 @@ def editarCapitulo():
     
     # PLACEHOLDER
     if chapter_id == "Novo":
-        chapter_id = maracuja_funcs.retorna_novo_chapter_id(sqlite3, project_id, chapter_id)
+        chapter_id = maracuja_funcs.retorna_novo_chapter_id(project_id, chapter_id)
         file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
         with file_path.open("w", encoding="utf-8") as file:
             json.dump({"text": '{"text": "Era uma vez..."}'}, file);
@@ -143,7 +142,7 @@ def editarCapitulo():
 
     chapterData = json.loads(rawChapterData);
 
-    titulo_capitulo = maracuja_funcs.DB_SELECT(sqlite3, 'select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
+    titulo_capitulo = maracuja_funcs.DB_SELECT('select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
     titulo_capitulo = titulo_capitulo[0][0]
 
     return render_template('editor.html',projectID=project_id, chapterID=chapter_id,chapterData=chapterData,versionID=version_id,tituloCapitulo=titulo_capitulo,iframeFlag=iframeFlag);
@@ -156,9 +155,9 @@ def compararVersoes():
     v1 = request.args.getlist('v1')[0];
     v2 = request.args.getlist('v2')[0];
 
-    titulo_v1 = DB_SELECT(sqlite3,'select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v1))
+    titulo_v1 = DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v1))
     titulo_v1 = titulo_v1[0][0];
-    titulo_v2 = DB_SELECT(sqlite3,'select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v2))
+    titulo_v2 = DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v2))
     titulo_v2 = titulo_v2[0][0];
     
     return render_template('comparar_versoes.html',projectID=project_id, chapterID=chapter_id,v1=v1,v2=v2,titulo_v1=titulo_v1,titulo_v2=titulo_v2);
@@ -170,7 +169,7 @@ def lerCapitulo():
     chapter_id = request.args.getlist('chapter_id')[0];
     version_id = request.args.getlist('version_id')[0];
 
-    titulo_capitulo = maracuja_funcs.DB_SELECT(sqlite3, 'select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
+    titulo_capitulo = maracuja_funcs.DB_SELECT('select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
     titulo_capitulo = titulo_capitulo[0][0]
 
     file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
@@ -195,9 +194,9 @@ def data():
     with file_path.open("w", encoding="utf-8") as file:
         json.dump(contents, file);
 
-    maracuja_funcs.DB_EDIT(sqlite3, 'UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
+    maracuja_funcs.DB_EDIT('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
 
-    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
+    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
 
     return jsonify({"message": "ok"})
 
@@ -215,7 +214,7 @@ def dataNota():
     with file_path.open("w", encoding="utf-8") as file:
         json.dump(contents, file);
 
-    maracuja_funcs.DB_EDIT(sqlite3, 'UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
+    maracuja_funcs.DB_EDIT('UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
 
     return jsonify({"msg": "ok"})
 
@@ -229,15 +228,15 @@ def nova_versao_capitulo():
     chapter_title = data["chapter_title"]
     nome_nova_versao = data["nome_nova_versao"]
 
-    version_id = maracuja_funcs.registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_nova_versao);
+    version_id = maracuja_funcs.registra_nova_versao(project_id, chapter_id, chapter_title, nome_nova_versao);
 
     file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
     with file_path.open("w", encoding="utf-8") as file:
         json.dump(contents, file);
 
-    maracuja_funcs.DB_EDIT(sqlite3, 'UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
+    maracuja_funcs.DB_EDIT('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
 
-    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
+    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
 
     return jsonify({"message": "ok","version_id":version_id})
 
@@ -260,7 +259,7 @@ def adicionaNota():
     titulo = data["titulo"]
     descricao = data["descricao"]
 
-    nota_id = maracuja_funcs.insere_notas_projeto(sqlite3, project_id, titulo, descricao);
+    nota_id = maracuja_funcs.insere_notas_projeto(project_id, titulo, descricao);
 
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
     with file_path.open("w", encoding="utf-8") as file:
@@ -270,17 +269,17 @@ def adicionaNota():
 
 @app.route('/lista_projetos_recentes')
 def lista_projetos_recentes():
-    order_desc = maracuja_funcs.DB_SELECT(sqlite3, 'select project_id from projetosRecentes order by last_open desc limit 10;',());
+    order_desc = maracuja_funcs.DB_SELECT('select project_id from projetosRecentes order by last_open desc limit 10;',());
     data = {}
     for projeto in order_desc:
-        titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, projeto[0]);
+        titulo = maracuja_funcs.pega_titulo_por_id(projeto[0]);
         data[titulo] = projeto[0];
         
     return jsonify(data)
 
 @app.route('/lista_todos_projetos')
 def lista_todos_projetos():
-    rows = maracuja_funcs.todos_projetos(sqlite3);
+    rows = maracuja_funcs.todos_projetos();
     return jsonify(rows)
 
 @app.route('/project_page/<int:project_id>', methods=['GET'])
@@ -293,7 +292,7 @@ def notasDoprojeto(project_id):
 
 @app.route('/retornaNotasProjeto/<int:project_id>', methods=['GET'])
 def retornaNotasProjeto(project_id):
-    lista_de_notas = maracuja_funcs.DB_SELECT(sqlite3,'select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,))
+    lista_de_notas = maracuja_funcs.DB_SELECT('select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,))
     return jsonify({"msg": "ok", "lista":lista_de_notas})
 
 @app.route('/criar_projeto', methods=['GET'])
@@ -305,7 +304,7 @@ def cadastraProjeto():
     titulo = request.form.get("titulo");
     sinopse = request.form.get("sinopse");
 
-    titulo_ja_existe = maracuja_funcs.titulo_ja_existe(sqlite3, titulo);
+    titulo_ja_existe = maracuja_funcs.titulo_ja_existe(titulo);
 
     if (titulo_ja_existe):
         resposta = {"msg":"Erro. Já existe um projeto com esse título. Por favor, use outro título."};
@@ -320,20 +319,20 @@ def cadastraProjeto():
         image.save(filepath)
         image_name = image.filename;
 
-    id_do_projeto = maracuja_funcs.insere_titulo_sinopse(sqlite3, titulo, sinopse, image_name);
+    id_do_projeto = maracuja_funcs.insere_titulo_sinopse(titulo, sinopse, image_name);
 
-    maracuja_funcs.insere_projeto_mais_recente(sqlite3, time, id_do_projeto);
+    maracuja_funcs.insere_projeto_mais_recente(time, id_do_projeto);
 
     resposta = {"msg":"ok","id":id_do_projeto}
     return jsonify(resposta)
 
 @app.route('/project_info/<int:project_id>', methods=['GET'])
 def project_info(project_id):
-    titulo = maracuja_funcs.pega_titulo_por_id(sqlite3, project_id);
-    sinopse = maracuja_funcs.pega_sinopse_por_id(sqlite3, project_id);
-    capa = maracuja_funcs.pega_capa_por_id(sqlite3, project_id);
+    titulo = maracuja_funcs.pega_titulo_por_id(project_id);
+    sinopse = maracuja_funcs.pega_sinopse_por_id(project_id);
+    capa = maracuja_funcs.pega_capa_por_id(project_id);
     
-    capitulos = maracuja_funcs.DB_SELECT(sqlite3, 'select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,));
+    capitulos = maracuja_funcs.DB_SELECT('select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,));
 
     data = {"name": titulo,"sinopse": sinopse, "capitulos":capitulos, "capa":capa}
     return jsonify(data)
@@ -380,8 +379,8 @@ def atualiza_projeto_info():
         image.save(filepath)
         nome_imagem = image.filename
 
-    maracuja_funcs.atualiza_titulo_sinopse(sqlite3, project_id, titulo, sinopse, nome_imagem);
-    maracuja_funcs.atualiza_projeto_mais_recente(sqlite3, time, project_id);
+    maracuja_funcs.atualiza_titulo_sinopse(project_id, titulo, sinopse, nome_imagem);
+    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
 
     resposta = {"msg":"ok"}
     return jsonify(resposta);
@@ -394,7 +393,7 @@ def deleta_versao():
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
     
-    message = maracuja_funcs.excluir_versao(Path, sqlite3, project_id, chapter_id, version_id);
+    message = maracuja_funcs.excluir_versao(Path, project_id, chapter_id, version_id);
 
     return jsonify({"message": message})
 
@@ -405,7 +404,7 @@ def deleta_capitulo():
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
     
-    message = maracuja_funcs.excluir_capitulo(Path, sqlite3, project_id, chapter_id);
+    message = maracuja_funcs.excluir_capitulo(Path, project_id, chapter_id);
 
     return jsonify({"message": message})
 
@@ -416,7 +415,7 @@ def deleta_nota():
     project_id = data["project_id"]
     nota_id = data["nota_id"]
     
-    message = maracuja_funcs.excluir_nota(Path, sqlite3, project_id, nota_id);
+    message = maracuja_funcs.excluir_nota(Path, project_id, nota_id);
 
     return jsonify({"msg": message})
 
@@ -426,7 +425,7 @@ def deleta_projeto():
 
     project_id = data["project_id"];
 
-    maracuja_funcs.excluir_projeto(os, Path, sqlite3, project_id);
+    maracuja_funcs.excluir_projeto(os, Path, project_id);
 
     return jsonify({"message": "ok"});
 
@@ -438,7 +437,7 @@ def move_capitulo():
     capituloASerMovido = data["capituloASerMovido"]
     novaPosicaoDoCapitulo = data["novaPosicaoDoCapitulo"]
 
-    maracuja_funcs.mover_capitulo(sqlite3, project_id, capituloASerMovido, novaPosicaoDoCapitulo);
+    maracuja_funcs.mover_capitulo(project_id, capituloASerMovido, novaPosicaoDoCapitulo);
 
     return jsonify({"message": "ok"})
 
@@ -449,7 +448,7 @@ def pega_versoes_capitulo():
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
 
-    lista = maracuja_funcs.DB_SELECT(sqlite3,"select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id));
+    lista = maracuja_funcs.DB_SELECT("select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id));
 
     return jsonify({"message": "ok", "lista": lista});
 
@@ -461,8 +460,8 @@ def canonizar_capitulo():
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
 
-    maracuja_funcs.DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
-    maracuja_funcs.DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
+    maracuja_funcs.DB_EDIT("UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
+    maracuja_funcs.DB_EDIT("UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
 
     return jsonify({"message": "ok"});
 
@@ -506,7 +505,7 @@ if __name__ == '__main__':
             exit();
 
         # tirando para teste
-        maracuja_funcs.DB_start(sqlite3,requests_lib);
+        maracuja_funcs.DB_start(requests_lib);
         app.run(host="0.0.0.0",port=5000,debug=True);
     
     except Exception as e:
