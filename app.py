@@ -38,22 +38,27 @@ def exportaProjeto(code):
 
     if tipo == '1':
         download_name = maracuja_funcs.exporta_para_pdf(projeto, titulo);
+        tipo_mime = "application/pdf"
 
     if tipo == '3':
         download_name = maracuja_funcs.exporta_para_md_multiplos(projeto, titulo);
+        tipo_mime = "application/gzip";
 
     if tipo == '4':
         download_name = maracuja_funcs.exporta_para_md_unico(projeto, titulo);
+        tipo_mime = "text/markdown";
     
     if tipo == '5':
         download_name = maracuja_funcs.exporta_para_html_multiplos(projeto, titulo);
+        tipo_mime = "application/gzip";
 
     if tipo == '6':
         download_name = maracuja_funcs.exporta_para_html_unico(projeto, titulo);
+        tipo_mime = "text/html";
     
     return send_file(
         download_name,
-        mimetype="application/gzip",
+        mimetype=tipo_mime,
         as_attachment=True,
         download_name=download_name
     )
@@ -102,7 +107,7 @@ def editarNota():
     project_id = request.args.getlist('project_id')[0];
     nota_id = request.args.getlist('nota_id')[0];
 
-    nota = maracuja_funcs. DB_SELECT('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
+    nota = maracuja_funcs.DB_SELECT('select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
 
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json"
     with file_path.open("r", encoding="utf-8") as file:
@@ -150,9 +155,9 @@ def compararVersoes():
     v1 = request.args.getlist('v1')[0];
     v2 = request.args.getlist('v2')[0];
 
-    titulo_v1 = DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v1))
+    titulo_v1 = maracuja_funcs.DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v1))
     titulo_v1 = titulo_v1[0][0];
-    titulo_v2 = DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v2))
+    titulo_v2 = maracuja_funcs.DB_SELECT('select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, v2))
     titulo_v2 = titulo_v2[0][0];
     
     return render_template('comparar_versoes.html',projectID=project_id, chapterID=chapter_id,v1=v1,v2=v2,titulo_v1=titulo_v1,titulo_v2=titulo_v2);
@@ -234,17 +239,6 @@ def nova_versao_capitulo():
     maracuja_funcs.atualiza_projeto_mais_recente(project_id);
 
     return jsonify({"message": "ok","version_id":version_id})
-
-@app.route('/chapterData', methods=['POST'])
-def chapterData():
-    chapter_id = request.args.getlist("chapter_id")[0];
-    project_id = request.args.getlist("project_id")[0];
-
-    file_path = Path("capitulos") / f"{project_id}-{chapter_id}-{version_id}.json"
-    with file_path.open("r", encoding="utf-8") as file:
-        data = file.read()
-
-    return jsonify({"chapterData": data})
 
 @app.route('/adicionaNota', methods=['POST'])
 def adicionaNota():
@@ -339,8 +333,11 @@ def todos_projetos():
 @app.route('/img/<string:filename>', methods=['GET'])
 def img(filename):
     if filename == "CAPA_DO_PROJETO":
-        return send_file(".\\static\\under_contruction.png", mimetype='image/gif')
-    return send_file(".\\localdata\\" + filename, mimetype='image/gif')
+        image_path = Path("static") / "under_construction.png"
+    else:
+        image_path = Path("localdata") / filename
+
+    return send_file(str(image_path), mimetype='image/gif')
 
 @app.route('/quilljs', methods=['GET'])
 def quilljs():
@@ -357,7 +354,8 @@ def img_app(image_id):
     else:
         image_id = "alt_under_contruction.png";
     
-    return send_file(".\\static\\" + image_id, mimetype='image/gif')
+    image_path = Path("static") / str(image_id);
+    return send_file(image_path, mimetype='image/gif')
 
 @app.route('/atualiza_projeto_info', methods=['POST'])
 def atualiza_projeto_info():
@@ -501,7 +499,7 @@ if __name__ == '__main__':
 
         # tirando para teste
         maracuja_funcs.DB_start();
-        app.run(host="0.0.0.0",port=5000,debug=True);
+        app.run(host="127.0.0.1",port=5000,debug=True);
     
     except Exception as e:
         print(e);

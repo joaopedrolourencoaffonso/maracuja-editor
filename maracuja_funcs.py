@@ -32,19 +32,16 @@ def DB_start():
         cursor.execute('CREATE TABLE sinopses (PROJECT_ID INTEGER, sinopse TEXT)');
         cursor.execute('CREATE TABLE capas (PROJECT_ID INTEGER, imagem_capa TEXT)');
         cursor.execute('CREATE TABLE capitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER, POSICAO INTEGER)');
-        #cursor.execute('CREATE TABLE versoesDeCapitulos (PROJECT_ID INTEGER, CHAPTER_ID INTEGER, VERSION_ID INTEGER, VERSION_NAME TEXT)');
         cursor.execute('CREATE TABLE projetosRecentes (PROJECT_ID INTEGER, LAST_OPEN INTEGER)');
         cursor.execute('CREATE TABLE notasDeProjetos (PROJECT_ID INTEGER, NOTA_ID INTEGER, TITULO TEXT, DESCRICAO TEXT)');
-        # INSERIR TABELA PARA CAPÍTULOS: PROJECT_ID, CHAPTER_ID, CHAPTER_TITLE
         conn.commit();
-    
-    conn.close();
+        conn.close();
+        
+        js_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js";
+        requests_lib.urlretrieve(js_file_url, "quill.js");
 
-    js_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js";
-    requests_lib.urlretrieve(js_file_url, "quill.js");
-
-    css_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css";
-    requests_lib.urlretrieve(css_file_url, "quill.css");
+        css_file_url = "https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css";
+        requests_lib.urlretrieve(css_file_url, "quill.css");
 
     return True;
 
@@ -59,11 +56,9 @@ def DB_SELECT(query, params=()):
 def DB_EDIT(query, params=()):
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
-    saida = cursor.execute(query, params).fetchall();
+    cursor.execute(query, params);
     conn.commit();
     conn.close();
-
-    return saida;
 
 def retorna_novo_chapter_id(project_id, chapter_id):
     id = DB_SELECT('SELECT MAX(chapter_id) FROM capitulos WHERE PROJECT_ID = ? AND IS_CANON = 1;', (project_id,));
@@ -90,7 +85,7 @@ def retorna_novo_chapter_id(project_id, chapter_id):
     return id;
 
 def insere_notas_projeto(project_id, titulo, descricao):
-    nota_id = DB_EDIT('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
+    nota_id = DB_SELECT('select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
     nota_id = nota_id[0][0];
 
     if (nota_id == None):
@@ -106,7 +101,6 @@ def todos_projetos():
     projetos = DB_SELECT('select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
     rows = {};
     for projeto in projetos:
-        #n_capitulos = cursor.execute('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],)).fetchall();
         n_capitulos = DB_SELECT('select count(chapter_id) from capitulos where project_id = ?;',(projeto[0],));
         rows.update({f"{projeto[0]}": {"titulo": f"{projeto[1]}","src": f"{projeto[2]}","ncapitulos": f"{n_capitulos[0][0]}"}})
     
@@ -121,9 +115,9 @@ def insere_titulo_sinopse(titulo, sinopse,filename):
     id = id + 1;
     id = str(id);
     
-    DB_EDIT('INSERT INTO titulos VALUES (' + id + ', "' + titulo + '")',());
-    DB_EDIT('INSERT INTO sinopses VALUES (' + id + ', "' + sinopse + '")',());
-    DB_EDIT('INSERT INTO capas VALUES (' + id + ', "' + filename + '")',());
+    DB_EDIT('INSERT INTO titulos VALUES (?, ?)',(id, titulo));
+    DB_EDIT('INSERT INTO sinopses VALUES (?, ?)',(id, sinopse));
+    DB_EDIT('INSERT INTO capas VALUES (?, ?)',(id, filename));
     
     return id;
 
@@ -132,16 +126,16 @@ def atualiza_titulo_sinopse(project_id, titulo, sinopse,filename):
     cursor = conn.cursor();
     project_id = str(project_id);
     
-    cursor.execute('UPDATE titulos set name = "' + titulo + '" where PROJECT_ID = ' + project_id + ';');
-    cursor.execute('UPDATE sinopses set sinopse = "' + sinopse + '" where PROJECT_ID = ' + project_id + ';');
+    cursor.execute('UPDATE titulos set name = ? where PROJECT_ID = ?;',(titulo, project_id));
+    cursor.execute('UPDATE sinopses set sinopse = ? where PROJECT_ID = ?;',(sinopse,project_id));
     
     if (filename != 'qiwuqiwuqoeuwhewh,djhbfejhv'):
-        cursor.execute('UPDATE capas set imagem_capa = "' + filename + '" where PROJECT_ID = ' + project_id + ';');
+        cursor.execute('UPDATE capas set imagem_capa = ? where PROJECT_ID = ?;',(filename,project_id));
     
     conn.commit();
     conn.close();
 
-    return id;
+    #return id;
 
 def pega_titulo_por_id(id):
     titulo = DB_SELECT('SELECT name FROM titulos where PROJECT_ID = ?;', (str(id),));
@@ -191,9 +185,19 @@ def excluir_versao(project_id, chapter_id, version_id):
     return retorno;
 
 def excluir_capitulo(project_id, chapter_id):
-    mover_capitulo(project_id, chapter_id, 888888);
+    while True:
+        posicoes = DB_SELECT(
+            "select posicao from capitulos where project_id = ? and chapter_id = ? limit 1;",
+            (project_id, chapter_id),
+        )
+        if not posicoes:
+            break
 
-    DB_EDIT("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
+        mover_capitulo(project_id, posicoes[0][0], 8888888)
+        DB_EDIT(
+            "delete from capitulos where project_id = ? and chapter_id = ? and posicao = ?;",
+            (project_id, chapter_id, 8888888),
+        )
     
     folder = Path("capitulos")
     pattern = f"{project_id}-{chapter_id}-*.json"
@@ -226,7 +230,7 @@ def excluir_projeto(os, project_id):
 
     DB_EDIT("delete from capas where project_id = ?;",(project_id,));
 
-    for f in Path("capitulos").glob(str(project_id) + "*.json"):
+    for f in Path("capitulos").glob(str(project_id) + "-*.json"):
         f.unlink()
 
 def mover_capitulo(project_id, capituloASerMovido, novaPosicaoDoCapitulo):
@@ -256,10 +260,10 @@ def mover_capitulo(project_id, capituloASerMovido, novaPosicaoDoCapitulo):
     conn.close();
 
 def registra_nova_versao(project_id, chapter_id, chapter_title, nome_nova_versao):
-    novo_id = DB_EDIT('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
+    novo_id = DB_SELECT('SELECT MAX(VERSION_ID) FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     novo_id = novo_id[0][0] + 1;
 
-    posicao = DB_EDIT('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id)).fetchall();
+    posicao = DB_SELECT('SELECT posicao FROM capitulos WHERE PROJECT_ID = ? AND CHAPTER_ID = ?;',(project_id, chapter_id));
     posicao = posicao[0][0];
 
     # PROJECT_ID INTEGER, CHAPTER_ID INTEGER, CHAPTER_TITLE TEXT, VERSION_ID INTEGER, VERSION_NAME TEXT, IS_CANON INTEGER
@@ -632,7 +636,6 @@ def exporta_para_pdf(project_id, titulo):
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
         temp_text = quill_to_html(capitulo_path);
         html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
-        #html_text = html_text.replace('<p>','<p style="line-height: 1.5;">')
 
     md_file_path = f"{titulo}.pdf"
 

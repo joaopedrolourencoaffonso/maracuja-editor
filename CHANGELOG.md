@@ -293,3 +293,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Corrigindo importação das bibliotecas. Bibliotecas são agoras importadas diretamente no `maracuja_funcs`, eliminando a passagem das mesmas como objetos, simplificando futuro processo de criação de executável e leitura do código.
+
+## 2.0.0 - 03-10-2026
+
+### Added
+
+- Código enxuto.
+- Implementação de boas práticas.
+- Resolução de bugs.
