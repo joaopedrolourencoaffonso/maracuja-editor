@@ -1,14 +1,9 @@
 from flask import Flask, render_template, jsonify, request, send_file
-from fpdf import FPDF
 import json
 import os
-from time import time;
 from pathlib import Path
 from sys import argv;
-import tarfile;
-import shutil
 import tempfile
-import urllib.request as requests_lib;
 import maracuja_funcs;
 
 app = Flask(__name__)
@@ -42,19 +37,19 @@ def exportaProjeto(code):
     titulo = titulo.replace(" ", "_");
 
     if tipo == '1':
-        download_name = maracuja_funcs.exporta_para_pdf(FPDF, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_pdf(projeto, titulo);
 
     if tipo == '3':
-        download_name = maracuja_funcs.exporta_para_md_multiplos(tempfile, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_md_multiplos(projeto, titulo);
 
     if tipo == '4':
-        download_name = maracuja_funcs.exporta_para_md_unico(Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_md_unico(projeto, titulo);
     
     if tipo == '5':
-        download_name = maracuja_funcs.exporta_para_html_multiplos(tempfile, Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_html_multiplos(projeto, titulo);
 
     if tipo == '6':
-        download_name = maracuja_funcs.exporta_para_html_unico(Path, json, tarfile, projeto, titulo);
+        download_name = maracuja_funcs.exporta_para_html_unico(projeto, titulo);
     
     return send_file(
         download_name,
@@ -66,7 +61,7 @@ def exportaProjeto(code):
 @app.route('/apagaTudo', methods=['GET'])
 def apagaTudo():
     try:
-        maracuja_funcs.clean(Path, shutil)
+        maracuja_funcs.clean()
         return jsonify({'msg':'Arquivos deletados com sucesso!'});
     except Exception as e:
         return jsonify({'msg':str(e)});
@@ -83,7 +78,7 @@ def importandoArquivos():
             filepath = arquivo_temporario.name
             arquivo.save(filepath)
 
-        maracuja_funcs.importa_arquivos(argv, tarfile, filepath, Path, shutil)
+        maracuja_funcs.importa_arquivos(argv, filepath)
         return jsonify({'msg': 'Arquivos importados com sucesso!'})
     except Exception as e:
         return jsonify({'msg': str(e)})
@@ -94,7 +89,7 @@ def importandoArquivos():
 @app.route('/retornaBackup', methods=['GET'])
 def retornaBackup():
     # as duas strings são apenas uma forma de reutilizar a função escrita para a linha de comando
-    maracuja_funcs.exporta_arquivos(["a","b","meusProjetosExport.tar.gz"],tarfile);
+    maracuja_funcs.exporta_arquivos(["a","b","meusProjetosExport.tar.gz"]);
     return send_file(
         "meusProjetosExport.tar.gz",
         mimetype="application/gzip",
@@ -196,7 +191,7 @@ def data():
 
     maracuja_funcs.DB_EDIT('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
 
-    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
+    maracuja_funcs.atualiza_projeto_mais_recente(project_id);
 
     return jsonify({"message": "ok"})
 
@@ -236,7 +231,7 @@ def nova_versao_capitulo():
 
     maracuja_funcs.DB_EDIT('UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(chapter_title, project_id, chapter_id, version_id));
 
-    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
+    maracuja_funcs.atualiza_projeto_mais_recente(project_id);
 
     return jsonify({"message": "ok","version_id":version_id})
 
@@ -321,7 +316,7 @@ def cadastraProjeto():
 
     id_do_projeto = maracuja_funcs.insere_titulo_sinopse(titulo, sinopse, image_name);
 
-    maracuja_funcs.insere_projeto_mais_recente(time, id_do_projeto);
+    maracuja_funcs.insere_projeto_mais_recente(id_do_projeto);
 
     resposta = {"msg":"ok","id":id_do_projeto}
     return jsonify(resposta)
@@ -380,7 +375,7 @@ def atualiza_projeto_info():
         nome_imagem = image.filename
 
     maracuja_funcs.atualiza_titulo_sinopse(project_id, titulo, sinopse, nome_imagem);
-    maracuja_funcs.atualiza_projeto_mais_recente(time, project_id);
+    maracuja_funcs.atualiza_projeto_mais_recente(project_id);
 
     resposta = {"msg":"ok"}
     return jsonify(resposta);
@@ -393,7 +388,7 @@ def deleta_versao():
     chapter_id = data["chapter_id"]
     version_id = data["version_id"]
     
-    message = maracuja_funcs.excluir_versao(Path, project_id, chapter_id, version_id);
+    message = maracuja_funcs.excluir_versao(project_id, chapter_id, version_id);
 
     return jsonify({"message": message})
 
@@ -404,7 +399,7 @@ def deleta_capitulo():
     project_id = data["project_id"]
     chapter_id = data["chapter_id"]
     
-    message = maracuja_funcs.excluir_capitulo(Path, project_id, chapter_id);
+    message = maracuja_funcs.excluir_capitulo(project_id, chapter_id);
 
     return jsonify({"message": message})
 
@@ -415,7 +410,7 @@ def deleta_nota():
     project_id = data["project_id"]
     nota_id = data["nota_id"]
     
-    message = maracuja_funcs.excluir_nota(Path, project_id, nota_id);
+    message = maracuja_funcs.excluir_nota(project_id, nota_id);
 
     return jsonify({"msg": message})
 
@@ -425,7 +420,7 @@ def deleta_projeto():
 
     project_id = data["project_id"];
 
-    maracuja_funcs.excluir_projeto(os, Path, project_id);
+    maracuja_funcs.excluir_projeto(os, project_id);
 
     return jsonify({"message": "ok"});
 
@@ -477,7 +472,7 @@ if __name__ == '__main__':
             
             if (argv[1] == "--export"):
                 print("Exportando arquivos");
-                maracuja_funcs.exporta_arquivos(argv,tarfile)
+                maracuja_funcs.exporta_arquivos(argv)
                 
                 print("Arquivos exportados para o formato .tar.gz!");
             
@@ -488,7 +483,7 @@ if __name__ == '__main__':
                 )
 
                 if decisao.lower() == "y":
-                    maracuja_funcs.clean(Path, shutil);
+                    maracuja_funcs.clean();
                 else:
                     print("Deleção cancelada.")
             
@@ -498,14 +493,14 @@ if __name__ == '__main__':
                     exit();
                 print("Importando dados do arquivo especificado")
 
-                maracuja_funcs.importa_arquivos(argv,tarfile, argv[2],Path, shutil);
+                maracuja_funcs.importa_arquivos(argv,argv[2]);
 
                 print("Arquivos importados com sucesso!")
 
             exit();
 
         # tirando para teste
-        maracuja_funcs.DB_start(requests_lib);
+        maracuja_funcs.DB_start();
         app.run(host="0.0.0.0",port=5000,debug=True);
     
     except Exception as e:

@@ -287,3 +287,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Excluindo funções redundantes, isto é, que podiam ser substituídas pela execução direta das funções `DB_EDIT` e `DB_SELECT`. (redução em 47 linhas de código!)
+
+## 1.0.5 - 03-10-2026
+
+### Added
+
+- Corrigindo importação das bibliotecas. Bibliotecas são agoras importadas diretamente no `maracuja_funcs`, eliminando a passagem das mesmas como objetos, simplificando futuro processo de criação de executável e leitura do código.

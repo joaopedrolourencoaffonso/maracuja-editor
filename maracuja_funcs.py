@@ -1,4 +1,11 @@
 import sqlite3
+import tarfile
+import shutil
+import json
+import urllib.request as requests_lib;
+from time import time;
+from fpdf import FPDF;
+from pathlib import Path;
 
 def verifica_array_tuples(vetor,elemento):
     for x in vetor:
@@ -6,7 +13,7 @@ def verifica_array_tuples(vetor,elemento):
             return True;
     return False;
 
-def DB_start(requests_lib):
+def DB_start():
     print("Updating DB")
     conn = sqlite3.connect('userdata');
     cursor = conn.cursor();
@@ -159,17 +166,17 @@ def pega_capa_por_id(id):
     capa = capas[0][0]
     return capa;
 
-def atualiza_projeto_mais_recente(time, id):
+def atualiza_projeto_mais_recente(id):
     nova_hora = int(time());
 
     DB_EDIT('UPDATE projetosRecentes set LAST_OPEN = ? WHERE PROJECT_ID = ?;',(nova_hora, id));
 
-def insere_projeto_mais_recente(time, id):
+def insere_projeto_mais_recente(id):
     nova_hora = int(time());
 
     DB_EDIT('insert into projetosRecentes values (?, ?);',(id, nova_hora));
 
-def excluir_versao(Path, project_id, chapter_id, version_id):
+def excluir_versao(project_id, chapter_id, version_id):
     is_canon = DB_SELECT("select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
     if is_canon[0][0] == 1:
         retorno = "Não pode excluir versão canon. Canonize outra versão antes de deletar este";
@@ -183,7 +190,7 @@ def excluir_versao(Path, project_id, chapter_id, version_id):
 
     return retorno;
 
-def excluir_capitulo(Path, project_id, chapter_id):
+def excluir_capitulo(project_id, chapter_id):
     mover_capitulo(project_id, chapter_id, 888888);
 
     DB_EDIT("delete from capitulos where project_id = ? AND posicao = 888888;",(project_id,));
@@ -196,7 +203,7 @@ def excluir_capitulo(Path, project_id, chapter_id):
 
     return "ok";
 
-def excluir_nota(Path, project_id, nota_id):
+def excluir_nota(project_id, nota_id):
     DB_EDIT("delete from notasDeProjetos where project_id = ? AND nota_id = ?;",(project_id,nota_id));
     
     file_path = Path("notas") / f"nota-{project_id}-{nota_id}.json";
@@ -204,7 +211,7 @@ def excluir_nota(Path, project_id, nota_id):
 
     return "ok";
 
-def excluir_projeto(os, Path, project_id):
+def excluir_projeto(os, project_id):
     DB_EDIT("delete from titulos where project_id = ?;",(project_id,));
     DB_EDIT("delete from sinopses where project_id = ?;",(project_id,));
     DB_EDIT("delete from capitulos where project_id = ?;",(project_id,));
@@ -260,7 +267,7 @@ def registra_nova_versao(project_id, chapter_id, chapter_title, nome_nova_versao
     
     return novo_id;
 
-def exporta_arquivos(argv, tarfile):
+def exporta_arquivos(argv):
     if len(argv) > 2:
         nome_do_projeto = argv[2]
     else:
@@ -275,7 +282,7 @@ def exporta_arquivos(argv, tarfile):
         archive.add("userdata", arcname="userdata")
 
 
-def clean(Path, shutil):
+def clean():
     for folder_name in ("localdata", "capitulos","notas"):
         folder = Path(folder_name)
         
@@ -298,8 +305,8 @@ def clean(Path, shutil):
 
     print("Arquivos deletados.")
 
-def importa_arquivos(argv,tarfile, filepath,Path, shutil):
-    clean(Path, shutil);
+def importa_arquivos(argv, filepath):
+    clean();
 
     temp_dir = Path("temp_folder");
 
@@ -326,7 +333,7 @@ def importa_arquivos(argv,tarfile, filepath,Path, shutil):
     # 4. Clean up temporary directory
     shutil.rmtree(temp_dir, ignore_errors=True)
 
-def quill_to_md(json, path_do_arquivo):
+def quill_to_md(path_do_arquivo):
     string_final = "";
     with path_do_arquivo.open("r", encoding="utf-8") as file:
         rawChapterData = file.read()
@@ -391,7 +398,7 @@ def quill_to_md(json, path_do_arquivo):
     
     return string_final
 
-def exporta_para_md_multiplos(tempfile, Path, json, tarfile, project_id, titulo):
+def exporta_para_md_multiplos(project_id, titulo):
     lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
     # 2. Prepare export_temp directory (create if missing, clean out existing files)
@@ -405,7 +412,7 @@ def exporta_para_md_multiplos(tempfile, Path, json, tarfile, project_id, titulo)
     # 3. Generate Markdown files and write them to export_temp
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        markdown_text = quill_to_md(json, capitulo_path);
+        markdown_text = quill_to_md(capitulo_path);
         markdown_text = "# " + capitulo[3] + "\n" + markdown_text;
 
         md_file_path = export_dir / f"{capitulo[4]}.md"
@@ -420,13 +427,13 @@ def exporta_para_md_multiplos(tempfile, Path, json, tarfile, project_id, titulo)
 
     return archive_filename
 
-def exporta_para_md_unico(Path, json, tarfile, project_id, titulo):
+def exporta_para_md_unico(project_id, titulo):
     lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     markdown_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_md(json, capitulo_path);
+        temp_text = quill_to_md(capitulo_path);
         markdown_text = markdown_text + "\n\n# " + capitulo[3] + "\n\n" + temp_text;
 
     md_file_path = f"{titulo}.md"
@@ -435,7 +442,7 @@ def exporta_para_md_unico(Path, json, tarfile, project_id, titulo):
 
     return md_file_path
 
-def quill_to_html(json, path_do_arquivo):
+def quill_to_html(path_do_arquivo):
     string_final = ""
 
     with path_do_arquivo.open("r", encoding="utf-8") as file:
@@ -574,7 +581,7 @@ def quill_to_html(json, path_do_arquivo):
 
     return string_final
 
-def exporta_para_html_multiplos(tempfile, Path, json, tarfile, project_id, titulo):
+def exporta_para_html_multiplos(project_id, titulo):
     lista_capitulos = DB_SELECT("select project_id, chapter_id, version_id, chapter_title, posicao from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     
     export_dir = Path("export_temp")
@@ -587,7 +594,7 @@ def exporta_para_html_multiplos(tempfile, Path, json, tarfile, project_id, titul
     # 3. Generate Markdown files and write them to export_temp
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        html_text = quill_to_html(json, capitulo_path);
+        html_text = quill_to_html(capitulo_path);
         html_text = "<h1>" + capitulo[3] + "</h1>" + html_text;
 
         md_file_path = export_dir / f"{capitulo[4]}.html"
@@ -602,13 +609,13 @@ def exporta_para_html_multiplos(tempfile, Path, json, tarfile, project_id, titul
 
     return archive_filename
 
-def exporta_para_html_unico(Path, json, tarfile, project_id, titulo):
+def exporta_para_html_unico(project_id, titulo):
     lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_html(json, capitulo_path);
+        temp_text = quill_to_html(capitulo_path);
         html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
 
     md_file_path = f"{titulo}.html"
@@ -617,13 +624,13 @@ def exporta_para_html_unico(Path, json, tarfile, project_id, titulo):
 
     return md_file_path
 
-def exporta_para_pdf(FPDF, Path, json, tarfile, project_id, titulo):
+def exporta_para_pdf(project_id, titulo):
     lista_capitulos = DB_SELECT("SELECT project_id, chapter_id, version_id, chapter_title FROM capitulos WHERE IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO", (project_id,));
     html_text = ""
 
     for capitulo in lista_capitulos:
         capitulo_path = Path("capitulos") / f"{capitulo[0]}-{capitulo[1]}-{capitulo[2]}.json"
-        temp_text = quill_to_html(json, capitulo_path);
+        temp_text = quill_to_html(capitulo_path);
         html_text = html_text + "<h2>" + capitulo[3] + "</h2>" + temp_text;
         #html_text = html_text.replace('<p>','<p style="line-height: 1.5;">')
 
