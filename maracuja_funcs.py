@@ -80,28 +80,6 @@ def retorna_novo_chapter_id(sqlite3, project_id, chapter_id):
     
     return id;
 
-def retorna_titulo_capitulo(sqlite3, project_id, chapter_id, version_id):
-    titulo = DB_SELECT(sqlite3, 'select CHAPTER_TITLE from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
-    titulo = titulo[0][0]
-
-    return titulo;
-
-def retorna_titulo_versao(sqlite3, project_id, chapter_id, version_id):
-    titulo = DB_SELECT(sqlite3,'select VERSION_NAME from capitulos where PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?;', (project_id, chapter_id, version_id))
-    titulo = titulo[0][0]
-
-    return titulo;
-
-def retorna_notas_projeto(sqlite3, project_id):
-    lista_de_notas = DB_SELECT(sqlite3,'select NOTA_ID, TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ?;', (project_id,))
-
-    return lista_de_notas;
-
-def retorna_nota_especifica(sqlite3, project_id, nota_id):
-    nota = DB_SELECT(sqlite3, 'select TITULO, DESCRICAO from notasDeProjetos where PROJECT_ID = ? AND NOTA_ID = ?;', (project_id,nota_id));
-
-    return nota;
-
 def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
     nota_id = DB_EDIT(sqlite3, 'select max(NOTA_ID) from notasDeProjetos where PROJECT_ID = ?;', (project_id,));
     nota_id = nota_id[0][0];
@@ -114,17 +92,6 @@ def insere_notas_projeto(sqlite3, project_id, titulo, descricao):
     DB_EDIT(sqlite3, 'insert into notasDeProjetos values (?,?,?,?);', (project_id, nota_id, titulo, descricao));
 
     return nota_id;
-
-def atualiza_nota_projeto(sqlite3, project_id, nota_id, titulo_da_nota, descricao_da_nota):
-    DB_EDIT(sqlite3, 'UPDATE notasDeProjetos set TITULO = ?, DESCRICAO = ? WHERE PROJECT_ID = ? AND NOTA_ID = ?;',(titulo_da_nota, descricao_da_nota, project_id, nota_id));
-
-def atualiza_titulo_capitulo(sqlite3, project_id, chapter_id, version_id, new_name):
-    DB_EDIT(sqlite3, 'UPDATE capitulos set CHAPTER_TITLE = ? WHERE PROJECT_ID = ? AND CHAPTER_ID = ? AND VERSION_ID = ?',(new_name, project_id, chapter_id, version_id));
-
-def pega_capitulos(sqlite3, project_id):
-    capitulos = DB_SELECT(sqlite3, 'select POSICAO, CHAPTER_ID, CHAPTER_TITLE, VERSION_ID from capitulos where IS_CANON = 1 AND PROJECT_ID = ? ORDER BY POSICAO ASC',(project_id,));
-    
-    return capitulos;
 
 def todos_projetos(sqlite3):
     projetos = DB_SELECT(sqlite3, 'select titulos.project_id, titulos.name, capas.imagem_capa from titulos INNER JOIN capas ON titulos.project_id=capas.project_id;',());
@@ -199,11 +166,6 @@ def insere_projeto_mais_recente(sqlite3, time, id):
     nova_hora = int(time());
 
     DB_EDIT(sqlite3,'insert into projetosRecentes values (?, ?);',(id, nova_hora));
-
-def retorna_projetos_recentes(sqlite3):
-    order_desc = DB_SELECT(sqlite3, 'select project_id from projetosRecentes order by last_open desc limit 10;',());
-
-    return order_desc;
 
 def excluir_versao(Path, sqlite3, project_id, chapter_id, version_id):
     is_canon = DB_SELECT(sqlite3, "select is_canon from capitulos where project_id = ? AND chapter_id = ? AND version_id = ?;",(project_id, chapter_id, version_id));
@@ -295,15 +257,6 @@ def registra_nova_versao(sqlite3, project_id, chapter_id, chapter_title, nome_no
     DB_EDIT(sqlite3, 'INSERT INTO capitulos VALUES (?, ?, ?, ?, ?, ?,?)', (project_id, chapter_id, chapter_title, novo_id, nome_nova_versao, 0,posicao));
     
     return novo_id;
-
-def pega_versoes_capitulo(sqlite3, project_id, chapter_id):
-    lista = DB_SELECT(sqlite3,"select version_id, version_name from capitulos where project_id = ? AND chapter_id = ?;",(project_id, chapter_id));
-
-    return lista;
-
-def canonizar_versao_capitulo(sqlite3, project_id, chapter_id, version_id):
-    DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 0 where project_id = ? and chapter_id = ? and version_id != ?;",(project_id, chapter_id, version_id));
-    DB_EDIT(sqlite3, "UPDATE capitulos set is_canon = 1 where project_id = ? and chapter_id = ?  and version_id = ?;",(project_id, chapter_id, version_id));
 
 def exporta_arquivos(argv, tarfile):
     if len(argv) > 2:

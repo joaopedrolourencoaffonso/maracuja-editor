@@ -281,3 +281,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Concentrando funções de atualização do banco de dados em uma única função `DB_EDIT` para diminuir redundância de código e incrementar legibilidade. (redução em 65 linhas de código!)
+
+## 1.0.4 - 03-10-2026
+
+### Added
+
+- Excluindo funções redundantes, isto é, que podiam ser substituídas pela execução direta das funções `DB_EDIT` e `DB_SELECT`. (redução em 47 linhas de código!)
